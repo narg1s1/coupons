@@ -11,6 +11,8 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/cdk": "^6.3.0",
+    "@angular/material": "6.x",
     "@angular/animations": "^6.0.3",
     "@angular/common": "^6.0.3",
     "@angular/compiler": "^6.0.3",
@@ -20,6 +22,8 @@
     "@angular/platform-browser": "^6.0.3",
     "@angular/platform-browser-dynamic": "^6.0.3",
     "@angular/router": "^6.0.3",
+    "@pe/ng-kit": "6.14.1-dev.andreyev.37",
+    "@pe/ui-kit": "6.17.0-dev.andreyev.2",
     "core-js": "^2.5.4",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"
