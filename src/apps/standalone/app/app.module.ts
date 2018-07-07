@@ -6,22 +6,34 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { IconsProviderModule } from '@pe/ng-kit/modules/icons-provider';
 import { I18nModule } from '@pe/ng-kit/modules/i18n';
+import { TranslationModule } from '@pe/ng-kit/modules/translation';
 
-import { RootComponent } from './components';
 import { AppRoutingModule } from './app-routing.module';
+import { RootComponent } from './components';
+import { TranslationsGuard } from './guards';
+import { environment } from '../../../environments/environment';
 
 @NgModule({
   imports: [
     BrowserModule,
     CommonModule,
     FormsModule,
-    AppRoutingModule,
+    BrowserAnimationsModule,
+
     IconsProviderModule,
     I18nModule.provide({}),
-    BrowserAnimationsModule
+    TranslationModule.forRoot({
+      microKey: 'coupons',
+      isProd: environment.production
+    }),
+
+    AppRoutingModule
   ],
   declarations: [ RootComponent ],
-  bootstrap: [ RootComponent ]
+  bootstrap: [ RootComponent ],
+  providers: [
+    TranslationsGuard
+  ]
 })
 export class AppModule {
 }

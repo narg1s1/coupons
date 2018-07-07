@@ -26,6 +26,12 @@
     "../node_modules/@pe/ng-kit/modules/window/**/*.ts",
     "../node_modules/@pe/ng-kit/src/kit/window/**/*.ts",
 
+    "../node_modules/@pe/ng-kit/modules/badge/**/*.ts",
+    "../node_modules/@pe/ng-kit/src/kit/badge/**/*.ts",
+
+    "../node_modules/@pe/ng-kit/modules/layout/**/*.ts",
+    "../node_modules/@pe/ng-kit/src/kit/layout/**/*.ts",
+
     "../node_modules/@pe/ui-kit/index.ts",
     "../node_modules/@pe/ui-kit/scss/pe-variables.ts",
     "../node_modules/@pe/ng-kit/src/kit/pe-variables.ts",

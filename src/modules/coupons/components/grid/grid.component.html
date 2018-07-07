@@ -1,0 +1,93 @@
+<pe-data-grid-layout [viewMode]="viewMode">
+    <pe-data-grid-toolbar peToolbar
+                          [viewMode]="viewMode"
+                          [showViewSwitcher]="false"
+                          [showColumnSwitcher]="true"
+                          [columns]="columns"
+                          (viewChanged)="viewMode = $event"
+                          (columnsChanged)="columns = $event"
+                          [searchValue]="searchValue"
+                          (inputSearch)="fetchProducts(null, $event)"
+    ></pe-data-grid-toolbar>
+    <pe-data-grid-filters peGridFilters
+                          [filters]="chips"
+                          (filterRemoved)="onChipRemoved($event)"
+    ></pe-data-grid-filters>
+    <pe-grid *ngIf="viewMode === 'grid'"
+             peGrid
+             [gutterSize]="'40px'"
+             [itemsPerRow]="itemsPerRow"
+             [items]="items"
+             [rowHeight]="'2:3'"
+    >
+        <ng-template let-item>
+            <div>
+                <img [src]="item?.medias[0]?.sources.customer_shop_grid.url" />
+                <div>{{ item.title }}</div>
+                <div>{{ item.variants[0].price }}</div>
+                <div><mat-checkbox [checked]="selectedItems.indexOf(item) > -1" (change)="onRowSelected(item)"></mat-checkbox></div>
+            </div>
+        </ng-template>
+    </pe-grid>
+
+    <pe-table *ngIf="viewMode === 'list'"
+              peTable
+              matSort
+              (matSortChange)="sortData($event)"
+              [dataSource]="items"
+    >
+        <pe-table-header-row  *peTableHeaderRowDef="activeColumns"></pe-table-header-row>
+        <pe-table-row *peTableRowDef="let row; columns: activeColumns;"></pe-table-row>
+        <ng-container *ngFor="let column of columns"
+                      peTableColumnDef="{{ column.name }}">
+            <div [ngSwitch]="column.name">
+                <div *ngSwitchCase="'title'">
+                    <pe-table-header-cell mat-sort-header="{{ column.name }}" *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
+                    <pe-table-cell *peTableCellDef="let item;">
+                        Second column {{ item.title }}
+                    </pe-table-cell>
+                </div>
+                <div *ngSwitchDefault>
+                    <pe-table-header-cell *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
+                    <pe-table-cell *peTableCellDef="let item;">
+                        Other column {{ item.title }}
+                    </pe-table-cell>
+                </div>
+                <div *ngSwitchCase="'selected'">
+                    <pe-table-header-cell *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
+                    <pe-table-cell *peTableCellDef="let item;">
+                        <mat-checkbox [checked]="selectedItems.indexOf(item) > -1" (change)="onRowSelected(item)"></mat-checkbox>
+                    </pe-table-cell>
+                </div>
+                <div *ngSwitchCase="'menu'">
+                    <pe-table-header-cell *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
+                    <pe-table-cell *peTableCellDef="let item;">
+                        <button class="mat-button-link mat-muted-light mat-button-no-padding"
+                                mat-button
+                                mat-icon-button
+                                [matMenuTriggerFor]="menu">
+                            <svg class="icon icon-16">
+                                <use xlink:href="#icon-dots-v-16"></use>
+                            </svg>
+                        </button>
+                        <mat-menu #menu="matMenu" class="mat-menu-md mat-menu-padding-lg">
+                            <div class="mat-menu-item-slide-toggle">
+                                Visibility
+                                <mat-slide-toggle (click)="toggleClick($event)" [disableRipple]="true"></mat-slide-toggle>
+                            </div>
+                            <mat-divider></mat-divider>
+                            <div mat-menu-item [disableRipple]="true">Edit</div>
+                            <div mat-menu-item [disableRipple]="true">Duplicate</div>
+                            <div mat-menu-item [disableRipple]="true">Delete</div>
+                        </mat-menu>
+                    </pe-table-cell>
+                </div>
+            </div>
+        </ng-container>
+    </pe-table>
+    <pe-data-grid-pagination pePagination
+                             [length]="allItemsCount"
+                             [pageSize]="pageSize"
+                             (pageSelect)="fetchProducts($event)"
+    ></pe-data-grid-pagination>
+</pe-data-grid-layout>
