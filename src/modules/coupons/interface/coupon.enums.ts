@@ -5,40 +5,40 @@ export enum CouponStatusEnum {
 
 
 export enum ProductTypeEnum {
-  ALL = 'All products',
-  PRODUCTS_AND_CATEGORIES= 'Selected products and categories',
-  exclude_products_categories = 'Exclude products and categories'
+  ALL = 'all_products',
+  PRODUCTS_AND_CATEGORIES= 'selected_products_and_categories',
+  exclude_products_categories = 'exclude_products_and_categories'
 }
 
 
 export enum UserTypeEnum {
-  ANY = 'Any user',
-  USER_AND_GROUPS = 'Selected users and groups'
+  ANY = 'any_user',
+  USER_AND_GROUPS = 'selected_users_and_groups'
 }
 
 
 export enum UsageTypeEnum {
-  NO_LIMITS = 'No usage limits',
-  LIMITED_USAGE = 'Limited usage'
+  NO_LIMITS = 'no_usage_limits',
+  LIMITED_USAGE = 'limited_usage'
 }
 
 
 export enum CustomerPurchaseTypeEnum {
-  ANY = 'Any products',
-  PRODUCTS_AND_CATEGORIES = 'Selected products and categories',
-  EXCLUDED_PRODUCTS = 'Excluded products'
+  ANY = 'any_products',
+  PRODUCTS_AND_CATEGORIES = 'selected_products_and_categories',
+  EXCLUDED_PRODUCTS = 'excluded_products'
 }
 
 
 export enum MinimumAmountTypeEnum {
-  ANY = 'Any purchase amount or items',
-  MIN_PURCHASE_AMOUNT = 'Minimum purchase amount',
-  MIN_PURCHASED_ITEMS = 'Minimum purchased items'
+  ANY = 'any_purchase_amount_or_items',
+  MIN_PURCHASE_AMOUNT = 'minimum_purchase_amount',
+  MIN_PURCHASED_ITEMS = 'minimum_purchased_items'
 }
 
 
 export enum CountriesTypeEnum {
-  ALL = 'All regions & countries',
-  COUNTRIES = 'Selected countries',
-  EXCLUDED_COUNTRIES = 'Exclude countries'
+  ALL = 'all_regions_countries',
+  COUNTRIES = 'selected_countries',
+  EXCLUDED_COUNTRIES = 'exclude_countries'
 }
