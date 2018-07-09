@@ -6,7 +6,7 @@ import { TranslationsGuard } from './guards';
 const appRoutes: Routes = [
   {
     path: 'business/:slug',
-    loadChildren: '../../../modules/coupons/app.module#CouponsAppModule',
+    loadChildren: '../../../modules/coupons/coupons-app.module#CouponsAppModule',
     canActivate: [ TranslationsGuard ]
   }
 ];

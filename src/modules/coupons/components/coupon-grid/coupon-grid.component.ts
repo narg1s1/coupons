@@ -5,15 +5,14 @@ import {
   DataViewModeType,
   DataGridAbstractComponent,
   DataGridFilterInterface,
-  DataGridTableColumnInterface,
-  DataGridSelectBarButtonInterface
+  DataGridTableColumnInterface
 } from '@pe/ng-kit/modules/data-grid';
 
 @Component({
   selector: 'coupons-grid',
-  templateUrl: 'grid.component.html'
+  templateUrl: 'coupon-grid.component.html'
 })
-export class GridComponent extends DataGridAbstractComponent<any> {
+export class CouponGridComponent extends DataGridAbstractComponent<any> {
   viewMode: DataViewModeType = 'list';
   pageNumber: number = 0;
   selectedItems: any[] = [];
@@ -55,18 +54,6 @@ export class GridComponent extends DataGridAbstractComponent<any> {
       updatedArray.push(item);
     }
     this.selectedItems = updatedArray;
-  }
-
-  onSelectBarClosed(): void {
-    this.selectedItems = [];
-  }
-
-  onUnselected(): void {
-    this.selectedItems = [];
-  }
-
-  onAllSelected(): void {
-    this.selectedItems = this.items.slice();
   }
 
   onChipRemoved(chip: DataGridFilterInterface): void {

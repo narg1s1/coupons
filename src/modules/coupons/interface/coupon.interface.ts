@@ -1,11 +1,16 @@
-import { CouponStatus } from "./coupon.type";
-import { BuyXGetYType, FixedAmountType, FreeShippingType, PercentageType } from "./coupon-type.interface";
+import { CouponStatusEnum } from './coupon.enums';
+import {
+  BuyXGetYCouponType,
+  FixedAmountCouponType,
+  FreeShippingCouponType,
+  PercentageCouponType
+} from './coupon-type.interface';
 
 export interface Coupon {
   name: string;
   code: string;
   expiresAt: string;
   countUsed: number;
-  status?: CouponStatus;
-  type?: PercentageType | FixedAmountType | FreeShippingType | BuyXGetYType;
+  status?: CouponStatusEnum;
+  type?: PercentageCouponType | FixedAmountCouponType | FreeShippingCouponType | BuyXGetYCouponType;
 }

@@ -37,7 +37,10 @@
             "styles": [
               "node_modules/@pe/ui-kit/scss/pe_style.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/@pe/ui-kit/js/pe_bootstrap.js"
+            ]
           },
           "configurations": {
             "production": {

@@ -6,7 +6,12 @@
       </div>
     </div>
     <div col-right>
-      <button mat-icon-button [class.mat-button-no-padding]="true" color="primary">
+      <button
+        mat-icon-button
+        [class.mat-button-no-padding]="true"
+        color="primary"
+        [routerLink]="['/business', 'xxxlutz', 'coupons', 'coupon-list', 'add-coupon']"
+      >
         <svg class="icon icon-16"><use xlink:href="#icon-plus-16"></use></svg>
       </button>
     </div>

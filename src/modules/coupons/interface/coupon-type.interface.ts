@@ -1,6 +1,14 @@
-import { Countries, CustomerPurchase, Dates, MinimumAmount, Products, Usage, Users } from "./coupon-type-items.interface";
+import {
+  Countries,
+  CustomerPurchase,
+  Dates,
+  MinimumAmount,
+  Products,
+  Usage,
+  Users
+} from './coupon-type-items.interface';
 
-export interface PercentageType {
+export interface PercentageCouponType {
   perccent: number
   minimumAmount?: MinimumAmount
   products: Products
@@ -10,12 +18,12 @@ export interface PercentageType {
 }
 
 
-export interface FixedAmountType {
+export interface FixedAmountCouponType {
   amount?: number;
 }
 
 
-export interface FreeShippingType {
+export interface FreeShippingCouponType {
   countries: Countries
   minimumAmount: MinimumAmount
   products: Products
@@ -24,7 +32,7 @@ export interface FreeShippingType {
 }
 
 
-export interface BuyXGetYType {
+export interface BuyXGetYCouponType {
   customerBuys: CustomerPurchase;
   customerGets: CustomerPurchase;
   users: Users;

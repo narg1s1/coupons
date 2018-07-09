@@ -31,9 +31,7 @@ import { environment } from '../../../environments/environment';
   ],
   declarations: [ RootComponent ],
   bootstrap: [ RootComponent ],
-  providers: [
-    TranslationsGuard
-  ]
+  providers: [ TranslationsGuard ]
 })
 export class AppModule {
 }

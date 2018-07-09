@@ -42,6 +42,21 @@
     "../node_modules/@pe/ng-kit/src/kit/table/**/*.ts",
 
     "../node_modules/@pe/ng-kit/modules/icons-provider/**/*.ts",
-    "../node_modules/@pe/ng-kit/src/kit/icons-provider/**/*.ts"
+    "../node_modules/@pe/ng-kit/src/kit/icons-provider/**/*.ts",
+
+    "../node_modules/@pe/ng-kit/modules/modal/**/*.ts",
+    "../node_modules/@pe/ng-kit/src/kit/modal/**/*.ts",
+
+    "../node_modules/@pe/ng-kit/modules/address/**/*.ts",
+    "../node_modules/@pe/ng-kit/src/kit/address/**/*.ts",
+
+    "../node_modules/@pe/ng-kit/modules/form/**/*.ts",
+    "../node_modules/@pe/ng-kit/src/kit/form/**/*.ts",
+
+    "../node_modules/@pe/ng-kit/modules/dialog/**/*.ts",
+    "../node_modules/@pe/ng-kit/src/kit/dialog/**/*.ts",
+
+    "../node_modules/@pe/ng-kit/modules/tooltip/**/*.ts",
+    "../node_modules/@pe/ng-kit/src/kit/tooltip/**/*.ts"
   ]
 }

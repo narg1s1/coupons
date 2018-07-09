@@ -1,32 +1,41 @@
+import {
+  CountriesTypeEnum,
+  CustomerPurchaseTypeEnum,
+  MinimumAmountTypeEnum,
+  ProductTypeEnum,
+  UsageTypeEnum,
+  UserTypeEnum
+} from './coupon.enums';
+
 export interface Countries {
-  type: 'All regions & countries' | 'Selected countries' | 'Exclude countries';
+  type: CountriesTypeEnum;
   countries: string[];
 }
 
 
 export interface MinimumAmount {
-  type: 'Any purchase amount or items' | 'Minimum purchase amount' | 'Minimum purchased items';
+  type: MinimumAmountTypeEnum;
   minimumAmount: number;
   minimumItems: number;
 }
 
 
 export interface Products {
-  type: 'All products' | 'Selected products and categories' | 'Exclude products and categories';
+  type: ProductTypeEnum;
   products: string[];
   categories: string[];
 }
 
 
 export interface Users {
-  type: 'Any user' | 'Selected users and groups';
+  type: UserTypeEnum;
   users: string[];
   groups: string[];
 }
 
 
 export interface Usage {
-  type: 'No usage limits' | 'Limited usage';
+  type: UsageTypeEnum;
   limit: LimitedUsage
 }
 
@@ -39,7 +48,7 @@ export interface Dates {
 
 export interface CustomerPurchase {
   quantity: number;
-  type: 'Any products' | 'Selected products and categories' | 'Excluded products';
+  type: CustomerPurchaseTypeEnum;
   products: string[];
   categories: string[];
   discount: number;
