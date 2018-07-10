@@ -1,11 +1,10 @@
-<pe-modal
-  [baseViewConfig]="'small'"
-  [viewConfig]="{classes: {modalBody : bodyZeroPadding ? 'zero-padding' : '', modalDialog: 'col-lg-7 col-md-8 col-sm-9 col-xs-12'}, styles: {modal: backgroundStyle}}"
-  [doHide]="hider"
-  (onClose)="back()"
-  [showLoading]="loading"
-  [baseButtons]="'close'"
-  [buttons]="buttons"
->
-  <h2>New discount coupon</h2>
-</pe-modal>
+<pe-dialog [baseButtons]="'close'" [buttons]="buttons">
+  <pe-dialog-content>
+    <div class="dialog-container">
+      <p>Please select the date of your previous employment</p>
+      <div>
+        <svg class="icon icon-32"><use xlink:href="#icon-alert-32"></use></svg>
+      </div>
+    </div>
+  </pe-dialog-content>
+</pe-dialog>

@@ -7,6 +7,11 @@ import {
   DataGridFilterInterface,
   DataGridTableColumnInterface
 } from '@pe/ng-kit/modules/data-grid';
+import { DialogConfigPresetName, DialogService } from '@pe/ng-kit/modules/dialog';
+
+import { CouponDuplicateComponent } from '../coupon-dublicate';
+import { CouponEditComponent } from '../coupon-edit';
+import { CouponRemoveComponent } from '../coupon-remove';
 
 @Component({
   selector: 'coupons-grid',
@@ -35,7 +40,8 @@ export class CouponGridComponent extends DataGridAbstractComponent<any> {
 
   constructor(
     injector: Injector,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private dialogService: DialogService
   ) {
     super(injector);
   }
@@ -87,5 +93,26 @@ export class CouponGridComponent extends DataGridAbstractComponent<any> {
 
   onToggleClick(event: any) {
     event.stopPropagation();
+  }
+
+  onOpenDuplicateDialog(): void {
+    this.dialogService.open(
+      CouponDuplicateComponent,
+      DialogConfigPresetName.Small
+    );
+  }
+
+  onOpenEditDialog(): void {
+    this.dialogService.open(
+      CouponEditComponent,
+      DialogConfigPresetName.Small
+    );
+  }
+
+  onOpenRemoveDialog(): void {
+    this.dialogService.open(
+      CouponRemoveComponent,
+      DialogConfigPresetName.Small
+    );
   }
 }

@@ -1,54 +1,54 @@
 import {
-  CountriesTypeEnum,
-  CustomerPurchaseTypeEnum,
-  MinimumAmountTypeEnum,
-  ProductTypeEnum,
-  UsageTypeEnum,
-  UserTypeEnum
+  CouponTypeCountriesEnum,
+  CouponTypeCustomerPurchaseEnum,
+  CouponTypeMinimumAmountEnum,
+  CouponTypeProductEnum,
+  CouponTypeUsageEnum,
+  CouponTypeUserEnum
 } from './coupon.enums';
 
-export interface Countries {
-  type: CountriesTypeEnum;
+export interface CouponCountries {
+  type: CouponTypeCountriesEnum;
   countries: string[];
 }
 
 
-export interface MinimumAmount {
-  type: MinimumAmountTypeEnum;
+export interface CouponMinimumAmount {
+  type: CouponTypeMinimumAmountEnum;
   minimumAmount: number;
   minimumItems: number;
 }
 
 
-export interface Products {
-  type: ProductTypeEnum;
+export interface CouponProducts {
+  type: CouponTypeProductEnum;
   products: string[];
   categories: string[];
 }
 
 
-export interface Users {
-  type: UserTypeEnum;
+export interface CouponUsers {
+  type: CouponTypeUserEnum;
   users: string[];
   groups: string[];
 }
 
 
-export interface Usage {
-  type: UsageTypeEnum;
-  limit: LimitedUsage
+export interface CouponUsage {
+  type: CouponTypeUsageEnum;
+  limit: CouponLimitedUsage
 }
 
 
-export interface Dates {
+export interface CouponDates {
   startDate: string;
   endDate: string;
 }
 
 
-export interface CustomerPurchase {
+export interface CouponCustomerPurchase {
   quantity: number;
-  type: CustomerPurchaseTypeEnum;
+  type: CouponTypeCustomerPurchaseEnum;
   products: string[];
   categories: string[];
   discount: number;
@@ -56,7 +56,7 @@ export interface CustomerPurchase {
 }
 
 
-export interface LimitedUsage {
+export interface CouponLimitedUsage {
   timesCanBeUsed: number;
   onePerCustomer: boolean;
 }

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
-import { DialogButtonListInterface, DialogComponentInterface, DialogRef } from '@pe/ng-kit/modules/dialog';
+import { DialogComponentInterface, DialogRef, DialogButtonListInterface } from '@pe/ng-kit/modules/dialog';
 
 @Component({
-  templateUrl: './coupon-remove.component.html'
+  templateUrl: 'coupon-create.component.html'
 })
-export class CouponRemoveComponent implements DialogComponentInterface {
+export class CouponCreateComponent implements DialogComponentInterface {
   buttons: DialogButtonListInterface = {
     save: {
       classes: 'mat-button-bold',
@@ -18,5 +18,5 @@ export class CouponRemoveComponent implements DialogComponentInterface {
       }
     }
   };
-  dialogRef: DialogRef<CouponRemoveComponent>;
+  dialogRef: DialogRef<CouponCreateComponent>;
 }

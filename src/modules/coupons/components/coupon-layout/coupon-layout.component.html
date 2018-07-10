@@ -10,7 +10,7 @@
         mat-icon-button
         [class.mat-button-no-padding]="true"
         color="primary"
-        [routerLink]="['/business', 'xxxlutz', 'coupons', 'coupon-list', 'add-coupon']"
+        (click)="onOpenCreateCouponDialog()"
       >
         <svg class="icon icon-16"><use xlink:href="#icon-plus-16"></use></svg>
       </button>

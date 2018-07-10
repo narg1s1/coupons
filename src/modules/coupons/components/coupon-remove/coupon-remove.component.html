@@ -1,13 +1,10 @@
-<pe-modal
-  [baseViewConfig]="'confirm'"
-  [viewConfig]="{classes: {modalBody : bodyZeroPadding ? 'zero-padding' : ''}}"
-  [doHide]="hider"
-  (onClose)="back()"
-  [showLoading]="loading"
-  [baseButtons]="'close'"
-  [buttons]="buttons"
-  [grayBG]="true"
->
-  <h4>Do you really want to do this?</h4>
-  <p>Please make your choice.</p>
-</pe-modal>
+<pe-dialog [baseButtons]="'close'" [buttons]="buttons">
+  <pe-dialog-content>
+    <div class="dialog-container">
+      <p>Please select the date of your previous employment</p>
+      <div>
+        <svg class="icon icon-32"><use xlink:href="#icon-alert-32"></use></svg>
+      </div>
+    </div>
+  </pe-dialog-content>
+</pe-dialog>

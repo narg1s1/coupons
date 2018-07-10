@@ -22,8 +22,8 @@ import { TableModule } from '@pe/ng-kit/src/kit/table';
 import { WindowService } from '@pe/ng-kit/modules/window';
 import { LayoutModule } from '@pe/ng-kit/modules/layout';
 import { BadgeModule } from '@pe/ng-kit/modules/badge';
-import { ModalModule } from '@pe/ng-kit/modules/modal';
 import { FormModule } from '@pe/ng-kit/modules/form';
+import { DialogModule} from '@pe/ng-kit/modules/dialog';
 
 import { CouponsRoutingModule } from './coupons-routing.module';
 import {
@@ -32,6 +32,7 @@ import {
   CouponDuplicateComponent,
   CouponEditComponent,
   CouponRemoveComponent,
+  CouponCreateComponent
 } from './components';
 
 @NgModule({
@@ -57,8 +58,8 @@ import {
     DataGridModule,
     LayoutModule,
     BadgeModule,
-    ModalModule,
     FormModule,
+    DialogModule,
 
     CouponsRoutingModule
   ],
@@ -67,9 +68,16 @@ import {
     CouponGridComponent,
     CouponDuplicateComponent,
     CouponEditComponent,
-    CouponRemoveComponent
+    CouponRemoveComponent,
+    CouponCreateComponent
   ],
-  providers: [ WindowService ]
+  providers: [ WindowService ],
+  entryComponents: [
+    CouponCreateComponent,
+    CouponEditComponent,
+    CouponDuplicateComponent,
+    CouponRemoveComponent
+  ]
 })
 export class CouponsAppModule {
 }

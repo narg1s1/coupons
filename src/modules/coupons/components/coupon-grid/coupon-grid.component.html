@@ -65,30 +65,12 @@
             <mat-menu #menu="matMenu" class="mat-menu-md mat-menu-padding-lg">
               <div class="mat-menu-item-slide-toggle">
                 Visibility
-                <mat-slide-toggle (click)="onToggleClick($event)" [disableRipple]="true"></mat-slide-toggle>
+                <mat-slide-toggle (click)="onToggleClick($event)"></mat-slide-toggle>
               </div>
               <mat-divider></mat-divider>
-              <div
-                mat-menu-item
-                [disableRipple]="true"
-                [routerLink]="['/business', 'xxxlutz', 'coupons', 'coupon-list', 'edit-coupon']"
-              >
-                Edit
-              </div>
-              <div
-                mat-menu-item
-                [disableRipple]="true"
-                [routerLink]="['/business', 'xxxlutz', 'coupons', 'coupon-list', 'duplicate-coupon']"
-              >
-                Duplicate
-              </div>
-              <div
-                mat-menu-item
-                [disableRipple]="true"
-                [routerLink]="['/business', 'xxxlutz', 'coupons', 'coupon-list', 'remove-coupon']"
-              >
-                Delete
-              </div>
+              <div mat-menu-item (click)="onOpenDuplicateDialog()">Edit</div>
+              <div mat-menu-item (click)="onOpenEditDialog()">Duplicate</div>
+              <div mat-menu-item (click)="onOpenRemoveDialog()">Delete</div>
             </mat-menu>
           </pe-table-cell>
         </div>
