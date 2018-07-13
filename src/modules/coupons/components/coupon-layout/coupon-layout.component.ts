@@ -16,7 +16,7 @@ export class CouponLayoutComponent {
   onOpenCreateCouponDialog(): void {
     this.dialogService.open(
       CouponCreateComponent,
-      DialogConfigPresetName.Small
+      DialogConfigPresetName.Medium,
     );
   }
 }

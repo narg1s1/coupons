@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, Inject} from '@angular/core';
 
-import { DialogComponentInterface, DialogRef, DialogButtonListInterface } from '@pe/ng-kit/modules/dialog';
+import { DialogComponentInterface, DialogRef, DialogButtonListInterface, DIALOG_DATA } from '@pe/ng-kit/modules/dialog';
 
 @Component({
   templateUrl: 'coupon-edit.component.html'
@@ -10,13 +10,15 @@ export class CouponEditComponent implements DialogComponentInterface {
     save: {
       classes: 'mat-button-bold',
       color: 'primary',
-      text: 'Try again',
+      text: 'Done',
       order: 2,
       click: () => {
-        alert('"Try again" was clicked');
         this.dialogRef.close();
       }
     }
   };
   dialogRef: DialogRef<CouponEditComponent>;
+
+  constructor(@Inject(DIALOG_DATA) public data: any) {
+  }
 }

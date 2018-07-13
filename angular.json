@@ -175,9 +175,31 @@
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
-            "assets": [],
-            "styles": [],
-            "scripts": []
+            "assets": [
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@pe/ng-kit/modules/ui-locale/assets",
+                "output": "/assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "i18n-serve",
+                "output": "/assets/i18n"
+              },
+              {
+                "glob": "**/transactions.png",
+                "input": "node_modules/@pe/ui-kit/icons-apps",
+                "output": "/assets"
+              }
+            ],
+            "styles": [
+              "node_modules/@pe/ui-kit/scss/pe_style.scss"
+            ],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/@pe/ui-kit/js/pe_bootstrap.js"
+            ]
           },
           "configurations": {
             "production": {

@@ -13,7 +13,10 @@ import {
   MatSelectModule,
   MatInputModule,
   MatToolbarModule,
-  MatIconModule
+  MatIconModule,
+  MatExpansionModule,
+  MatChipsModule,
+  MatCardModule
 } from '@angular/material';
 
 import { DataGridModule } from '@pe/ng-kit/modules/data-grid';
@@ -32,8 +35,10 @@ import {
   CouponDuplicateComponent,
   CouponEditComponent,
   CouponRemoveComponent,
-  CouponCreateComponent
+  CouponCreateComponent,
+  CouponCreateFormComponent
 } from './components';
+import { MockData } from './service/mock-data';
 
 @NgModule({
   imports: [
@@ -52,6 +57,9 @@ import {
     MatSelectModule,
     MatToolbarModule,
     MatIconModule,
+    MatExpansionModule,
+    MatChipsModule,
+    MatCardModule,
 
     TableModule,
     GridModule,
@@ -69,9 +77,13 @@ import {
     CouponDuplicateComponent,
     CouponEditComponent,
     CouponRemoveComponent,
-    CouponCreateComponent
+    CouponCreateComponent,
+    CouponCreateFormComponent,
   ],
-  providers: [ WindowService ],
+  providers: [
+    WindowService,
+    MockData
+  ],
   entryComponents: [
     CouponCreateComponent,
     CouponEditComponent,

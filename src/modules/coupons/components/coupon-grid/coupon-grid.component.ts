@@ -7,30 +7,72 @@ import {
   DataGridFilterInterface,
   DataGridTableColumnInterface
 } from '@pe/ng-kit/modules/data-grid';
-import { DialogConfigPresetName, DialogService } from '@pe/ng-kit/modules/dialog';
+import {DialogConfigPresetName, DialogService} from '@pe/ng-kit/modules/dialog';
 
 import { CouponDuplicateComponent } from '../coupon-dublicate';
 import { CouponEditComponent } from '../coupon-edit';
 import { CouponRemoveComponent } from '../coupon-remove';
+import { MockData } from '../../service/mock-data';
+import { CouponTypeDiscountEnum, VoucherTypeEnum } from '../../interface/coupon.enums';
+
+
+const vaucher = {
+  code: '34454534543',
+  name: 'Code name',
+  type: VoucherTypeEnum.DISCOUNT_VOUCHER_TYPE,
+  type_data: {
+    discount: {
+      type: CouponTypeDiscountEnum.PERCENTAGE,
+      percent_off: 10,
+      amount_limit: 10000
+    }
+  },
+  start_date: '',
+  expiration_date: '',
+  active: true,
+  redemption: '',
+  publish: '',
+  assets: '',
+  metadata: '',
+  additional_info: '',
+  category: {
+    name: ''
+  },
+  campaign: {
+    name: '',
+    start_date: '',
+    expiration_date: '',
+    vouchers_count: 1
+  }
+};
+
+const mockData = [vaucher];
 
 @Component({
   selector: 'coupons-grid',
   templateUrl: 'coupon-grid.component.html'
 })
 export class CouponGridComponent extends DataGridAbstractComponent<any> {
-  viewMode: DataViewModeType = 'list';
+  dataViewMode: typeof DataViewModeType = DataViewModeType;
+  viewMode: DataViewModeType = this.dataViewMode.List;
   pageNumber: number = 0;
   selectedItems: any[] = [];
-  searchValue: string;
   chips: DataGridFilterInterface[] = [];
   columns: DataGridTableColumnInterface[] = [
     { name: 'name', title: 'Name', isActive: true, isToggleable: true },
     { name: 'code', title: 'Code', isActive: true, isToggleable: true },
-    { name: 'expiry_date', title: 'Expiry Date', isActive: true, isToggleable: true },
-    { name: 'no_used', title: 'No. Used', isActive: true, isToggleable: true },
     { name: 'selected', title: 'Enabled', isActive: true, isToggleable: true },
     { name: 'menu', title: '', isActive: true, isToggleable: true }
   ];
+  searchValue: string;
+
+  constructor(
+    injector: Injector,
+    private httpClient: HttpClient,
+    private dialogService: DialogService,
+    protected mockData: MockData) {
+    super(injector);
+  }
 
   get activeColumns(): string[] {
     return this.columns
@@ -38,16 +80,9 @@ export class CouponGridComponent extends DataGridAbstractComponent<any> {
       .map((column: DataGridTableColumnInterface) => column.name);
   }
 
-  constructor(
-    injector: Injector,
-    private httpClient: HttpClient,
-    private dialogService: DialogService
-  ) {
-    super(injector);
-  }
-
   ngOnInit(): void {
     super.ngOnInit();
+    this.mockData.save(mockData);
     this.fetchProducts(0);
   }
 
@@ -63,9 +98,17 @@ export class CouponGridComponent extends DataGridAbstractComponent<any> {
 
     this.httpClient.get(url)
       .subscribe((products: any) => {
-        this.items = products.collection;
-        this.allItemsCount = products.pagination.item_count;
+        //this.items = mockData;
+        this.allItemsCount = mockData.length;
       });
+  }
+
+  onChipRemoved(chip: DataGridFilterInterface): void {
+    let index: number = this.chips.indexOf(chip);
+
+    if (index >= 0) {
+      this.chips.splice(index, 1);
+    }
   }
 
   sortData(event: any): void {
@@ -83,36 +126,31 @@ export class CouponGridComponent extends DataGridAbstractComponent<any> {
     this.selectedItems = updatedArray;
   }
 
-  onChipRemoved(chip: DataGridFilterInterface): void {
-    let index: number = this.chips.indexOf(chip);
-
-    if (index >= 0) {
-      this.chips.splice(index, 1);
-    }
-  }
-
   onToggleClick(event: any) {
     event.stopPropagation();
   }
 
-  onOpenDuplicateDialog(): void {
+  onOpenDuplicateDialog(item: any): void {
     this.dialogService.open(
       CouponDuplicateComponent,
-      DialogConfigPresetName.Small
+      DialogConfigPresetName.Small,
+      { item }
     );
   }
 
-  onOpenEditDialog(): void {
+  onOpenEditDialog(item: any): void {
     this.dialogService.open(
       CouponEditComponent,
-      DialogConfigPresetName.Small
+      DialogConfigPresetName.Small,
+      { item }
     );
   }
 
-  onOpenRemoveDialog(): void {
+  onOpenRemoveDialog(item: any): void {
     this.dialogService.open(
       CouponRemoveComponent,
-      DialogConfigPresetName.Small
+      DialogConfigPresetName.Small,
+      { item }
     );
   }
 }

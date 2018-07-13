@@ -10,12 +10,9 @@ export class CouponCreateComponent implements DialogComponentInterface {
     save: {
       classes: 'mat-button-bold',
       color: 'primary',
-      text: 'Try again',
+      text: 'Done',
       order: 2,
-      click: () => {
-        alert('"Try again" was clicked');
-        this.dialogRef.close();
-      }
+      click: () => this.dialogRef.close('done')
     }
   };
   dialogRef: DialogRef<CouponCreateComponent>;
