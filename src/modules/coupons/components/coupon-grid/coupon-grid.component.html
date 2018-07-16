@@ -9,10 +9,6 @@
                         [searchValue]="searchValue"
                         (inputSearch)="fetchProducts(null, $event)">
   </pe-data-grid-toolbar>
-  <pe-data-grid-filters peGridFilters
-                        [filters]="chips"
-                        (filterRemoved)="onChipRemoved($event)"
-  ></pe-data-grid-filters>
 
   <pe-table *ngIf="viewMode === dataViewMode.List"
             peTable
@@ -25,7 +21,7 @@
         <div *ngSwitchCase="'selected'">
           <pe-table-header-cell class="select-area" *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
           <pe-table-cell *peTableCellDef="let item;">
-            <mat-checkbox [checked]="selectedItems.indexOf(item) > -1" (change)="onRowSelected(item)"></mat-checkbox>
+            <mat-checkbox *ngIf="item.active" [checked]="true" [disabled]="true" (change)="onRowSelected(item)"></mat-checkbox>
           </pe-table-cell>
         </div>
 
@@ -58,7 +54,7 @@
             <mat-menu #menu="matMenu" class="mat-menu-md mat-menu-padding-lg">
               <div class="mat-menu-item-slide-toggle">
                 Visibility
-                <mat-slide-toggle (click)="onToggleClick($event)"></mat-slide-toggle>
+                <mat-slide-toggle [checked]="item.active" (click)="onToggleClick($event)"></mat-slide-toggle>
               </div>
               <mat-divider></mat-divider>
               <div mat-menu-item (click)="onOpenEditDialog(item)">Edit</div>

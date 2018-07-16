@@ -5,3 +5,4 @@ export * from './coupon-edit';
 export * from './coupon-remove';
 export * from './coupon-create';
 export * from './coupon-create-form';
+export * from './coupon-campaign-form';

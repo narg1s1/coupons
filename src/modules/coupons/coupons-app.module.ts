@@ -16,7 +16,8 @@ import {
   MatIconModule,
   MatExpansionModule,
   MatChipsModule,
-  MatCardModule
+  MatCardModule,
+  MatTabsModule
 } from '@angular/material';
 
 import { DataGridModule } from '@pe/ng-kit/modules/data-grid';
@@ -26,7 +27,7 @@ import { WindowService } from '@pe/ng-kit/modules/window';
 import { LayoutModule } from '@pe/ng-kit/modules/layout';
 import { BadgeModule } from '@pe/ng-kit/modules/badge';
 import { FormModule } from '@pe/ng-kit/modules/form';
-import { DialogModule} from '@pe/ng-kit/modules/dialog';
+import { DialogModule } from '@pe/ng-kit/modules/dialog';
 
 import { CouponsRoutingModule } from './coupons-routing.module';
 import {
@@ -36,9 +37,13 @@ import {
   CouponEditComponent,
   CouponRemoveComponent,
   CouponCreateComponent,
-  CouponCreateFormComponent
+  CouponCreateFormComponent,
+  CouponCampaignFormComponent
 } from './components';
-import { MockData } from './service/mock-data';
+import {
+  MockData,
+  CouponTabFormService
+} from './service';
 
 @NgModule({
   imports: [
@@ -60,6 +65,7 @@ import { MockData } from './service/mock-data';
     MatExpansionModule,
     MatChipsModule,
     MatCardModule,
+    MatTabsModule,
 
     TableModule,
     GridModule,
@@ -79,10 +85,12 @@ import { MockData } from './service/mock-data';
     CouponRemoveComponent,
     CouponCreateComponent,
     CouponCreateFormComponent,
+    CouponCampaignFormComponent
   ],
   providers: [
     WindowService,
-    MockData
+    MockData,
+    CouponTabFormService
   ],
   entryComponents: [
     CouponCreateComponent,

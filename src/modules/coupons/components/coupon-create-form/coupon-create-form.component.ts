@@ -1,4 +1,12 @@
-import {Component, ChangeDetectionStrategy, Injector, Input} from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Injector,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit
+} from '@angular/core';
 import { Validators } from '@angular/forms';
 
 import {
@@ -11,7 +19,7 @@ import {
 import { formScheme } from './coupon-create-form-schema';
 import { CouponTypeDiscountEnum, VoucherTypeEnum } from '../../interface/coupon.enums';
 import { CouponCreateForm } from '../../interface/coupon-form.interface';
-import { MockData } from '../../service/mock-data';
+import { CouponTabFormService, TypeFormEnum } from '../../service';
 
 const vaucher = {
   code: '34454534543',
@@ -49,24 +57,38 @@ const vaucher = {
   templateUrl: 'coupon-create-form.component.html',
   providers: [ErrorBag]
 })
-export class CouponCreateFormComponent extends FormAbstractComponent<CouponCreateForm> {
+export class CouponCreateFormComponent extends FormAbstractComponent<CouponCreateForm> implements OnInit {
   formTranslationsScope: 'test_fieldset.form';
   mainFieldSet: FormSchemeField[];
   formScheme: FormScheme = formScheme;
 
   @Input() data?: CouponCreateForm;
+  @Input() isAdditionalForm?: boolean;
+
+  @Output() onSubmitForm: EventEmitter<any> = new EventEmitter();
 
   protected formStorageKey: string = 'test_fieldset.form';
-  protected additionalFieldList: string[] = ['discount_type', 'percent_off',
-    'amount_off', 'unit_off', 'unit_type', 'gift_amount', 'additional_info', 'start_date', 'expiration_date',
-    'active_voucher', 'gift_category'];
+  protected additionalFieldList: string[] = ['discount_type', 'percent_off', 'amount_off', 'unit_off', 'unit_type',
+    'gift_amount'];
 
-  constructor(injector: Injector, protected errorBag: ErrorBag, protected mockData: MockData) {
+  constructor(injector: Injector,
+              protected errorBag: ErrorBag,
+              private formDataService: CouponTabFormService) {
     super(injector);
   }
 
   onSuccess(): void {
-    this.mockData.save([...this.mockData.active, vaucher]);
+    this.onSubmitForm.emit({ data: vaucher });
+  }
+
+  ngOnInit(): void {
+    this.formDataService.submittedForm.subscribe((submittedFormEntity: boolean) => {
+      if (submittedFormEntity && this.formDataService.isActiveTabForm(TypeFormEnum.VOUCHER)) {
+        debugger
+        this.onSubmit();
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 
   protected createForm(): void {
@@ -79,7 +101,7 @@ export class CouponCreateFormComponent extends FormAbstractComponent<CouponCreat
       amount_off: [initialData.amount_off, Validators.required],
       unit_off: [initialData.unit_off, Validators.required],
       unit_type: [initialData.unit_type, Validators.required],
-      gift_category: [initialData.gift_category, Validators.required],
+      category: [initialData.category, Validators.required],
       gift_amount: [initialData.gift_amount, Validators.required],
       additional_info: [initialData.additional_info, Validators.required],
       start_date: [initialData.start_date, Validators.required],
@@ -106,8 +128,7 @@ export class CouponCreateFormComponent extends FormAbstractComponent<CouponCreat
         inputTypeList = this.checkDiscountType(formValues, inputTypeList);
         break;
       case VoucherTypeEnum.GIFT_VOUCHER_TYPE:
-        inputTypeList = ['gift_category', 'gift_amount', 'additional_info', 'start_date', 'expiration_date',
-          'active_voucher'];
+        inputTypeList = ['gift_amount'];
         break;
     }
     this.showAdditionalFormField(inputTypeList);

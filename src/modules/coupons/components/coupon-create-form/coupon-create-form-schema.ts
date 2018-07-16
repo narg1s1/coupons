@@ -1,7 +1,14 @@
-import { AddonType, AddonStyle, ButtonType, FormScheme } from '@pe/ng-kit/modules/form';
-import { DatepickerMode, DatepickerStartView, DatePresets } from '@pe/ng-kit/modules/form';
+import {
+  DatepickerMode,
+  DatepickerStartView,
+  DatePresets,
+  AddonType,
+  AddonStyle,
+  ButtonType,
+  FormScheme
+} from '@pe/ng-kit/modules/form';
 
-import { CouponTypeDiscountEnum, VoucherTypeEnum } from '../../interface/coupon.enums';
+import {CouponTypeDiscountEnum, UnitTypeEnum, VoucherTypeEnum} from '../../interface/coupon.enums';
 
 export const formScheme: FormScheme = {
   fieldsets: {
@@ -11,6 +18,7 @@ export const formScheme: FormScheme = {
         type: 'input',
         fieldSettings: {
           classList: 'col-xs-12 col-sm-12',
+          label: 'Voucher name',
           required: true
         },
         inputSettings: {
@@ -22,6 +30,7 @@ export const formScheme: FormScheme = {
         type: 'input',
         fieldSettings: {
           classList: 'col-xs-12 col-sm-12',
+          label: 'Code',
           required: true
         },
         inputSettings: {
@@ -87,6 +96,7 @@ export const formScheme: FormScheme = {
         type: 'input',
         fieldSettings: {
           classList: 'col-xs-12 col-sm-12',
+          label: 'Percent off',
           required: true
         },
         inputSettings: {
@@ -103,6 +113,7 @@ export const formScheme: FormScheme = {
         type: 'input',
         fieldSettings: {
           classList: 'col-xs-12 col-sm-12',
+          label: 'Amount off',
           required: true
         },
         inputSettings: {
@@ -119,6 +130,7 @@ export const formScheme: FormScheme = {
         type: 'input',
         fieldSettings: {
           classList: 'col-xs-6 col-sm-6',
+          label: 'Unit off',
           required: true
         },
         inputSettings: {
@@ -137,11 +149,11 @@ export const formScheme: FormScheme = {
           options: [
             {
               label: 'Times',
-              value: VoucherTypeEnum.DISCOUNT_VOUCHER_TYPE
+              value: UnitTypeEnum.TIME
             },
             {
               label: 'Items',
-              value: VoucherTypeEnum.GIFT_VOUCHER_TYPE
+              value: UnitTypeEnum.ITEMS
             }
           ]
         }
@@ -150,7 +162,8 @@ export const formScheme: FormScheme = {
         name: 'gift_amount',
         type: 'input',
         fieldSettings: {
-          classList: 'col-xs-6 col-sm-6',
+          classList: 'col-xs-12 col-sm-12',
+          label: 'Gift amount',
           required: true
         },
         inputSettings: {
@@ -158,10 +171,11 @@ export const formScheme: FormScheme = {
         }
       },
       {
-        name: 'gift_category',
+        name: 'category',
         type: 'input',
         fieldSettings: {
-          classList: 'col-xs-6 col-sm-6',
+          classList: 'col-xs-12 col-sm-12',
+          label: 'Category',
           required: true
         },
         inputSettings: {
@@ -173,6 +187,7 @@ export const formScheme: FormScheme = {
         type: 'textarea',
         fieldSettings: {
           classList: 'col-xs-12',
+          label: 'Additional info',
           required: true
         },
         textareaSettings: {
@@ -186,6 +201,7 @@ export const formScheme: FormScheme = {
         type: 'date',
         fieldSettings: {
           classList: 'col-xs-12 col-sm-6',
+          label: 'Start date',
           required: true
         },
         dateSettings: {
@@ -201,6 +217,7 @@ export const formScheme: FormScheme = {
         type: 'date',
         fieldSettings: {
           classList: 'col-xs-12 col-sm-6',
+          label: 'Expiration date',
           required: true
         },
         dateSettings: {
@@ -225,6 +242,7 @@ export const formScheme: FormScheme = {
         type: 'input',
         fieldSettings: {
           classList: 'col-xs-12 col-sm-12',
+          label: 'Redemption',
           required: false
         },
         inputSettings: {

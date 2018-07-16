@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 
-import { DialogConfigPresetName, DialogService } from '@pe/ng-kit/modules/dialog';
+import { DialogConfigPresetName, DialogRef, DialogService } from '@pe/ng-kit/modules/dialog';
 
 import { CouponCreateComponent } from '../coupon-create';
+import { CouponTabFormService, TypeFormEnum } from '../../service';
 
 @Component({
   selector: 'coupons-layout',
@@ -10,13 +11,17 @@ import { CouponCreateComponent } from '../coupon-create';
   styleUrls: ['coupon-layout.component.scss']
 })
 export class CouponLayoutComponent {
-  constructor(private dialogService: DialogService) {
+  constructor(private dialogService: DialogService,
+              private couponTabFormService: CouponTabFormService) {
   }
 
   onOpenCreateCouponDialog(): void {
-    this.dialogService.open(
+    const dialogRef: DialogRef<CouponCreateComponent> = this.dialogService.open(
       CouponCreateComponent,
       DialogConfigPresetName.Medium,
     );
+    dialogRef.afterClosed().subscribe(() => {
+      this.couponTabFormService.activeTabForm = TypeFormEnum.VOUCHER;
+    });
   }
 }

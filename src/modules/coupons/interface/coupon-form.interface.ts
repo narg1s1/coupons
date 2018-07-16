@@ -6,7 +6,7 @@ export interface CouponCreateForm {
   unit_off: number;
   unit_type: string;
   gift_amount: string;
-  gift_category: string;
+  category: string;
   additional_info: string;
   start_date: string;
   expiration_date: string;

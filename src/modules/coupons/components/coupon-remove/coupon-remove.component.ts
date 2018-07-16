@@ -1,7 +1,8 @@
 import {Component, Inject} from '@angular/core';
 
 import { DIALOG_DATA, DialogButtonListInterface, DialogComponentInterface, DialogRef} from '@pe/ng-kit/modules/dialog';
-import { MockData } from '../../service/mock-data';
+
+import { MockData } from '../../service';
 
 @Component({
   templateUrl: './coupon-remove.component.html'

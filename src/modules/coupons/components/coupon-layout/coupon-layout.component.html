@@ -1,4 +1,31 @@
-<pe-layout-app [headerTransparent]="false" [noPadding]="true">
+<div class="doc-container-black doc-container-no-margin">
+  <mat-toolbar class="mat-toolbar-dashboard">
+    <div class="mat-toolbar-left">
+      <button mat-icon-button class="mat-button-no-padding mat-button-link mat-toolbar-margin-right mat-toolbar-white">
+        <svg class="mat-toolbar-item icon icon-24"><use xlink:href="#icon-dashboard-24"></use></svg>
+      </button>
+      <button mat-button class="mat-button-no-padding mat-button-link mat-toolbar-white">Start</button>
+    </div>
+    <div class="mat-toolbar-center"></div>
+    <div class="mat-toolbar-right">
+      <button mat-icon-button  class="mat-button-no-padding mat-button-link mat-toolbar-margin-right mat-toolbar-white">
+        <svg class="icon icon-20"><use xlink:href="#icon-commerceos-burger-20"></use></svg>
+      </button>
+      <button mat-icon-button class="mat-button-no-padding mat-button-link mat-toolbar-white">
+        <svg class="icon icon-20"><use xlink:href="#icon-commerceos-user-20"></use></svg>
+      </button>
+    </div>
+  </mat-toolbar>
+</div>
+
+
+<pe-layout-app
+  [headerTransparent]="false"
+  [fullView]="true"
+  [bodyBackgroundGrey]="true"
+  [appHeaderSpace]="true"
+  [bodyTopRadius]="true"
+>
   <pe-layout-header header [showBackButton]="false">
     <div col-center>
       <div class="modal-title">
@@ -16,5 +43,8 @@
       </button>
     </div>
   </pe-layout-header>
-  <router-outlet></router-outlet>
+
+  <pe-layout-content>
+    <router-outlet></router-outlet>
+  </pe-layout-content>
 </pe-layout-app>

@@ -2,7 +2,7 @@ import {Component, Inject} from '@angular/core';
 
 import { DialogButtonListInterface, DialogComponentInterface, DialogRef, DIALOG_DATA } from '@pe/ng-kit/modules/dialog';
 
-import { MockData } from '../../service/mock-data';
+import { MockData } from '../../service';
 
 @Component({
   templateUrl: 'coupon-duplicate.component.html'

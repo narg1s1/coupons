@@ -1,4 +1,4 @@
-<form novalidate class="form-table" (ngSubmit)="onSubmit()" [formGroup]="form" *ngIf="form">
+<form novalidate class="form-table" [formGroup]="form" *ngIf="form">
 
   <div class="row">
     <div class="col-xs-12">
@@ -13,16 +13,5 @@
       ></pe-form-fieldset>
     </div>
   </div>
-
-  <button
-    mat-button
-    color="primary"
-    [class.pull-right]="true"
-    [class.mat-button-link]="true"
-    [class.mat-button-bold]="true"
-    (submit)="onSubmit()"
-  >
-    Save
-  </button>
 
 </form>

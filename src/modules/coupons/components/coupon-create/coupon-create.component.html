@@ -1,7 +1,14 @@
-<pe-dialog [baseButtons]="'cancel'" [buttons]="buttons" [title]="'Black Friday'">
+<pe-dialog [baseButtons]="'cancel'" [buttons]="buttons">
   <pe-dialog-content>
     <div class="dialog-container">
-      <coupon-create-form></coupon-create-form>
+        <mat-tab-group class="demo-tab-group" (selectedTabChange)="setActiveForm($event)">
+          <mat-tab label="Voucher">
+            <coupon-create-form (onSubmitForm)="onSubmitVoucherForm($event)"></coupon-create-form>
+          </mat-tab>
+          <mat-tab label="Campaign">
+            <coupon-campaign-form (onSubmitForm)="onSubmitCampaignForm($event)"></coupon-campaign-form>
+          </mat-tab>
+        </mat-tab-group>
     </div>
   </pe-dialog-content>
 </pe-dialog>

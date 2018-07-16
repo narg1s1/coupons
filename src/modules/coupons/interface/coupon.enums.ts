@@ -1,11 +1,16 @@
 export enum CouponTypeDiscountEnum {
   PERCENTAGE = 'PERCENT',
   FIXED_AMOUNT = 'AMOUNT',
-  UNIT = 'unit_off',
+  UNIT = 'UNIT',
 }
 
 
 export enum VoucherTypeEnum {
-  DISCOUNT_VOUCHER_TYPE = 'discount_voucher_type',
-  GIFT_VOUCHER_TYPE = 'gift_voucher_type'
+  DISCOUNT_VOUCHER_TYPE = 'DISCOUNT_VOUCHER',
+  GIFT_VOUCHER_TYPE = 'GIFT_VOUCHER'
+}
+
+export enum UnitTypeEnum {
+  TIME = 'time',
+  ITEMS = 'items'
 }

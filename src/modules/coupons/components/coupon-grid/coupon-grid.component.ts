@@ -4,15 +4,14 @@ import { HttpClient } from '@angular/common/http';
 import {
   DataViewModeType,
   DataGridAbstractComponent,
-  DataGridFilterInterface,
   DataGridTableColumnInterface
 } from '@pe/ng-kit/modules/data-grid';
-import {DialogConfigPresetName, DialogService} from '@pe/ng-kit/modules/dialog';
+import { DialogConfigPresetName, DialogService } from '@pe/ng-kit/modules/dialog';
 
 import { CouponDuplicateComponent } from '../coupon-dublicate';
 import { CouponEditComponent } from '../coupon-edit';
 import { CouponRemoveComponent } from '../coupon-remove';
-import { MockData } from '../../service/mock-data';
+import { MockData } from '../../service';
 import { CouponTypeDiscountEnum, VoucherTypeEnum } from '../../interface/coupon.enums';
 
 
@@ -29,7 +28,7 @@ const vaucher = {
   },
   start_date: '',
   expiration_date: '',
-  active: true,
+  active: false,
   redemption: '',
   publish: '',
   assets: '',
@@ -53,18 +52,17 @@ const mockData = [vaucher];
   templateUrl: 'coupon-grid.component.html'
 })
 export class CouponGridComponent extends DataGridAbstractComponent<any> {
-  dataViewMode: typeof DataViewModeType = DataViewModeType;
-  viewMode: DataViewModeType = this.dataViewMode.List;
+  searchValue: string;
   pageNumber: number = 0;
   selectedItems: any[] = [];
-  chips: DataGridFilterInterface[] = [];
+  dataViewMode: typeof DataViewModeType = DataViewModeType;
+  viewMode: DataViewModeType = this.dataViewMode.List;
   columns: DataGridTableColumnInterface[] = [
     { name: 'name', title: 'Name', isActive: true, isToggleable: true },
     { name: 'code', title: 'Code', isActive: true, isToggleable: true },
     { name: 'selected', title: 'Enabled', isActive: true, isToggleable: true },
     { name: 'menu', title: '', isActive: true, isToggleable: true }
   ];
-  searchValue: string;
 
   constructor(
     injector: Injector,
@@ -103,14 +101,6 @@ export class CouponGridComponent extends DataGridAbstractComponent<any> {
       });
   }
 
-  onChipRemoved(chip: DataGridFilterInterface): void {
-    let index: number = this.chips.indexOf(chip);
-
-    if (index >= 0) {
-      this.chips.splice(index, 1);
-    }
-  }
-
   sortData(event: any): void {
     console.log(event);
   }
@@ -127,6 +117,10 @@ export class CouponGridComponent extends DataGridAbstractComponent<any> {
   }
 
   onToggleClick(event: any) {
+    this.mockData.save([{
+      ...vaucher,
+      active: !vaucher.active
+    }]);
     event.stopPropagation();
   }
 
