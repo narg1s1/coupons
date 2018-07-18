@@ -4,49 +4,16 @@ import {
   DatePresets,
   AddonType,
   AddonStyle,
-  ButtonType,
   FormScheme
 } from '@pe/ng-kit/modules/form';
 
-import {CouponTypeDiscountEnum, UnitTypeEnum, VoucherTypeEnum} from '../../interface/coupon.enums';
+import { CouponTypeDiscountEnum, VoucherTypeEnum } from '../../interface';
 
 export const formScheme: FormScheme = {
   fieldsets: {
     mainFieldSet: [
       {
-        name: 'voucher_name',
-        type: 'input',
-        fieldSettings: {
-          classList: 'col-xs-12 col-sm-12',
-          label: 'Voucher name',
-          required: true
-        },
-        inputSettings: {
-          placeholder: 'Name'
-        }
-      },
-      {
-        name: 'voucher_code',
-        type: 'input',
-        fieldSettings: {
-          classList: 'col-xs-12 col-sm-12',
-          label: 'Code',
-          required: true
-        },
-        inputSettings: {
-          placeholder: 'Code'
-        },
-        addonAppend: {
-          addonType: AddonType.Buttom,
-          buttonType: ButtonType.Button,
-          addonStyle: AddonStyle.Filled,
-          onClick: () => {debugger},
-          text: 'Generate',
-          buttonClassList: 'mat-button mat-primary mat-button-link mat-button-bold'
-        }
-      },
-      {
-        name: 'voucher_type',
+        name: 'type',
         type: 'select',
         fieldSettings: {
           classList: 'col-xs-12',
@@ -138,27 +105,6 @@ export const formScheme: FormScheme = {
         }
       },
       {
-        name: 'unit_type',
-        type: 'select',
-        fieldSettings: {
-          classList: 'col-xs-6 col-sm-6',
-          label: 'Unit type',
-          required: true
-        },
-        selectSettings: {
-          options: [
-            {
-              label: 'Times',
-              value: UnitTypeEnum.TIME
-            },
-            {
-              label: 'Items',
-              value: UnitTypeEnum.ITEMS
-            }
-          ]
-        }
-      },
-      {
         name: 'gift_amount',
         type: 'input',
         fieldSettings: {
@@ -171,6 +117,18 @@ export const formScheme: FormScheme = {
         }
       },
       {
+        name: 'gift_balance',
+        type: 'input',
+        fieldSettings: {
+          classList: 'col-xs-12 col-sm-12',
+          label: 'Gift Balance',
+          required: true
+        },
+        inputSettings: {
+          placeholder: 'Gift balance'
+        }
+      },
+      {
         name: 'category',
         type: 'input',
         fieldSettings: {
@@ -179,21 +137,7 @@ export const formScheme: FormScheme = {
           required: true
         },
         inputSettings: {
-          placeholder: 'Gift category'
-        }
-      },
-      {
-        name: 'additional_info',
-        type: 'textarea',
-        fieldSettings: {
-          classList: 'col-xs-12',
-          label: 'Additional info',
-          required: true
-        },
-        textareaSettings: {
-          minRows: 5,
-          maxRows: 5,
-          placeholder: 'Additional info'
+          placeholder: 'Category'
         }
       },
       {
@@ -205,7 +149,7 @@ export const formScheme: FormScheme = {
           required: true
         },
         dateSettings: {
-          mode: DatepickerMode.MonthYear,
+          mode: DatepickerMode.Date,
           placeholder: 'Start date',
           min: DatePresets.default.min,
           max: DatePresets.default.max,
@@ -221,7 +165,7 @@ export const formScheme: FormScheme = {
           required: true
         },
         dateSettings: {
-          mode: DatepickerMode.MonthYear,
+          mode: DatepickerMode.Date,
           placeholder: 'Expiration date',
           min: DatePresets.default.min,
           max: DatePresets.default.max,
@@ -229,24 +173,12 @@ export const formScheme: FormScheme = {
         }
       },
       {
-        name: 'active_voucher',
+        name: 'active',
         type: 'checkbox',
         fieldSettings: {
           classList: 'col-xs-12 col-sm-12',
           label: 'Active',
           required: false
-        }
-      },
-      {
-        name: 'redemption_quantity',
-        type: 'input',
-        fieldSettings: {
-          classList: 'col-xs-12 col-sm-12',
-          label: 'Redemption',
-          required: false
-        },
-        inputSettings: {
-          placeholder: 'Redemption quantity'
         }
       }
     ]
