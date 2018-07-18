@@ -2,7 +2,7 @@ import {Component, Inject} from '@angular/core';
 
 import { DialogButtonListInterface, DialogComponentInterface, DialogRef, DIALOG_DATA } from '@pe/ng-kit/modules/dialog';
 
-import { MockData } from '../../service';
+import { ApiService, SpinnerService, VoucherStorageService } from '../../service';
 
 @Component({
   templateUrl: 'coupon-duplicate.component.html'
@@ -14,19 +14,27 @@ export class CouponDuplicateComponent implements DialogComponentInterface {
       color: 'primary',
       text: 'Duplicate',
       order: 2,
-      click: () => {
-        this.duplicateById();
-        this.dialogRef.close();
-      }
+      click: () => this.duplicateById()
     }
   };
   dialogRef: DialogRef<CouponDuplicateComponent>;
 
-  constructor(@Inject(DIALOG_DATA) public data: any, protected mockData: MockData) {
+  constructor(@Inject(DIALOG_DATA) public data: any,
+              protected voucherStorageService: VoucherStorageService,
+              private apiService: ApiService,
+              protected spinnerService: SpinnerService) {
   }
 
-  duplicateById() {
-    const newData = this.mockData.active.find((item) => item.code === this.data.item.code);
-    this.mockData.save([...this.mockData.active, newData]);
+  duplicateById(): void {
+    this.apiService.createVoucher(this.data.coupon).subscribe(
+      (coupon) => {
+        this.voucherStorageService.updateStorage([...this.voucherStorageService.voucherList, coupon]);
+        this.spinnerService.stop();
+        this.dialogRef.close()
+      },
+      (error) => {
+        this.spinnerService.stop();
+      }
+    )
   }
 }

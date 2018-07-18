@@ -11,47 +11,14 @@ import { DialogConfigPresetName, DialogService } from '@pe/ng-kit/modules/dialog
 import { CouponDuplicateComponent } from '../coupon-dublicate';
 import { CouponEditComponent } from '../coupon-edit';
 import { CouponRemoveComponent } from '../coupon-remove';
-import { MockData } from '../../service';
-import { CouponTypeDiscountEnum, VoucherTypeEnum } from '../../interface/coupon.enums';
-
-
-const vaucher = {
-  code: '34454534543',
-  name: 'Code name',
-  type: VoucherTypeEnum.DISCOUNT_VOUCHER_TYPE,
-  type_data: {
-    discount: {
-      type: CouponTypeDiscountEnum.PERCENTAGE,
-      percent_off: 10,
-      amount_limit: 10000
-    }
-  },
-  start_date: '',
-  expiration_date: '',
-  active: false,
-  redemption: '',
-  publish: '',
-  assets: '',
-  metadata: '',
-  additional_info: '',
-  category: {
-    name: ''
-  },
-  campaign: {
-    name: '',
-    start_date: '',
-    expiration_date: '',
-    vouchers_count: 1
-  }
-};
-
-const mockData = [vaucher];
+import { ApiService, VoucherStorageService } from '../../service';
+import { Coupon } from '../../interface';
 
 @Component({
   selector: 'coupons-grid',
   templateUrl: 'coupon-grid.component.html'
 })
-export class CouponGridComponent extends DataGridAbstractComponent<any> {
+export class CouponGridComponent extends DataGridAbstractComponent<Coupon> {
   searchValue: string;
   pageNumber: number = 0;
   selectedItems: any[] = [];
@@ -60,6 +27,7 @@ export class CouponGridComponent extends DataGridAbstractComponent<any> {
   columns: DataGridTableColumnInterface[] = [
     { name: 'name', title: 'Name', isActive: true, isToggleable: true },
     { name: 'code', title: 'Code', isActive: true, isToggleable: true },
+    { name: 'expiry_date', title: 'Expiry date', isActive: true, isToggleable: true },
     { name: 'selected', title: 'Enabled', isActive: true, isToggleable: true },
     { name: 'menu', title: '', isActive: true, isToggleable: true }
   ];
@@ -68,7 +36,8 @@ export class CouponGridComponent extends DataGridAbstractComponent<any> {
     injector: Injector,
     private httpClient: HttpClient,
     private dialogService: DialogService,
-    protected mockData: MockData) {
+    private apiService: ApiService,
+    protected voucherStorageService: VoucherStorageService) {
     super(injector);
   }
 
@@ -80,71 +49,61 @@ export class CouponGridComponent extends DataGridAbstractComponent<any> {
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.mockData.save(mockData);
     this.fetchProducts(0);
   }
 
   fetchProducts(page: number, search?: string): void {
     this.selectedItems = [];
-    let url: string = `https://stage.payever.de/products/api/v1/products?f%5Bbusiness%5D%5Bv%5D%5B%5D=b197bf22-6309-11e7-a2a8-5254008319f0&limit=${this.pageSize}&page=${page || this.pageNumber}`;
-
     this.pageNumber = page || this.pageNumber;
-    if (Boolean(search) || search === '') {
-      this.searchValue = search;
-      url += `&f[search]=${search}`;
-    }
-
-    this.httpClient.get(url)
-      .subscribe((products: any) => {
-        //this.items = mockData;
-        this.allItemsCount = mockData.length;
-      });
+    this.apiService.getVoucherList(page).subscribe(
+      (response) => {
+        this.voucherStorageService.updateStorage(response.collection);
+        this.allItemsCount = response.collection.length;
+      },
+      (error) => {});
   }
 
   sortData(event: any): void {
     console.log(event);
   }
 
-  onRowSelected(item: any): void {
-    const itemIndex: number = this.selectedItems.indexOf(item);
-    const updatedArray: any[] = this.selectedItems.slice();
-    if (itemIndex > -1) {
-      updatedArray.splice(itemIndex, 1);
-    } else {
-      updatedArray.push(item);
-    }
-    this.selectedItems = updatedArray;
-  }
-
-  onToggleClick(event: any) {
-    this.mockData.save([{
-      ...vaucher,
-      active: !vaucher.active
-    }]);
+  onToggleClick(event: any, coupon: Coupon) {
+    const updatedCoupon = {
+      ...coupon,
+      active: !coupon.active
+    };
+    this.apiService.updateVoucher(updatedCoupon).subscribe(
+      (coupon) => {
+        const updatedVoucherList = this.voucherStorageService.voucherList
+          .filter(voucher => voucher.uuid !== coupon.uuid);
+        this.voucherStorageService.updateStorage(updatedVoucherList);
+      },
+      (error) => {}
+    );
     event.stopPropagation();
   }
 
-  onOpenDuplicateDialog(item: any): void {
+  onOpenDuplicateDialog(coupon: Coupon): void {
     this.dialogService.open(
       CouponDuplicateComponent,
       DialogConfigPresetName.Small,
-      { item }
+      { coupon }
     );
   }
 
-  onOpenEditDialog(item: any): void {
+  onOpenEditDialog(coupon: Coupon): void {
     this.dialogService.open(
       CouponEditComponent,
       DialogConfigPresetName.Small,
-      { item }
+      { coupon }
     );
   }
 
-  onOpenRemoveDialog(item: any): void {
+  onOpenRemoveDialog(coupon: Coupon): void {
     this.dialogService.open(
       CouponRemoveComponent,
       DialogConfigPresetName.Small,
-      { item }
+      { coupon }
     );
   }
 }

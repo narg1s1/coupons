@@ -9,51 +9,15 @@ import {
 } from '@pe/ng-kit/modules/form';
 
 import { formScheme } from './coupon-create-form-schema';
-import { CouponTypeDiscountEnum, VoucherTypeEnum } from '../../interface/coupon.enums';
-import { CouponCreateForm } from '../../interface/coupon-form.interface';
-import { CouponTabFormService, TypeFormEnum, MockData } from '../../service';
-
-const vaucher = {
-  code: '34454534543',
-  name: 'Code name',
-  type: VoucherTypeEnum.DISCOUNT_VOUCHER_TYPE,
-  type_data: {
-    discount: {
-      type: CouponTypeDiscountEnum.PERCENTAGE,
-      percent_off: 10,
-      amount_limit: 10000
-    }
-  },
-  start_date: '',
-  expiration_date: '',
-  active: true,
-  redemption: '',
-  publish: '',
-  assets: '',
-  metadata: '',
-  additional_info: '',
-  category: {
-    name: ''
-  },
-  campaign: {
-    name: '',
-    start_date: '',
-    expiration_date: '',
-    vouchers_count: 1
-  }
-};
-
-
-interface CampaignForm {
-  name: string;
-  start_date: string;
-  expiration_date: string;
-}
+import { CouponTypeDiscountEnum, VoucherTypeEnum } from '../../interface';
+import { CampaignForm, CouponCreateForm } from '../../interface/coupon-form.interface';
+import { CouponTabFormService, TypeFormEnum } from '../../service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'coupon-campaign-form',
   templateUrl: 'coupon-campaign-form.component.html',
+  styleUrls: ['coupon-campaign-form.component.scss'],
   providers: [ErrorBag]
 })
 export class CouponCampaignFormComponent extends FormAbstractComponent<CampaignForm> implements OnInit {
@@ -69,13 +33,11 @@ export class CouponCampaignFormComponent extends FormAbstractComponent<CampaignF
 
   constructor(injector: Injector,
               protected errorBag: ErrorBag,
-              protected mockData: MockData,
               private formDataService: CouponTabFormService) {
     super(injector);
   }
 
   onSuccess(): void {
-    this.mockData.save([...this.mockData.active, vaucher]);
     this.onSubmitForm.emit(vaucher);
   }
 

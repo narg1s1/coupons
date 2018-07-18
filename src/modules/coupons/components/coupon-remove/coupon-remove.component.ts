@@ -1,8 +1,8 @@
-import {Component, Inject} from '@angular/core';
+import { Component, Inject } from '@angular/core';
 
-import { DIALOG_DATA, DialogButtonListInterface, DialogComponentInterface, DialogRef} from '@pe/ng-kit/modules/dialog';
+import { DIALOG_DATA, DialogButtonListInterface, DialogComponentInterface, DialogRef } from '@pe/ng-kit/modules/dialog';
 
-import { MockData } from '../../service';
+import { ApiService, SpinnerService, VoucherStorageService } from '../../service';
 
 @Component({
   templateUrl: './coupon-remove.component.html'
@@ -14,20 +14,31 @@ export class CouponRemoveComponent implements DialogComponentInterface {
       color: 'primary',
       text: 'Remove',
       order: 2,
-      click: () => {
-        this.removeById();
-        this.dialogRef.close();
-      }
+      click: () => this.removeById()
+
     }
   };
   dialogRef: DialogRef<CouponRemoveComponent>;
 
-  constructor(@Inject(DIALOG_DATA) public data: any, protected mockData: MockData) {
+  constructor(@Inject(DIALOG_DATA) public data: any,
+              private apiService: ApiService,
+              private voucherStorageService: VoucherStorageService,
+              protected spinnerService: SpinnerService) {
   }
 
-  removeById() {
-    const data = this.mockData.active.slice();
-    data.splice(0, 1);
-    this.mockData.save(data);
+  removeById(): void {
+    this.spinnerService.start();
+    const updatedVoucherList = this.voucherStorageService.voucherList
+      .filter(coupon => coupon.uuid !== this.data.uuid);
+    this.apiService.deleteVoucher(this.data.uuid).subscribe(
+      (coupon) => {
+        this.voucherStorageService.updateStorage(updatedVoucherList);
+        this.spinnerService.stop();
+        this.dialogRef.close();
+      },
+      (error) => {
+        this.spinnerService.stop();
+      }
+    );
   }
 }

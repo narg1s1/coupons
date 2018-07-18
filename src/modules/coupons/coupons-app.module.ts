@@ -17,7 +17,8 @@ import {
   MatExpansionModule,
   MatChipsModule,
   MatCardModule,
-  MatTabsModule
+  MatTabsModule,
+  MatRadioModule
 } from '@angular/material';
 
 import { DataGridModule } from '@pe/ng-kit/modules/data-grid';
@@ -41,8 +42,10 @@ import {
   CouponCampaignFormComponent
 } from './components';
 import {
-  MockData,
-  CouponTabFormService
+  VoucherStorageService,
+  CouponTabFormService,
+  ApiService,
+  SpinnerService
 } from './service';
 
 @NgModule({
@@ -65,6 +68,7 @@ import {
     MatExpansionModule,
     MatChipsModule,
     MatCardModule,
+    MatRadioModule,
     MatTabsModule,
 
     TableModule,
@@ -89,8 +93,10 @@ import {
   ],
   providers: [
     WindowService,
-    MockData,
-    CouponTabFormService
+    CouponTabFormService,
+    ApiService,
+    SpinnerService,
+    VoucherStorageService
   ],
   entryComponents: [
     CouponCreateComponent,

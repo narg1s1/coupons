@@ -14,14 +14,20 @@
             peTable
             matSort
             (matSortChange)="sortData($event)"
-            [dataSource]="mockData.active">
+            [dataSource]="voucherStorageService.voucherList">
     <ng-container *ngFor="let column of columns;"
                   peTableColumnDef="{{ column.name }}">
       <div [ngSwitch]="column.name">
         <div *ngSwitchCase="'selected'">
           <pe-table-header-cell class="select-area" *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
           <pe-table-cell *peTableCellDef="let item;">
-            <mat-checkbox *ngIf="item.active" [checked]="true" [disabled]="true" (change)="onRowSelected(item)"></mat-checkbox>
+
+
+
+            <mat-radio-group *ngIf="item.active" class="example-radio-group">
+              <mat-radio-button class="example-radio-button" [checked]="true" [disabled]="true"></mat-radio-button>
+            </mat-radio-group>
+
           </pe-table-cell>
         </div>
 
@@ -29,6 +35,13 @@
           <pe-table-header-cell mat-sort-header="{{ column.name }}" *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
           <pe-table-cell *peTableCellDef="let item;">
             {{ item.name }}
+          </pe-table-cell>
+        </div>
+
+        <div *ngSwitchCase="'expiry_date'">
+          <pe-table-header-cell mat-sort-header="{{ column.name }}" *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
+          <pe-table-cell *peTableCellDef="let item;">
+            {{ item.expiration_date }}
           </pe-table-cell>
         </div>
 
@@ -53,8 +66,8 @@
             </button>
             <mat-menu #menu="matMenu" class="mat-menu-md mat-menu-padding-lg">
               <div class="mat-menu-item-slide-toggle">
-                Visibility
-                <mat-slide-toggle [checked]="item.active" (click)="onToggleClick($event)"></mat-slide-toggle>
+                Enabled
+                <mat-slide-toggle [checked]="item.active" (click)="onToggleClick($event, item)"></mat-slide-toggle>
               </div>
               <mat-divider></mat-divider>
               <div mat-menu-item (click)="onOpenEditDialog(item)">Edit</div>
