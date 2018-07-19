@@ -85,9 +85,7 @@ export class CouponCreateComponent implements DialogComponentInterface {
       }
     } else {
       entity = {
-        gift: {
-          amount: form.gift_amount
-        },
+        gift: { amount: form.gift_amount },
         discount: {}
       }
     }

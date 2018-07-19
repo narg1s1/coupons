@@ -12,6 +12,7 @@ export interface CouponCreateForm {
   active: boolean;
 }
 
+
 export interface CampaignForm {
   name: string;
   start_date: string;

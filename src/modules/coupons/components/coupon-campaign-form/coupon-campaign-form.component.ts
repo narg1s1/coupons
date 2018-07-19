@@ -9,8 +9,7 @@ import {
 } from '@pe/ng-kit/modules/form';
 
 import { formScheme } from './coupon-create-form-schema';
-import { CouponTypeDiscountEnum, VoucherTypeEnum } from '../../interface';
-import { CampaignForm, CouponCreateForm } from '../../interface/coupon-form.interface';
+import { CampaignForm, CouponCreateForm } from '../../interface';
 import { CouponTabFormService, TypeFormEnum } from '../../service';
 
 @Component({
@@ -38,7 +37,8 @@ export class CouponCampaignFormComponent extends FormAbstractComponent<CampaignF
   }
 
   onSuccess(): void {
-    this.onSubmitForm.emit(vaucher);
+    // TODO: the campaign api is not ready
+    // this.onSubmitForm.emit(this.form.value);
   }
 
   ngOnInit(): void {

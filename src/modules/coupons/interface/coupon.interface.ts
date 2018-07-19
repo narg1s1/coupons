@@ -2,10 +2,10 @@ import { CouponTypeDiscountEnum, VoucherTypeEnum } from './coupon.enums';
 
 export interface Coupon {
   uuid?: string;
-  code: string;
+  code?: string;
   type: VoucherTypeEnum;
-  discount: CouponDiscountTypeInterface;
-  gift: CouponGiftTypeInterface;
+  discount: CouponDiscountInterface;
+  gift: CouponGiftInterface;
   category: string;
   active: boolean;
   start_date: string;
@@ -16,7 +16,7 @@ export interface Coupon {
 }
 
 
-export interface CouponDiscountTypeInterface {
+export interface CouponDiscountInterface {
   type: CouponTypeDiscountEnum,
   percent?: number;
   amount?: number;
@@ -24,10 +24,11 @@ export interface CouponDiscountTypeInterface {
 }
 
 
-export interface CouponGiftTypeInterface {
+export interface CouponGiftInterface {
   amount: number;
   balance: number;
 }
+
 
 export interface CouponResponse {
   pagination: Pagination
@@ -42,6 +43,7 @@ export interface Pagination {
   per_page: number,
   item_count: number
 }
+
 
 export interface Order {
   field: string,
