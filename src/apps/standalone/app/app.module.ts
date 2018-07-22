@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 
 import { IconsProviderModule } from '@pe/ng-kit/modules/icons-provider';
 import { I18nModule } from '@pe/ng-kit/modules/i18n';
@@ -27,7 +29,10 @@ import { environment } from '../../../environments/environment';
       isProd: environment.production
     }),
 
-    AppRoutingModule
+    AppRoutingModule,
+
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot([]),
   ],
   declarations: [ RootComponent ],
   bootstrap: [ RootComponent ],

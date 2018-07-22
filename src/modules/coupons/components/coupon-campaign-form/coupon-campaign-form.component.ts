@@ -9,8 +9,8 @@ import {
 } from '@pe/ng-kit/modules/form';
 
 import { formScheme } from './coupon-create-form-schema';
-import { CampaignForm, CouponCreateForm } from '../../interface';
-import { CouponTabFormService, TypeFormEnum } from '../../service';
+import { CampaignForm, CouponCreateForm, TypeFormEnum } from '../../interface';
+import { CouponTabFormService } from '../../service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

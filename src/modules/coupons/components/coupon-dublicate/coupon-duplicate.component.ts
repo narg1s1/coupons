@@ -1,13 +1,19 @@
-import {Component, Inject} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+import { Observable } from 'rxjs/Observable';
 
 import { DialogButtonListInterface, DialogComponentInterface, DialogRef, DIALOG_DATA } from '@pe/ng-kit/modules/dialog';
 
-import { ApiService, SpinnerService, VoucherStorageService } from '../../service';
+import { ApiService } from '../../service';
+import { CouponState } from '../../state-management/interface';
+import { saveCoupon } from '../../state-management/actions';
+import { selectCouponLoading } from '../../state-management/selectors';
 
 @Component({
   templateUrl: 'coupon-duplicate.component.html'
 })
-export class CouponDuplicateComponent implements DialogComponentInterface {
+export class CouponDuplicateComponent implements DialogComponentInterface, OnInit {
   buttons: DialogButtonListInterface = {
     save: {
       classes: 'mat-button-bold',
@@ -18,23 +24,19 @@ export class CouponDuplicateComponent implements DialogComponentInterface {
     }
   };
   dialogRef: DialogRef<CouponDuplicateComponent>;
+  couponLoading$: Observable<boolean> = null;
 
   constructor(@Inject(DIALOG_DATA) public data: any,
-              protected voucherStorageService: VoucherStorageService,
               private apiService: ApiService,
-              protected spinnerService: SpinnerService) {
+              private store: Store<CouponState>) {
+  }
+
+  ngOnInit(): void {
+    this.couponLoading$ = this.store.select(selectCouponLoading);
   }
 
   duplicateById(): void {
-    this.apiService.createVoucher(this.data.coupon).subscribe(
-      (coupon) => {
-        this.voucherStorageService.updateStorage([...this.voucherStorageService.voucherList, coupon]);
-        this.spinnerService.stop();
-        this.dialogRef.close()
-      },
-      (error) => {
-        this.spinnerService.stop();
-      }
-    )
+    this.store.dispatch(saveCoupon());
+    this.dialogRef.close();
   }
 }

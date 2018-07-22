@@ -1,4 +1,4 @@
-<pe-dialog [baseButtons]="'cancel'" [buttons]="buttons" [loading]="spinnerService.active">
+<pe-dialog [baseButtons]="'cancel'" [buttons]="buttons" [loading]="couponLoading$ | async">
   <pe-dialog-content>
     <div class="dialog-container">
         <mat-tab-group class="demo-tab-group" (selectedTabChange)="setActiveForm($event)">

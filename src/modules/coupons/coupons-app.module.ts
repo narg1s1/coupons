@@ -21,6 +21,9 @@ import {
   MatRadioModule
 } from '@angular/material';
 
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+
 import { DataGridModule } from '@pe/ng-kit/modules/data-grid';
 import { GridModule } from '@pe/ng-kit/modules/grid';
 import { TableModule } from '@pe/ng-kit/src/kit/table';
@@ -31,6 +34,7 @@ import { FormModule } from '@pe/ng-kit/modules/form';
 import { DialogModule } from '@pe/ng-kit/modules/dialog';
 
 import { CouponsRoutingModule } from './coupons-routing.module';
+import { reducer, CouponEffects } from './state-management';
 import {
   CouponLayoutComponent,
   CouponGridComponent,
@@ -42,7 +46,6 @@ import {
   CouponCampaignFormComponent
 } from './components';
 import {
-  VoucherStorageService,
   CouponTabFormService,
   ApiService,
   SpinnerService
@@ -79,7 +82,10 @@ import {
     FormModule,
     DialogModule,
 
-    CouponsRoutingModule
+    CouponsRoutingModule,
+
+    StoreModule.forFeature('coupon', reducer),
+    EffectsModule.forFeature([ CouponEffects ])
   ],
   declarations: [
     CouponLayoutComponent,
@@ -95,8 +101,7 @@ import {
     WindowService,
     CouponTabFormService,
     ApiService,
-    SpinnerService,
-    VoucherStorageService
+    SpinnerService
   ],
   entryComponents: [
     CouponCreateComponent,

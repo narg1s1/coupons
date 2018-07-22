@@ -3,7 +3,8 @@ import { Component } from '@angular/core';
 import { DialogConfigPresetName, DialogRef, DialogService } from '@pe/ng-kit/modules/dialog';
 
 import { CouponCreateComponent } from '../coupon-create';
-import { CouponTabFormService, TypeFormEnum } from '../../service';
+import { CouponTabFormService } from '../../service';
+import { TypeFormEnum } from '../../interface';
 
 @Component({
   selector: 'coupons-layout',
@@ -12,8 +13,7 @@ import { CouponTabFormService, TypeFormEnum } from '../../service';
 })
 export class CouponLayoutComponent {
   constructor(private dialogService: DialogService,
-              private couponTabFormService: CouponTabFormService) {
-  }
+              private couponTabFormService: CouponTabFormService) {}
 
   onOpenCreateCouponDialog(): void {
     const dialogRef: DialogRef<CouponCreateComponent> = this.dialogService.open(

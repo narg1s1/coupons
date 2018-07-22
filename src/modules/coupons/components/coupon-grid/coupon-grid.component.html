@@ -14,7 +14,7 @@
             peTable
             matSort
             (matSortChange)="sortData($event)"
-            [dataSource]="voucherStorageService.voucherList">
+            [dataSource]="couponList$ | async">
     <ng-container *ngFor="let column of columns;"
                   peTableColumnDef="{{ column.name }}">
       <div [ngSwitch]="column.name">

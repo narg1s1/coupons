@@ -1,13 +1,19 @@
-import {Component, Inject} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+import { Observable } from 'rxjs/Observable';
 
 import { DialogComponentInterface, DialogRef, DialogButtonListInterface, DIALOG_DATA } from '@pe/ng-kit/modules/dialog';
 
-import {ApiService, SpinnerService, VoucherStorageService} from '../../service';
+import { ApiService } from '../../service';
+import { CouponState } from '../../state-management/interface';
+import { updateCoupon } from '../../state-management/actions';
+import { selectCouponLoading } from '../../state-management/selectors';
 
 @Component({
   templateUrl: 'coupon-edit.component.html'
 })
-export class CouponEditComponent implements DialogComponentInterface {
+export class CouponEditComponent implements DialogComponentInterface, OnInit {
   buttons: DialogButtonListInterface = {
     save: {
       classes: 'mat-button-bold',
@@ -18,24 +24,19 @@ export class CouponEditComponent implements DialogComponentInterface {
     }
   };
   dialogRef: DialogRef<CouponEditComponent>;
+  couponLoading$: Observable<boolean> = null;
 
   constructor(@Inject(DIALOG_DATA) public data: any,
               private apiService: ApiService,
-              private voucherStorageService: VoucherStorageService,
-              protected spinnerService: SpinnerService) {
+              private store: Store<CouponState>) {
+  }
+
+  ngOnInit(): void {
+    this.couponLoading$ = this.store.select(selectCouponLoading);
   }
 
   private updateVoucher(): void {
-    this.spinnerService.start();
-    this.apiService.updateVoucher(this.data.coupon).subscribe(
-      (coupon) => {
-        this.voucherStorageService.updateStorage([...this.voucherStorageService.voucherList, coupon]);
-        this.spinnerService.stop();
-        this.dialogRef.close();
-      },
-      (error) => {
-        this.spinnerService.start();
-      }
-    );
+    this.store.dispatch(updateCoupon());
+    this.dialogRef.close();
   }
 }

@@ -1,6 +1,9 @@
 import { Component, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+
 import {
   DataViewModeType,
   DataGridAbstractComponent,
@@ -11,8 +14,11 @@ import { DialogConfigPresetName, DialogService } from '@pe/ng-kit/modules/dialog
 import { CouponDuplicateComponent } from '../coupon-dublicate';
 import { CouponEditComponent } from '../coupon-edit';
 import { CouponRemoveComponent } from '../coupon-remove';
-import { ApiService, VoucherStorageService } from '../../service';
+import { ApiService } from '../../service';
 import { Coupon } from '../../interface';
+import { CouponState } from '../../state-management/interface';
+import { loadCouponList, saveCoupon } from '../../state-management/actions';
+import { selectCouponList } from '../../state-management/selectors';
 
 @Component({
   selector: 'coupons-grid',
@@ -24,6 +30,7 @@ export class CouponGridComponent extends DataGridAbstractComponent<Coupon> {
   selectedItems: any[] = [];
   dataViewMode: typeof DataViewModeType = DataViewModeType;
   viewMode: DataViewModeType = this.dataViewMode.List;
+  couponList$: Observable<Coupon[]> = null;
   columns: DataGridTableColumnInterface[] = [
     { name: 'name', title: 'Name', isActive: true, isToggleable: true },
     { name: 'code', title: 'Code', isActive: true, isToggleable: true },
@@ -37,7 +44,7 @@ export class CouponGridComponent extends DataGridAbstractComponent<Coupon> {
     private httpClient: HttpClient,
     private dialogService: DialogService,
     private apiService: ApiService,
-    protected voucherStorageService: VoucherStorageService) {
+    private store: Store<CouponState>) {
     super(injector);
   }
 
@@ -49,18 +56,15 @@ export class CouponGridComponent extends DataGridAbstractComponent<Coupon> {
 
   ngOnInit(): void {
     super.ngOnInit();
+    this.couponList$ = this.store.select(selectCouponList);
     this.fetchProducts(0);
   }
 
   fetchProducts(page: number, search?: string): void {
     this.selectedItems = [];
     this.pageNumber = page || this.pageNumber;
-    this.apiService.getVoucherList(page).subscribe(
-      (response) => {
-        this.voucherStorageService.updateStorage(response.collection);
-        this.allItemsCount = response.collection.length;
-      },
-      (error) => {});
+
+    this.store.dispatch(loadCouponList({ page }));
   }
 
   sortData(event: any): void {
@@ -72,14 +76,7 @@ export class CouponGridComponent extends DataGridAbstractComponent<Coupon> {
       ...coupon,
       active: !coupon.active
     };
-    this.apiService.updateVoucher(updatedCoupon).subscribe(
-      (coupon) => {
-        const updatedVoucherList = this.voucherStorageService.voucherList
-          .filter(voucher => voucher.uuid !== coupon.uuid);
-        this.voucherStorageService.updateStorage(updatedVoucherList);
-      },
-      (error) => {}
-    );
+    this.store.dispatch(saveCoupon(updatedCoupon));
     event.stopPropagation();
   }
 

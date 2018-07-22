@@ -1,14 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+import { Observable } from 'rxjs/Observable';
 
 import { DialogComponentInterface, DialogRef, DialogButtonListInterface } from '@pe/ng-kit/modules/dialog';
 
-import { CouponTabFormService, ApiService, SpinnerService, VoucherStorageService } from '../../service';
+import { CouponTabFormService, ApiService } from '../../service';
 import { Coupon, VoucherTypeEnum, CouponCreateForm } from '../../interface';
+import { CouponState } from '../../state-management/interface';
+import { saveCoupon } from '../../state-management/actions';
+import { selectCouponLoading } from '../../state-management/selectors';
 
 @Component({
   templateUrl: 'coupon-create.component.html'
 })
-export class CouponCreateComponent implements DialogComponentInterface {
+export class CouponCreateComponent implements DialogComponentInterface, OnInit {
   buttons: DialogButtonListInterface = {
     save: {
       classes: 'mat-button-bold',
@@ -19,11 +25,15 @@ export class CouponCreateComponent implements DialogComponentInterface {
     }
   };
   dialogRef: DialogRef<CouponCreateComponent>;
+  couponLoading$: Observable<boolean> = null;
 
   constructor(private couponTabFormService: CouponTabFormService,
               private couponService: ApiService,
-              private voucherStorageService: VoucherStorageService,
-              protected spinnerService: SpinnerService) {
+              private store: Store<CouponState>) {
+  }
+
+  ngOnInit(): void {
+    this.couponLoading$ = this.store.select(selectCouponLoading);
   }
 
   setActiveForm(selectedTab: any): void {
@@ -32,32 +42,14 @@ export class CouponCreateComponent implements DialogComponentInterface {
 
   onSubmitVoucherForm(data: CouponCreateForm): void {
     const requestData: Coupon = this.prepareFormData(data);
-    this.spinnerService.start();
-    this.couponService.createVoucher(requestData).subscribe(
-      (coupon) => {
-        this.voucherStorageService.updateStorage([...this.voucherStorageService.voucherList, coupon]);
-        this.spinnerService.stop();
-        this.dialogRef.close();
-      },
-      (error) => {
-        this.spinnerService.stop();
-      }
-    );
+    this.store.dispatch(saveCoupon(requestData));
+    this.dialogRef.close();
     this.couponTabFormService.setSubmittedForm(false);
   }
 
   onSubmitCampaignForm(data: any): void {
-    this.spinnerService.start();
-    this.couponService.createVoucher(data.data).subscribe(
-      (response) => {
-        this.spinnerService.stop();
-        this.dialogRef.close();
-      },
-      (error) => {
-        this.spinnerService.stop();
-      }
-    );
     this.couponTabFormService.setSubmittedForm(false);
+    this.dialogRef.close();
   }
 
   private prepareFormData(form: CouponCreateForm): Coupon {

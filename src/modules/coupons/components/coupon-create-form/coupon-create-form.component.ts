@@ -17,8 +17,8 @@ import {
 } from '@pe/ng-kit/modules/form';
 
 import { formScheme } from './coupon-create-form-schema';
-import { CouponTypeDiscountEnum, VoucherTypeEnum, CouponCreateForm, Coupon } from '../../interface';
-import { CouponTabFormService, TypeFormEnum } from '../../service';
+import { CouponTypeDiscountEnum, VoucherTypeEnum, CouponCreateForm, Coupon, TypeFormEnum } from '../../interface';
+import { CouponTabFormService } from '../../service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,7 +28,7 @@ import { CouponTabFormService, TypeFormEnum } from '../../service';
   providers: [ErrorBag]
 })
 export class CouponCreateFormComponent extends FormAbstractComponent<CouponCreateForm> implements OnInit {
-  formTranslationsScope: 'test_fieldset.form';
+  formTranslationsScope: 'coupon_fieldset.form';
   mainFieldSet: FormSchemeField[];
   formScheme: FormScheme = formScheme;
 
@@ -36,7 +36,7 @@ export class CouponCreateFormComponent extends FormAbstractComponent<CouponCreat
 
   @Output() onSubmitForm: EventEmitter<any> = new EventEmitter();
 
-  protected formStorageKey: string = 'test_fieldset.form';
+  protected formStorageKey: string = 'coupon_fieldset.form';
   protected additionalFieldList: string[] = ['discount_type', 'percent_off', 'amount_off', 'unit_off', 'gift_amount',
     'gift_balance'];
 

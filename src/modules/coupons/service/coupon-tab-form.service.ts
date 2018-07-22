@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-export enum TypeFormEnum {
-  VOUCHER,
-  CAMPAIGN
-}
+import { TypeFormEnum } from '../interface';
 
 @Injectable()
 export class CouponTabFormService {
