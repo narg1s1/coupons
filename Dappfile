@@ -1,0 +1,35 @@
+dimg_group do
+  artifact do
+     docker.from 'node:8.11.3'
+
+     git do
+       add '/' do
+         to '/payever'
+       end
+     end
+
+     shell do
+       before_install do
+         run 'apt-get update',
+             'echo "machine gitlab.devpayever.com login deploybot password tVUeMCwr3SUWod4UGxDD" > ~/.netrc',
+             'apt-get install -y curl git bzip2 openssh-client --no-install-recommends '
+       end
+
+       install do
+           run 'cd /payever/ && npm install ',
+               'cd /payever/ && npm run build'
+       end
+      end
+
+    export '/payever/dist' do
+      to '/usr/share/nginx/html'
+      after 'install'
+    end
+  end
+
+  dimg 'user' do
+    docker.from 'nginx'
+  end
+
+  docker.expose 80
+end
