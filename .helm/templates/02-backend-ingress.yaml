@@ -16,4 +16,4 @@ spec:
   tls:
   - secretName: custom-tls-cert-1
     hosts:
-    - {{ .Chart.Name }}-frontend.payever.de
+    - {{ .Chart.Name }}.payever.de

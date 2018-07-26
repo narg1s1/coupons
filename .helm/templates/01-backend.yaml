@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-frontend
+  name: {{ .Chart.Name }}
   annotations:
      shipping/deploy-timestamp: {{ now }}
 spec:
@@ -9,7 +9,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-frontend
+        app: {{ .Chart.Name }}
     spec:
       imagePullSecrets:
       - name: regsecret
@@ -17,7 +17,7 @@ spec:
       - command: [ "nginx", "-g", "daemon off;" ]
         image: {{ tuple "coupons-frontend" . |  include "dimg" }}
         imagePullPolicy: Always
-        name: {{ .Chart.Name }}-frontend
+        name: {{ .Chart.Name }}
         ports:
         - containerPort: 80
           name: http
@@ -33,7 +33,7 @@ metadata:
 spec:
   type:  ClusterIP
   selector:
-    app: {{ .Chart.Name }}-frontend
+    app: {{ .Chart.Name }}
   ports:
     - protocol: TCP
       port: 80
