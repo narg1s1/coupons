@@ -27,7 +27,7 @@ dimg_group do
     end
   end
 
-  dimg 'user' do
+  dimg 'coupons-frontend' do
     docker.from 'nginx'
   end
 

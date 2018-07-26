@@ -15,7 +15,7 @@ spec:
       - name: regsecret
       containers:
       - command: [ "nginx", "-g", "daemon off;" ]
-        image: {{ tuple "user" . |  include "dimg" }}
+        image: {{ tuple "coupons-frontend" . |  include "dimg" }}
         imagePullPolicy: Always
         name: {{ .Chart.Name }}-frontend
         ports:

@@ -5,16 +5,17 @@ Build:
   stage: build
   script:
     - docker -v
-    - dapp dimg build --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE}
-    - dapp dimg push --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE} --tag-ci registry.devpayever.com --registry-username payever --registry-password vMnPdItXkV9T
+    - dapp dimg build --name coupons-frontend --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE}
+    - dapp dimg push --name coupons-frontend --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE} --tag-ci registry.devpayever.com --registry-username payever --registry-password vMnPdItXkV9T
 
   tags:
     - deploy
 Deploy:
-  stage: deploy 
+  stage: deploy
   script:
   - dapp --version
   - dapp kube deploy
+      --name coupons-frontend
       --tag-ci
       --namespace default
       --set "global.env=stage"
