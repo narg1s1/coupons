@@ -33,7 +33,6 @@ export class CouponCreateFormComponent extends FormAbstractComponent<CouponCreat
   formScheme: FormScheme = formScheme;
 
   @Input() data?: Coupon;
-
   @Output() onSubmitForm: EventEmitter<any> = new EventEmitter();
 
   protected formStorageKey: string = 'coupon_fieldset.form';
@@ -104,16 +103,16 @@ export class CouponCreateFormComponent extends FormAbstractComponent<CouponCreat
 
   private checkDiscountType(formValues: CouponCreateForm, inputTypeList: string[]): string[] {
     if (formValues.discount_type === CouponTypeDiscountEnum.PERCENTAGE) {
-      inputTypeList.push('percent_off');
+      inputTypeList = [...inputTypeList, 'percent_off'];
     } else if (formValues.discount_type === CouponTypeDiscountEnum.FIXED_AMOUNT) {
-      inputTypeList.push('amount_off');
+      inputTypeList= [...inputTypeList, 'amount_off'];
     } else if (formValues.discount_type === CouponTypeDiscountEnum.UNIT) {
       inputTypeList = [...inputTypeList, 'unit_off'];
     }
     return inputTypeList;
   }
 
-  protected showAdditionalFormField(fieldToShow: string[]): void {
+  private showAdditionalFormField(fieldToShow: string[]): void {
     this.additionalFieldList.map(inputName => {
       if (fieldToShow.includes(inputName)) {
         this.toggleControl(inputName,true);

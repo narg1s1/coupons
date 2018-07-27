@@ -25,7 +25,6 @@ export class CouponCampaignFormComponent extends FormAbstractComponent<CampaignF
   formScheme: FormScheme = formScheme;
 
   @Input() data?: CouponCreateForm;
-
   @Output() onSubmitForm: EventEmitter<any> = new EventEmitter();
 
   protected formStorageKey: string = 'campaign_fieldset.form';

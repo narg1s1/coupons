@@ -96,7 +96,7 @@ export const formScheme: FormScheme = {
         name: 'unit_off',
         type: 'input',
         fieldSettings: {
-          classList: 'col-xs-6 col-sm-6',
+          classList: 'col-xs-12 col-sm-12',
           label: 'Unit off',
           required: true
         },
