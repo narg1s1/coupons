@@ -16,9 +16,9 @@ import { ModalEditCouponComponent } from '../modal-edit-coupon';
 import { ModalRemoveCouponComponent } from '../modal-remove-coupon';
 import { ApiService } from '../../service';
 import { Coupon } from '../../interface';
-import { CouponState } from '../../state-management/interface';
-import { loadCouponList, saveCoupon } from '../../state-management/actions';
-import { selectCouponList } from '../../state-management/selectors';
+import { CouponState } from '../../redux-management/interface';
+import { loadCouponList, saveCoupon } from '../../redux-management/actions';
+import { selectCouponList } from '../../redux-management/selectors';
 
 @Component({
   selector: 'coupons-grid',

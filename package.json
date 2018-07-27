@@ -26,7 +26,7 @@
     "@ngrx/effects": "^6.0.1",
     "@ngrx/store": "^6.0.1",
     "@ngrx/store-devtools": "^6.0.1",
-    "@pe/ng-kit": "6.24.0-dev-kozak1",
+    "@pe/ng-kit": "6.24.0-dev-kozak-version-2",
     "@pe/ui-kit": "6.x",
     "core-js": "^2.5.4",
     "jquery": "^3.3.1",

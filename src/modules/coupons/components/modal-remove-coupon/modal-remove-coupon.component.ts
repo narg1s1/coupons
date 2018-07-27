@@ -6,9 +6,9 @@ import { Observable } from 'rxjs/Observable';
 import { DIALOG_DATA, DialogButtonListInterface, DialogComponentInterface, DialogRef } from '@pe/ng-kit/modules/dialog';
 
 import { ApiService } from '../../service';
-import { CouponState } from '../../state-management/interface';
-import { deleteCoupon } from '../../state-management/actions';
-import { selectCouponLoading } from "../../state-management/selectors";
+import { CouponState } from '../../redux-management/interface';
+import { deleteCoupon } from '../../redux-management/actions';
+import { selectCouponLoading } from "../../redux-management/selectors";
 
 @Component({
   templateUrl: './modal-remove-coupon.component.html'

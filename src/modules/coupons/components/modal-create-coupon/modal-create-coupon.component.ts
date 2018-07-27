@@ -7,9 +7,9 @@ import { DialogComponentInterface, DialogRef, DialogButtonListInterface } from '
 
 import { CouponFormService, ApiService } from '../../service';
 import { Coupon, VoucherTypeEnum, CouponCreateForm } from '../../interface';
-import { CouponState } from '../../state-management/interface';
-import { saveCoupon } from '../../state-management/actions';
-import { selectCouponLoading } from '../../state-management/selectors';
+import { CouponState } from '../../redux-management/interface';
+import { saveCoupon } from '../../redux-management/actions';
+import { selectCouponLoading } from '../../redux-management/selectors';
 
 @Component({
   templateUrl: 'modal-create-coupon.component.html'

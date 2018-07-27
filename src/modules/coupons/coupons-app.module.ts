@@ -34,7 +34,7 @@ import { FormModule } from '@pe/ng-kit/modules/form';
 import { DialogModule } from '@pe/ng-kit/modules/dialog';
 
 import { CouponsRoutingModule } from './coupons-routing.module';
-import { reducer, CouponEffects } from './state-management';
+import { reducer, CouponEffects } from './redux-management';
 import {
   CouponLayoutComponent,
   CouponGridComponent,

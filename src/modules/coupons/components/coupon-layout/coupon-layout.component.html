@@ -1,4 +1,4 @@
-<div class="doc-container-black doc-container-no-margin">
+<div class="header-wrapper">
   <mat-toolbar class="mat-toolbar-dashboard">
     <div class="mat-toolbar-left">
       <button mat-icon-button class="mat-button-no-padding mat-button-link mat-toolbar-margin-right mat-toolbar-white">
@@ -18,12 +18,11 @@
   </mat-toolbar>
 </div>
 
-
 <pe-layout-app
   [headerTransparent]="false"
   [fullView]="true"
   [bodyBackgroundGrey]="true"
-  [appHeaderSpace]="true"
+  [layoutTopOffset]="true"
   [bodyTopRadius]="true"
 >
   <pe-layout-header header [showBackButton]="false">
