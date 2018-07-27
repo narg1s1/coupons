@@ -17,8 +17,8 @@ import {
 } from '@pe/ng-kit/modules/form';
 
 import { formScheme } from './coupon-create-form-schema';
-import { CouponTypeDiscountEnum, VoucherTypeEnum, CouponCreateForm, Coupon, TypeFormEnum } from '../../interface';
-import { CouponTabFormService } from '../../service';
+import { CouponTypeDiscountEnum, VoucherTypeEnum, CouponCreateForm, Coupon } from '../../interface';
+import { CouponFormService } from '../../service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,7 +42,7 @@ export class CouponCreateFormComponent extends FormAbstractComponent<CouponCreat
 
   constructor(injector: Injector,
               protected errorBag: ErrorBag,
-              private formDataService: CouponTabFormService) {
+              private couponFormService: CouponFormService) {
     super(injector);
   }
 
@@ -51,8 +51,8 @@ export class CouponCreateFormComponent extends FormAbstractComponent<CouponCreat
   }
 
   ngOnInit(): void {
-    this.formDataService.submittedForm.subscribe((submittedFormEntity: boolean) => {
-      if (submittedFormEntity && this.formDataService.isActiveTabForm(TypeFormEnum.VOUCHER)) {
+    this.couponFormService.submittedForm.subscribe((isSubmittedFormEntity: boolean) => {
+      if (isSubmittedFormEntity) {
         this.onSubmit();
         this.changeDetectorRef.detectChanges();
       }

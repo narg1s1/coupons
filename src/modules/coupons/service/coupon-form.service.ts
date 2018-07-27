@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { TypeFormEnum } from '../interface';
 
 @Injectable()
-export class CouponTabFormService {
+export class CouponFormService {
   submittedForm = new Subject<boolean>();
   activeTabForm: TypeFormEnum = TypeFormEnum.VOUCHER;
 

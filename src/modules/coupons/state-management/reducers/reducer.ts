@@ -1,5 +1,5 @@
-import { ActionTypes } from '../actions/index';
-import { CouponAction, CouponState } from '../interface/index';
+import { ActionTypes } from '../actions';
+import { CouponAction, CouponState } from '../interface';
 
 const initialState: CouponState = {
   couponList: [],

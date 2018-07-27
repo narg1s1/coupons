@@ -11,9 +11,9 @@ import { deleteCoupon } from '../../state-management/actions';
 import { selectCouponLoading } from "../../state-management/selectors";
 
 @Component({
-  templateUrl: './coupon-remove.component.html'
+  templateUrl: './modal-remove-coupon.component.html'
 })
-export class CouponRemoveComponent implements DialogComponentInterface, OnInit {
+export class ModalRemoveCouponComponent implements DialogComponentInterface, OnInit {
   buttons: DialogButtonListInterface = {
     save: {
       classes: 'mat-button-bold',
@@ -21,10 +21,9 @@ export class CouponRemoveComponent implements DialogComponentInterface, OnInit {
       text: 'Remove',
       order: 2,
       click: () => this.removeById()
-
     }
   };
-  dialogRef: DialogRef<CouponRemoveComponent>;
+  dialogRef: DialogRef<ModalRemoveCouponComponent>;
   couponLoading$: Observable<boolean> = null;
 
   constructor(@Inject(DIALOG_DATA) public data: any,

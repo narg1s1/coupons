@@ -9,8 +9,8 @@ import {
 } from '@pe/ng-kit/modules/form';
 
 import { formScheme } from './coupon-create-form-schema';
-import { CampaignForm, CouponCreateForm, TypeFormEnum } from '../../interface';
-import { CouponTabFormService } from '../../service';
+import { CampaignForm, CouponCreateForm } from '../../interface';
+import { CouponFormService } from '../../service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,7 +20,7 @@ import { CouponTabFormService } from '../../service';
   providers: [ErrorBag]
 })
 export class CouponCampaignFormComponent extends FormAbstractComponent<CampaignForm> implements OnInit {
-  formTranslationsScope: 'test_fieldset.form';
+  formTranslationsScope: 'campaign_fieldset.form';
   mainFieldSet: FormSchemeField[];
   formScheme: FormScheme = formScheme;
 
@@ -28,11 +28,11 @@ export class CouponCampaignFormComponent extends FormAbstractComponent<CampaignF
 
   @Output() onSubmitForm: EventEmitter<any> = new EventEmitter();
 
-  protected formStorageKey: string = 'test_fieldset.form';
+  protected formStorageKey: string = 'campaign_fieldset.form';
 
   constructor(injector: Injector,
               protected errorBag: ErrorBag,
-              private formDataService: CouponTabFormService) {
+              private formDataService: CouponFormService) {
     super(injector);
   }
 
@@ -43,7 +43,7 @@ export class CouponCampaignFormComponent extends FormAbstractComponent<CampaignF
 
   ngOnInit(): void {
     this.formDataService.submittedForm.subscribe((submittedFormEntity: boolean) => {
-      if (submittedFormEntity && this.formDataService.isActiveTabForm(TypeFormEnum.CAMPAIGN)) {
+      if (submittedFormEntity) {
         this.onSubmit();
         this.changeDetectorRef.detectChanges();
       }

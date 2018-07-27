@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
-import { Observable, empty } from 'rxjs';
+import { Observable, EMPTY } from 'rxjs';
+
 import { catchError, mergeMap, switchMap } from 'rxjs/operators';
 
 import { ApiService } from '../../service';
 import { CouponAction, CouponState } from '../interface';
+import { Coupon} from '../../interface';
 import {
   ActionTypes,
   deleteCouponError,
@@ -26,13 +28,13 @@ export class CouponEffects {
   loadCouponList$: Observable<CouponAction> = this.actions.ofType(ActionTypes.GET_LOAD_COUPON).pipe(
     switchMap((action: CouponAction) => {
       return this.apiService.getVoucherList(action.payload.page).pipe(
-        mergeMap((data: any[]) => {
+        mergeMap((data: Coupon[]) => {
           this.store.dispatch(loadCouponListSuccess(data));
           return [];
         }),
         catchError((err, caught) => {
           this.store.dispatch(loadCouponListError());
-          return empty();
+          return EMPTY;
         })
       );
     })
@@ -48,7 +50,7 @@ export class CouponEffects {
         }),
         catchError((err, caught) => {
           this.store.dispatch(deleteCouponError());
-          return empty();
+          return EMPTY;
         })
       );
     })
@@ -56,15 +58,15 @@ export class CouponEffects {
 
   @Effect()
   updateCoupon$: Observable<CouponAction> = this.actions.ofType(ActionTypes.PUT_UPDATE_COUPON).pipe(
-    switchMap((payload: any) => {
-      return this.apiService.updateVoucher(payload).pipe(
-        mergeMap((data: any) => {
+    switchMap((action: CouponAction) => {
+      return this.apiService.updateVoucher(action.payload).pipe(
+        mergeMap((data: Coupon) => {
           this.store.dispatch(updateCouponSuccess(data));
           return [];
         }),
         catchError((err, caught) => {
           this.store.dispatch(updateCouponError());
-          return empty();
+          return EMPTY;
         })
       );
     })
@@ -72,15 +74,15 @@ export class CouponEffects {
 
   @Effect()
   saveCoupon$: Observable<CouponAction> = this.actions.ofType(ActionTypes.POST_SAVE_COUPON).pipe(
-    switchMap((payload: any) => {
-      return this.apiService.createVoucher(payload).pipe(
-        mergeMap((data: any) => {
+    switchMap((action: CouponAction) => {
+      return this.apiService.createVoucher(action.payload).pipe(
+        mergeMap((data: Coupon) => {
           this.store.dispatch(saveCouponSuccess(data));
           return [];
         }),
         catchError((err, caught) => {
           this.store.dispatch(saveCouponError());
-          return empty();
+          return EMPTY;
         })
       );
     })

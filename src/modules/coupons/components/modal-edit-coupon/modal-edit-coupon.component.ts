@@ -3,27 +3,27 @@ import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs/Observable';
 
-import { DialogButtonListInterface, DialogComponentInterface, DialogRef, DIALOG_DATA } from '@pe/ng-kit/modules/dialog';
+import { DialogComponentInterface, DialogRef, DialogButtonListInterface, DIALOG_DATA } from '@pe/ng-kit/modules/dialog';
 
 import { ApiService } from '../../service';
 import { CouponState } from '../../state-management/interface';
-import { saveCoupon } from '../../state-management/actions';
+import { updateCoupon } from '../../state-management/actions';
 import { selectCouponLoading } from '../../state-management/selectors';
 
 @Component({
-  templateUrl: 'coupon-duplicate.component.html'
+  templateUrl: 'modal-edit-coupon.component.html'
 })
-export class CouponDuplicateComponent implements DialogComponentInterface, OnInit {
+export class ModalEditCouponComponent implements DialogComponentInterface, OnInit {
   buttons: DialogButtonListInterface = {
     save: {
       classes: 'mat-button-bold',
       color: 'primary',
-      text: 'Duplicate',
+      text: 'Done',
       order: 2,
-      click: () => this.duplicateById()
+      click: () => this.updateVoucher()
     }
   };
-  dialogRef: DialogRef<CouponDuplicateComponent>;
+  dialogRef: DialogRef<ModalEditCouponComponent>;
   couponLoading$: Observable<boolean> = null;
 
   constructor(@Inject(DIALOG_DATA) public data: any,
@@ -35,8 +35,8 @@ export class CouponDuplicateComponent implements DialogComponentInterface, OnIni
     this.couponLoading$ = this.store.select(selectCouponLoading);
   }
 
-  duplicateById(): void {
-    this.store.dispatch(saveCoupon());
+  private updateVoucher(): void {
+    this.store.dispatch(updateCoupon());
     this.dialogRef.close();
   }
 }

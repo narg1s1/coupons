@@ -38,18 +38,14 @@ import { reducer, CouponEffects } from './state-management';
 import {
   CouponLayoutComponent,
   CouponGridComponent,
-  CouponDuplicateComponent,
-  CouponEditComponent,
-  CouponRemoveComponent,
-  CouponCreateComponent,
+  ModalDuplicateCouponComponent,
+  ModalEditCouponComponent,
+  ModalRemoveCouponComponent,
+  ModalCreateCouponComponent,
   CouponCreateFormComponent,
   CouponCampaignFormComponent
 } from './components';
-import {
-  CouponTabFormService,
-  ApiService,
-  SpinnerService
-} from './service';
+import { CouponFormService, ApiService } from './service';
 
 @NgModule({
   imports: [
@@ -90,24 +86,23 @@ import {
   declarations: [
     CouponLayoutComponent,
     CouponGridComponent,
-    CouponDuplicateComponent,
-    CouponEditComponent,
-    CouponRemoveComponent,
-    CouponCreateComponent,
+    ModalDuplicateCouponComponent,
+    ModalEditCouponComponent,
+    ModalRemoveCouponComponent,
+    ModalCreateCouponComponent,
     CouponCreateFormComponent,
     CouponCampaignFormComponent
   ],
   providers: [
     WindowService,
-    CouponTabFormService,
-    ApiService,
-    SpinnerService
+    CouponFormService,
+    ApiService
   ],
   entryComponents: [
-    CouponCreateComponent,
-    CouponEditComponent,
-    CouponDuplicateComponent,
-    CouponRemoveComponent
+    ModalCreateCouponComponent,
+    ModalEditCouponComponent,
+    ModalDuplicateCouponComponent,
+    ModalRemoveCouponComponent
   ]
 })
 export class CouponsAppModule {

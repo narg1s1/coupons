@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 
 import { DialogConfigPresetName, DialogRef, DialogService } from '@pe/ng-kit/modules/dialog';
 
-import { CouponCreateComponent } from '../coupon-create';
-import { CouponTabFormService } from '../../service';
+import { ModalCreateCouponComponent } from '../modal-create-coupon';
+import { CouponFormService } from '../../service';
 import { TypeFormEnum } from '../../interface';
 
 @Component({
@@ -13,11 +13,11 @@ import { TypeFormEnum } from '../../interface';
 })
 export class CouponLayoutComponent {
   constructor(private dialogService: DialogService,
-              private couponTabFormService: CouponTabFormService) {}
+              private couponTabFormService: CouponFormService) {}
 
   onOpenCreateCouponDialog(): void {
-    const dialogRef: DialogRef<CouponCreateComponent> = this.dialogService.open(
-      CouponCreateComponent,
+    const dialogRef: DialogRef<ModalCreateCouponComponent> = this.dialogService.open(
+      ModalCreateCouponComponent,
       DialogConfigPresetName.Medium,
     );
     dialogRef.afterClosed().subscribe(() => {

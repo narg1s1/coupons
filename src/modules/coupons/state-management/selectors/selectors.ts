@@ -12,6 +12,7 @@ export const selectCouponList: MemoizedSelector<any, Coupon[]> = createSelector(
   (state: CouponState) => state.couponList
 );
 
+
 export const selectCouponLoading: MemoizedSelector<any, boolean> = createSelector(
   couponStateSelector,
   (state: CouponState) => state.loading

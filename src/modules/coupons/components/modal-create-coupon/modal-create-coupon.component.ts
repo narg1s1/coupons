@@ -5,29 +5,29 @@ import { Observable } from 'rxjs/Observable';
 
 import { DialogComponentInterface, DialogRef, DialogButtonListInterface } from '@pe/ng-kit/modules/dialog';
 
-import { CouponTabFormService, ApiService } from '../../service';
+import { CouponFormService, ApiService } from '../../service';
 import { Coupon, VoucherTypeEnum, CouponCreateForm } from '../../interface';
 import { CouponState } from '../../state-management/interface';
 import { saveCoupon } from '../../state-management/actions';
 import { selectCouponLoading } from '../../state-management/selectors';
 
 @Component({
-  templateUrl: 'coupon-create.component.html'
+  templateUrl: 'modal-create-coupon.component.html'
 })
-export class CouponCreateComponent implements DialogComponentInterface, OnInit {
+export class ModalCreateCouponComponent implements DialogComponentInterface, OnInit {
   buttons: DialogButtonListInterface = {
     save: {
       classes: 'mat-button-bold',
       color: 'primary',
       text: 'Done',
       order: 2,
-      click: () => this.couponTabFormService.setSubmittedForm(true)
+      click: () => this.couponFormService.setSubmittedForm(true)
     }
   };
-  dialogRef: DialogRef<CouponCreateComponent>;
+  dialogRef: DialogRef<ModalCreateCouponComponent>;
   couponLoading$: Observable<boolean> = null;
 
-  constructor(private couponTabFormService: CouponTabFormService,
+  constructor(private couponFormService: CouponFormService,
               private couponService: ApiService,
               private store: Store<CouponState>) {
   }
@@ -36,20 +36,11 @@ export class CouponCreateComponent implements DialogComponentInterface, OnInit {
     this.couponLoading$ = this.store.select(selectCouponLoading);
   }
 
-  setActiveForm(selectedTab: any): void {
-    this.couponTabFormService.activeTabForm = selectedTab.index
-  }
-
   onSubmitVoucherForm(data: CouponCreateForm): void {
     const requestData: Coupon = this.prepareFormData(data);
     this.store.dispatch(saveCoupon(requestData));
     this.dialogRef.close();
-    this.couponTabFormService.setSubmittedForm(false);
-  }
-
-  onSubmitCampaignForm(data: any): void {
-    this.couponTabFormService.setSubmittedForm(false);
-    this.dialogRef.close();
+    this.couponFormService.setSubmittedForm(false);
   }
 
   private prepareFormData(form: CouponCreateForm): Coupon {

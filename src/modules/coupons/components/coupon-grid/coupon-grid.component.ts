@@ -11,9 +11,9 @@ import {
 } from '@pe/ng-kit/modules/data-grid';
 import { DialogConfigPresetName, DialogService } from '@pe/ng-kit/modules/dialog';
 
-import { CouponDuplicateComponent } from '../coupon-dublicate';
-import { CouponEditComponent } from '../coupon-edit';
-import { CouponRemoveComponent } from '../coupon-remove';
+import { ModalDuplicateCouponComponent } from '../modal-duplicate-coupon';
+import { ModalEditCouponComponent } from '../modal-edit-coupon';
+import { ModalRemoveCouponComponent } from '../modal-remove-coupon';
 import { ApiService } from '../../service';
 import { Coupon } from '../../interface';
 import { CouponState } from '../../state-management/interface';
@@ -82,7 +82,7 @@ export class CouponGridComponent extends DataGridAbstractComponent<Coupon> {
 
   onOpenDuplicateDialog(coupon: Coupon): void {
     this.dialogService.open(
-      CouponDuplicateComponent,
+      ModalDuplicateCouponComponent,
       DialogConfigPresetName.Small,
       { coupon }
     );
@@ -90,7 +90,7 @@ export class CouponGridComponent extends DataGridAbstractComponent<Coupon> {
 
   onOpenEditDialog(coupon: Coupon): void {
     this.dialogService.open(
-      CouponEditComponent,
+      ModalEditCouponComponent,
       DialogConfigPresetName.Small,
       { coupon }
     );
@@ -98,7 +98,7 @@ export class CouponGridComponent extends DataGridAbstractComponent<Coupon> {
 
   onOpenRemoveDialog(coupon: Coupon): void {
     this.dialogService.open(
-      CouponRemoveComponent,
+      ModalRemoveCouponComponent,
       DialogConfigPresetName.Small,
       { coupon }
     );
