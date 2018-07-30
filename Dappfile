@@ -9,13 +9,13 @@ dimg_group do
      end
 
      shell do
-       before_install do
+       install do
          run 'apt-get update',
              'echo "machine gitlab.devpayever.com login deploybot password tVUeMCwr3SUWod4UGxDD" > ~/.netrc',
              'apt-get install -y curl git bzip2 openssh-client --no-install-recommends '
        end
 
-       install do
+       setup do
            run 'cd /payever/ && npm install ',
                'cd /payever/ && npm run build'
        end
@@ -23,12 +23,12 @@ dimg_group do
 
     export '/payever/dist' do
       to '/usr/share/nginx/html'
-      after 'install'
+      after 'setup'
     end
   end
 
   dimg 'coupons-frontend' do
-    docker.from 'nginx'
+    docker.from 'nginx-alpine'
   end
 
   docker.expose 80
