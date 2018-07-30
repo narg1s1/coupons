@@ -28,7 +28,7 @@ dimg_group do
   end
 
   dimg 'coupons-frontend' do
-    docker.from 'nginx-alpine'
+    docker.from 'nginx:alpine'
   end
 
   docker.expose 80
