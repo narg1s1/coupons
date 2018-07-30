@@ -14,6 +14,9 @@
   "include": [
     "./**/*.ts",
 
+    "../node_modules/@pe/ng-kit/modules/common/**/*.ts",
+    "../node_modules/@pe/ng-kit/src/kit/common/**/*.ts",
+
     "../node_modules/@pe/ng-kit/modules/data-grid/**/*.ts",
     "../node_modules/@pe/ng-kit/src/kit/data-grid/**/*.ts",
 
