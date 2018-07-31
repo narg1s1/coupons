@@ -5,6 +5,7 @@ Build:
   stage: build
   script:
     - docker -v
+    - docker pull registry.devpayever.com/nginx:master
     - dapp dimg build --name coupons-frontend --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE}
     - dapp dimg push --name coupons-frontend --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE} --tag-ci registry.devpayever.com --registry-username payever --registry-password vMnPdItXkV9T
 
