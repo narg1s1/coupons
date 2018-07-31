@@ -16,7 +16,7 @@ dimg_group do
              'apt-get install -y curl git bzip2 openssh-client --no-install-recommends '
        end
 
-       before_setup do
+       setup do
            run 'cd /payever/ && npm install ',
                'cd /payever/ && npm run build'
        end
