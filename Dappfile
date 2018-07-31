@@ -29,7 +29,7 @@ dimg_group do
   end
 
   dimg 'coupons-frontend' do
-    docker.from 'nginx:alpine'
+    docker.from 'registry.devpayever.com/nginx:master'
   end
 
   docker.expose 80
