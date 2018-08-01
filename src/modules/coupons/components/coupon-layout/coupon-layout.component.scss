@@ -1,14 +1,2 @@
 @import '~@pe/ui-kit/scss/mixins/pe_mixins';
 @import '~@pe/ui-kit/scss/pe_variables';
-
-.header-wrapper {
-  @include pe_flexbox;
-  @include pe_align-items(center);
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  color: $color-white;
-  background: transparent;
-  height: $pe_vgrid_height * 6;
-}

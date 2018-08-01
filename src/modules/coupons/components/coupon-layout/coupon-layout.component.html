@@ -1,46 +1,60 @@
-<div class="header-wrapper">
-  <mat-toolbar class="mat-toolbar-dashboard">
-    <div class="mat-toolbar-left">
-      <button mat-icon-button class="mat-button-no-padding mat-button-link mat-toolbar-margin-right mat-toolbar-white">
-        <svg class="mat-toolbar-item icon icon-24"><use xlink:href="#icon-dashboard-24"></use></svg>
-      </button>
-      <button mat-button class="mat-button-no-padding mat-button-link mat-toolbar-white">Start</button>
-    </div>
-    <div class="mat-toolbar-center"></div>
-    <div class="mat-toolbar-right">
-      <button mat-icon-button  class="mat-button-no-padding mat-button-link mat-toolbar-margin-right mat-toolbar-white">
-        <svg class="icon icon-20"><use xlink:href="#icon-commerceos-burger-20"></use></svg>
-      </button>
-      <button mat-icon-button class="mat-button-no-padding mat-button-link mat-toolbar-white">
-        <svg class="icon icon-20"><use xlink:href="#icon-commerceos-user-20"></use></svg>
-      </button>
-    </div>
-  </mat-toolbar>
+<!--<div class="header-wrapper">-->
+  <!--<mat-toolbar class="mat-toolbar-dashboard">-->
+    <!--<div class="mat-toolbar-left">-->
+      <!--<button mat-icon-button class="mat-button-no-padding mat-button-link mat-toolbar-margin-right mat-toolbar-white">-->
+        <!--<svg class="mat-toolbar-item icon icon-24"><use xlink:href="#icon-dashboard-24"></use></svg>-->
+      <!--</button>-->
+      <!--<button mat-button class="mat-button-no-padding mat-button-link mat-toolbar-white">Start</button>-->
+    <!--</div>-->
+    <!--<div class="mat-toolbar-center"></div>-->
+    <!--<div class="mat-toolbar-right">-->
+      <!--<button mat-icon-button  class="mat-button-no-padding mat-button-link mat-toolbar-margin-right mat-toolbar-white">-->
+        <!--<svg class="icon icon-20"><use xlink:href="#icon-commerceos-burger-20"></use></svg>-->
+      <!--</button>-->
+      <!--<button mat-icon-button class="mat-button-no-padding mat-button-link mat-toolbar-white">-->
+        <!--<svg class="icon icon-20"><use xlink:href="#icon-commerceos-user-20"></use></svg>-->
+      <!--</button>-->
+    <!--</div>-->
+  <!--</mat-toolbar>-->
+<!--</div>-->
+
+<!--<pe-layout-app-->
+  <!--[headerTransparent]="false"-->
+  <!--[fullView]="true"-->
+<!--&gt;-->
+  <!--<pe-layout-header header [showBackButton]="false">-->
+    <!--<div col-center>-->
+      <!--<div class="modal-title">-->
+        <!--<svg class="icon icon-24"><use xlink:href="#icon-checkbox-checked-24"></use></svg>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<div col-right>-->
+      <!--<button-->
+        <!--mat-icon-button-->
+        <!--[class.mat-button-no-padding]="true"-->
+        <!--color="primary"-->
+        <!--(click)="onOpenCreateCouponDialog()"-->
+      <!--&gt;-->
+        <!--<svg class="icon icon-16"><use xlink:href="#icon-plus-16"></use></svg>-->
+      <!--</button>-->
+    <!--</div>-->
+  <!--</pe-layout-header>-->
+
+  <!--<pe-layout-content>-->
+    <!--<router-outlet></router-outlet>-->
+  <!--</pe-layout-content>-->
+<!--</pe-layout-app>-->
+
+<div>
+  <button
+          mat-icon-button
+          [class.mat-button-no-padding]="true"
+          color="primary"
+          (click)="onOpenCreateCouponDialog()"
+  >
+    <svg class="icon icon-16"><use xlink:href="#icon-plus-16"></use></svg>
+  </button>
 </div>
-
-<pe-layout-app
-  [headerTransparent]="false"
-  [fullView]="true"
->
-  <pe-layout-header header [showBackButton]="false">
-    <div col-center>
-      <div class="modal-title">
-        <svg class="icon icon-24"><use xlink:href="#icon-checkbox-checked-24"></use></svg>
-      </div>
-    </div>
-    <div col-right>
-      <button
-        mat-icon-button
-        [class.mat-button-no-padding]="true"
-        color="primary"
-        (click)="onOpenCreateCouponDialog()"
-      >
-        <svg class="icon icon-16"><use xlink:href="#icon-plus-16"></use></svg>
-      </button>
-    </div>
-  </pe-layout-header>
-
-  <pe-layout-content>
-    <router-outlet></router-outlet>
-  </pe-layout-content>
-</pe-layout-app>
+<div>
+  <router-outlet></router-outlet>
+</div>
