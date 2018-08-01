@@ -25,7 +25,7 @@ import { environment } from '../../../environments/environment';
     IconsProviderModule,
     I18nModule.provide({}),
     TranslationModule.forRoot({
-      microKey: 'https://coupons-frontend.payever.de',
+      microPath: 'https://coupons-frontend.payever.de',
       isProd: environment.production
     }),
 
