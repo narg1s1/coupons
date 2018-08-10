@@ -2,11 +2,12 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ .Chart.Name }}
+  namespace: developers
   annotations:
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
-  - host: {{ .Chart.Name }}.payever.de
+  - host: {{ .Chart.Name }}.devpayever.com
     http:
       paths:
       - path: /
@@ -14,6 +15,6 @@ spec:
           serviceName: {{ .Chart.Name }}-srv
           servicePort: 80
   tls:
-  - secretName: custom-tls-cert-1
+  - secretName: custom-tls-cert-com
     hosts:
-    - {{ .Chart.Name }}.payever.de
+    - {{ .Chart.Name }}.devpayever.com
