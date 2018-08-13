@@ -4,5 +4,4 @@ import { Component } from '@angular/core';
   selector: 'coupons-root',
   templateUrl: 'root.component.html'
 })
-export class RootComponent {
-}
+export class RootComponent {}

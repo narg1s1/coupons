@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EffectsModule } from '@ngrx/effects';
@@ -13,14 +12,14 @@ import { TranslationModule } from '@pe/ng-kit/modules/translation';
 import { AppRoutingModule } from './app-routing.module';
 import { RootComponent } from './components';
 import { TranslationsGuard } from './guards';
+import { SharedModule } from './modules/shared';
 import { environment } from '../../../environments/environment';
 
 @NgModule({
   imports: [
     BrowserModule,
-    CommonModule,
-    FormsModule,
     BrowserAnimationsModule,
+    HttpClientModule,
 
     IconsProviderModule,
     I18nModule.provide({}),
@@ -31,6 +30,8 @@ import { environment } from '../../../environments/environment';
 
     AppRoutingModule,
 
+    SharedModule.forRoot(),
+
     StoreModule.forRoot({}),
     EffectsModule.forRoot([]),
   ],
@@ -38,5 +39,4 @@ import { environment } from '../../../environments/environment';
   bootstrap: [ RootComponent ],
   providers: [ TranslationsGuard ]
 })
-export class AppModule {
-}
+export class AppModule {}

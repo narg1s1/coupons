@@ -1,7 +1,0 @@
-<pe-dialog [baseButtons]="'cancel'" [title]="'Create voucher'" [buttons]="buttons" [loading]="couponLoading$ | async">
-  <pe-dialog-content>
-    <div class="dialog-container">
-      <coupon-create-form (onSubmitForm)="onSubmitVoucherForm($event)"></coupon-create-form>
-    </div>
-  </pe-dialog-content>
-</pe-dialog>

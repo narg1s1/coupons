@@ -6,18 +6,13 @@ import { TranslationsGuard } from './guards';
 const appRoutes: Routes = [
   {
     path: 'business/:slug',
-    loadChildren: '../../../modules/coupons/coupons-app.module#CouponsAppModule',
+    loadChildren: './modules/coupons/coupons.module#CouponsModule',
     canActivate: [ TranslationsGuard ]
   }
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(appRoutes)
-  ],
-  exports: [
-    RouterModule
-  ]
+  imports: [RouterModule.forRoot(appRoutes)],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}
