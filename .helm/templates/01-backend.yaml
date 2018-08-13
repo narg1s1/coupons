@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ .Chart.Name }}
+  namespace: developers
   annotations:
      shipping/deploy-timestamp: {{ now }}
 spec:
@@ -30,6 +31,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Chart.Name }}-srv
+  namespace: developers
 spec:
   type:  ClusterIP
   selector:

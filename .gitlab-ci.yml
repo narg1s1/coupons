@@ -6,8 +6,8 @@ Build:
   script:
     - docker -v
     - docker pull registry.devpayever.com/nginx:master
-    - dapp dimg build --name coupons-frontend --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE}
-    - dapp dimg push --name coupons-frontend --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE} --tag-ci registry.devpayever.com --registry-username payever --registry-password vMnPdItXkV9T
+    - dapp dimg build --name coupons-frontend-dev --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE}
+    - dapp dimg push --name coupons-frontend-dev --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE} --tag-ci registry.devpayever.com --registry-username payever --registry-password vMnPdItXkV9T
 
   tags:
     - deploy
@@ -16,9 +16,9 @@ Deploy:
   script:
   - dapp --version
   - dapp kube deploy
-      --name coupons-frontend
+      --name coupons-frontend-dev
       --tag-ci
-      --namespace default
+      --namespace developers
       --set "global.env=stage"
       --set "global.git_rev=${CI_BUILD_REF:-$CI_COMMIT_SHA}"
       --set global.ciProjectName=$CI_PROJECT_NAME
