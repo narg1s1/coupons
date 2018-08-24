@@ -10,7 +10,10 @@
     "cli": "pe-i18n-cli",
     "i18n:prod": "rimraf dist/i18n && I18N_HOST=translate.payever.de pe-i18n-cli push --domain-prefix=coupons && I18N_HOST=translate.payever.de pe-i18n-cli pull --output-path=./dist/i18n --domain-prefix=coupons",
     "i18n:serve": "mkdir -p i18n-serve/en/ && node ./bin/i18n-flatten.js",
-    "pack": "pe-micro-packager"
+    "pack": "pe-micro-packager",
+    "micro-register:dev": "pe-micro-register --env=dev --config=micro.config.dev.json",
+    "micro-register:stage": "pe-micro-register --env=stage",
+    "micro-register:prod": "pe-micro-register"
   },
   "private": true,
   "dependencies": {
