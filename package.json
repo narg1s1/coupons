@@ -4,7 +4,7 @@
   "scripts": {
     "start": "npm run i18n:serve && ng serve --port=8082",
     "build": "npm run build:prod",
-    "build:prod": "node ./node_modules/@angular/cli/bin/ng build --project=prod --output-hashing=none --prod --deploy-url https://coupons-frontend.payever.de/ && npm run pack && npm run i18n:prod",
+    "build:prod": "node ./node_modules/@angular/cli/bin/ng build --project=prod --output-hashing=none --prod --deploy-url https://coupons-frontend.devpayever.com/ && npm run pack && npm run micro-register:stage && npm run i18n:prod",
     "build:dev:micro": "node ./node_modules/@angular/cli/bin/ng build --project=prod --output-hashing=none --prod --deploy-url /dist_ext/coupons/ && npm run pack && npm run i18n:prod",
     "test": "ng test",
     "cli": "pe-i18n-cli",

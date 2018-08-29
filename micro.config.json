@@ -6,5 +6,5 @@
   },
   "tag": "<coupons-root></coupons-root>",
   "url": "/business/{uuid}/coupons",
-  "bootstrapScriptUrl": "https://coupons-frontend.payever.de/micro.{hash}.js"
+  "bootstrapScriptUrl": "https://coupons-frontend.devpayever.com/micro.{hash}.js"
 }
