@@ -72,7 +72,7 @@ Build to staging:
     - sed -i -- "s/coupons-frontend/$CI_COMMIT_REF_SLUG/g" ./.helm/templates/01-backend.yaml
     - sed -i "s/developers/staging/g" ./.helm/templates/01-backend.yaml
     - sed -i "s/developers/staging/g" ./.helm/templates/02-backend-ingress.yaml
-    - sed -i "s/.devpayever.com/.payever.org/g" ./.helm/templates/02-backend-ingress.yaml
+    #- sed -i "s/.devpayever.com/.payever.org/g" ./.helm/templates/02-backend-ingress.yaml
     - dapp dimg build --name coupons-frontend --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE}
     - dapp dimg push --name coupons-frontend --build-dir ~/dapp_build/${CI_PROJECT_NAME} ${CI_REGISTRY_IMAGE}  registry.devpayever.com --registry-username payever --registry-password vMnPdItXkV9T
   tags:
@@ -87,6 +87,7 @@ Deploy to staging:
     - sed -i -- "s/coupons-frontend/$CI_COMMIT_REF_SLUG/g" ./Dappfile
     - sed -i -- "s/coupons-frontend/$CI_COMMIT_REF_SLUG/g" ./.helm/templates/01-backend.yaml
     - sed -i "s/developers/staging/g" ./.helm/templates/01-backend.yaml
+    - sed -i -- "s/coupons-frontend/coupons-frontend-staging/g" ./.helm/Chart.yaml
     - sed -i "s/developers/staging/g" ./.helm/templates/02-backend-ingress.yaml
     - dapp kube deploy
       --name coupons-frontend
