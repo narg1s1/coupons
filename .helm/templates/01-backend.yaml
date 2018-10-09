@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: developers
+  annotations:
+     shipping/deploy-timestamp: {{ now }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      imagePullSecrets:
+      - name: regsecret
+      containers:
+      - command: [ "nginx", "-g", "daemon off;" ]
+        image: {{ tuple "coupons-frontend" . |  include "dimg" }}
+        imagePullPolicy: Always
+        name: {{ .Chart.Name }}
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        env:
+        - name: KUBERNETES_DEPLOYED
+          value: "{{ now }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-srv
+  namespace: developers
+spec:
+  type:  ClusterIP
+  selector:
+    app: {{ .Chart.Name }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http

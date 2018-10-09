@@ -1,0 +1,91 @@
+<pe-data-grid-layout [viewMode]="viewMode">
+  <pe-data-grid-toolbar peToolbar
+                        [viewMode]="viewMode"
+                        [showViewSwitcher]="false"
+                        [showColumnSwitcher]="false"
+                        [columns]="columns"
+                        (viewChanged)="viewMode = $event"
+                        (columnsChanged)="columns = $event"
+                        [searchValue]="searchValue"
+                        (inputSearch)="fetchProducts(null, $event)">
+  </pe-data-grid-toolbar>
+
+  <pe-table *ngIf="viewMode === dataViewMode.List"
+            peTable
+            matSort
+            (matSortChange)="sortData($event)"
+            [dataSource]="couponList$ | async">
+    <ng-container *ngFor="let column of columns;"
+                  peTableColumnDef="{{ column.name }}">
+      <div [ngSwitch]="column.name">
+        <div *ngSwitchCase="'selected'">
+          <pe-table-header-cell class="select-area" *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
+          <pe-table-cell *peTableCellDef="let item;">
+
+
+
+            <mat-radio-group *ngIf="item.active" class="example-radio-group">
+              <mat-radio-button class="example-radio-button" [checked]="true" [disabled]="true"></mat-radio-button>
+            </mat-radio-group>
+
+          </pe-table-cell>
+        </div>
+
+        <div *ngSwitchCase="'name'">
+          <pe-table-header-cell mat-sort-header="{{ column.name }}" *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
+          <pe-table-cell *peTableCellDef="let item;">
+            {{ item.name }}
+          </pe-table-cell>
+        </div>
+
+        <div *ngSwitchCase="'expiry_date'">
+          <pe-table-header-cell mat-sort-header="{{ column.name }}" *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
+          <pe-table-cell *peTableCellDef="let item;">
+            {{ item.expiration_date }}
+          </pe-table-cell>
+        </div>
+
+        <div *ngSwitchDefault>
+          <pe-table-header-cell *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
+          <pe-table-cell *peTableCellDef="let item;">
+            {{ item.code }}
+          </pe-table-cell>
+        </div>
+        <div *ngSwitchCase="'menu'">
+          <pe-table-header-cell *peHeaderCellDef>{{ column.title }}</pe-table-header-cell>
+          <pe-table-cell *peTableCellDef="let item;">
+            <button
+              class="mat-button-link mat-muted-light mat-button-no-padding"
+              mat-button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+            >
+              <svg class="icon icon-16">
+                <use xlink:href="#icon-dots-v-16"></use>
+              </svg>
+            </button>
+            <mat-menu #menu="matMenu" class="mat-menu-md mat-menu-padding-lg">
+              <div class="mat-menu-item-slide-toggle">
+                Enabled
+                <mat-slide-toggle [checked]="item.active" (click)="onToggleClick($event, item)"></mat-slide-toggle>
+              </div>
+              <mat-divider></mat-divider>
+              <div mat-menu-item (click)="onOpenEditDialog(item)">Edit</div>
+              <div mat-menu-item (click)="onOpenDuplicateDialog(item)">Duplicate</div>
+              <div mat-menu-item (click)="onOpenRemoveDialog(item)">Delete</div>
+            </mat-menu>
+          </pe-table-cell>
+        </div>
+      </div>
+    </ng-container>
+    <pe-table-header-row  *peTableHeaderRowDef="activeColumns"></pe-table-header-row>
+    <pe-table-row *peTableRowDef="let row; columns: activeColumns;"></pe-table-row>
+  </pe-table>
+  <pe-data-grid-pagination pePagination
+                           [length]="allItemsCount"
+                           [pageSize]="pageSize"
+                           (pageSelect)="fetchProducts($event)"
+  ></pe-data-grid-pagination>
+</pe-data-grid-layout>
+
+<router-outlet></router-outlet>
