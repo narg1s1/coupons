@@ -18,9 +18,14 @@ import { PeCouponsSharedModule } from './coupons.shared';
 
 import { PeCouponsIconAddComponent } from './misc/icons/add-image'
 
+import { PeCouponsFormFieldModule } from './routes/edit/components/form-field/coupons-form-field.module';
+import { PeCouponsRadioModule } from './routes/edit/components/radio/coupons-radio.module';
+import { PeCouponsSlideToggleModule } from './routes/edit/components/slide-toggle/coupons-slide-toggle.module';
+
 import { PeCouponsGridComponent } from './routes/grid/coupons-grid.component';
 import { PeCouponsComponent } from './routes/_root/coupons-root.component';
 import { PeCouponsEditComponent } from './routes/edit/coupons-edit.component';
+
 
 
 // HACK: fix --prod build
@@ -33,6 +38,10 @@ const icons = [
 
 @NgModule({
   imports: [
+    PeCouponsFormFieldModule,
+    PeCouponsRadioModule,
+    PeCouponsSlideToggleModule,
+
     PeCouponsRouteModule,
     PeCouponsSharedModule,
     CommonModule,

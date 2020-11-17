@@ -1,1 +1,160 @@
-<p>coupon edit works!</p>
+<div class="wrapper">
+  <span class="title">Create discount code</span>
+  <form>
+
+    <pe-coupons-form-field>
+      <pe-coupons-label>Discount code</pe-coupons-label>
+      <input type="text" placeholder="e.g. SPRINGSALE">
+      <pe-coupons-suffix>
+        <button>Generate code</button>
+      </pe-coupons-suffix>
+      <pe-coupons-subscript>Customers will enter this discount code at checkout.</pe-coupons-subscript>
+    </pe-coupons-form-field>
+
+    <pe-coupons-form-field>
+      <pe-coupons-label>Types</pe-coupons-label>
+      <pe-coupons-radio-group>
+        <pe-coupons-radio *ngFor="let type of types" [group]="type" [value]="type.value">{{ type.key }}</pe-coupons-radio>
+      </pe-coupons-radio-group>
+    </pe-coupons-form-field>
+
+    <pe-coupons-form-field>
+      <pe-coupons-label>Discount value</pe-coupons-label>
+      <input type="text" placeholder="Enter value">
+      <pe-coupons-suffix>
+        <span>Percentage (%)</span>
+      </pe-coupons-suffix>
+    </pe-coupons-form-field>
+
+    <pe-coupons-form-field>
+      <pe-coupons-label>Applies to</pe-coupons-label>
+      <pe-coupons-radio-group>
+        <pe-coupons-radio>All products</pe-coupons-radio>
+        <pe-coupons-radio>Specific collections</pe-coupons-radio>
+        <pe-coupons-radio>Specific products</pe-coupons-radio>
+      </pe-coupons-radio-group>
+    </pe-coupons-form-field>
+
+    <pe-coupons-form-field>
+      <pe-coupons-label>Minimum requirements</pe-coupons-label>
+      <pe-coupons-radio-group>
+        <pe-coupons-radio>None</pe-coupons-radio>
+        <pe-coupons-radio>Minimum purchase amount ($)</pe-coupons-radio>
+        <pe-coupons-radio>Minimum quantity of items</pe-coupons-radio>
+      </pe-coupons-radio-group>
+    </pe-coupons-form-field>
+
+    <pe-coupons-form-field>
+      <pe-coupons-label>Customer eligibility</pe-coupons-label>
+      <pe-coupons-radio-group>
+        <pe-coupons-radio>Everyone</pe-coupons-radio>
+        <pe-coupons-radio>Specific groups of customers</pe-coupons-radio>
+        <pe-coupons-radio>Specific customers</pe-coupons-radio>
+      </pe-coupons-radio-group>
+    </pe-coupons-form-field>
+
+    <pe-coupons-form-field>
+      <pe-coupons-label>Usage limits</pe-coupons-label>
+      <pe-coupons-radio-group>
+        <pe-coupons-radio>Limit number of times this discount can be used in total</pe-coupons-radio>
+        <pe-coupons-radio>Limit to one use per customer</pe-coupons-radio>
+      </pe-coupons-radio-group>
+    </pe-coupons-form-field>
+
+    <pe-coupons-form-field>
+      <pe-coupons-label>Active dates</pe-coupons-label>
+      <pe-coupons-prefix>
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+          <g fill="none" fill-rule="evenodd">
+            <g>
+              <g transform="translate(-570 -1655) translate(570 1655)">
+                <rect width="28" height="28" fill="#86868B" rx="7"/>
+                <g fill="#FFF">
+                  <path d="M5.536 0c.394 0 .714.32.714.714V2.5h7.5V.714c0-.394.32-.714.714-.714h1.072c.394 0 .714.32.714.714V2.5h2.321c.79 0 1.429.64 1.429 1.429V18.57c0 .79-.64 1.429-1.429 1.429H1.43C.639 20 0 19.36 0 18.571V3.93C0 3.139.64 2.5 1.429 2.5H3.75V.714C3.75.32 4.07 0 4.464 0h1.072zM5 12.5c-.69 0-1.25.56-1.25 1.25S4.31 15 5 15s1.25-.56 1.25-1.25S5.69 12.5 5 12.5zm5 0c-.69 0-1.25.56-1.25 1.25S9.31 15 10 15s1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm-5-5c-.69 0-1.25.56-1.25 1.25S4.31 10 5 10s1.25-.56 1.25-1.25S5.69 7.5 5 7.5zm5 0c-.69 0-1.25.56-1.25 1.25S9.31 10 10 10s1.25-.56 1.25-1.25S10.69 7.5 10 7.5zm5 0c-.69 0-1.25.56-1.25 1.25S14.31 10 15 10s1.25-.56 1.25-1.25S15.69 7.5 15 7.5z" transform="translate(4 4)"/>
+                </g>
+              </g>
+            </g>
+          </g>
+        </svg>      
+      </pe-coupons-prefix>
+      <input type="text" placeholder="2020-11-10">
+      <pe-coupons-suffix>
+        <span>Set start date</span>
+      </pe-coupons-suffix>
+    </pe-coupons-form-field>
+
+    <pe-coupons-form-field>
+      <pe-coupons-label>Channels</pe-coupons-label>
+      <pe-coupons-prefix>
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+          <defs>
+            <linearGradient id="fwtxt37w1a" x1="27.342%" x2="73.96%" y1="-7.019%" y2="110.296%">
+              <stop offset="0%" stop-color="#FFF"/>
+              <stop offset="100%" stop-color="#EEE"/>
+            </linearGradient>
+          </defs>
+          <g fill="none" fill-rule="evenodd">
+            <g>
+              <g transform="translate(-570 -1832) translate(570 1832)">
+                <rect width="28" height="28" fill="#86868B" rx="7"/>
+                <g fill-rule="nonzero">
+                  <g>
+                    <path fill="url(#fwtxt37w1a)" d="M9.92.057c5.28 0 9.71 4.246 9.86 9.586l.003.277c0 5.28-4.341 9.71-9.59 9.86l-.273.003c-5.28 0-9.71-4.247-9.86-9.586L.057 9.92C.057 4.64 4.303.21 9.643.06L9.92.057zm0 6.933l-.177.005C8.171 7.088 6.99 8.413 6.99 9.92l.005.176c.093 1.573 1.418 2.754 2.925 2.754l.166-.006c1.492-.092 2.764-1.417 2.764-2.924l-.006-.177C12.752 8.171 11.427 6.99 9.92 6.99z" transform="translate(4 4)"/>
+                    <path fill="#2F2F2F" d="M9.92 12.85c-1.563 0-2.93-1.27-2.93-2.93 0-1.563 1.27-2.93 2.93-2.93 1.562 0 2.93 1.27 2.93 2.93 0 1.562-1.368 2.93-2.93 2.93z" opacity=".518" transform="translate(4 4)"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </svg>      
+      </pe-coupons-prefix>
+      <span>Point of Sale</span>
+      <pe-coupons-suffix>
+        <pe-coupons-slide-toggle></pe-coupons-slide-toggle>
+      </pe-coupons-suffix>
+    </pe-coupons-form-field>
+
+    <pe-coupons-form-field>
+      <pe-coupons-prefix>
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+          <g fill="none" fill-rule="evenodd">
+            <g>
+              <g transform="translate(-570 -1890) translate(570 1890)">
+                <rect width="28" height="28" fill="#86868B" rx="7"/>
+                <g fill="#FFF" fill-rule="nonzero">
+                  <path d="M14.561 3.932h-.876C13.335 1.66 11.408 0 9.044 0 6.679 0 4.753 1.748 4.402 3.932h-.875c-.964 0-1.84.786-1.84 1.835v10.398c0 .961.789 1.835 1.84 1.835h10.946c.964 0 1.84-.786 1.84-1.835V5.68c0-.962-.789-1.748-1.752-1.748zM9.044.962c1.751 0 3.24 1.31 3.59 2.97h-7.18c.35-1.748 1.838-2.97 3.59-2.97z" transform="translate(5.09 5.09)"/>
+                </g>
+              </g>
+            </g>
+          </g>
+        </svg>          
+      </pe-coupons-prefix>
+      <span>Shop</span>
+      <pe-coupons-suffix>
+        <pe-coupons-slide-toggle></pe-coupons-slide-toggle>
+      </pe-coupons-suffix>
+    </pe-coupons-form-field>
+
+    <pe-coupons-form-field>
+      <pe-coupons-prefix>
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+          <g fill="none" fill-rule="evenodd">
+            <g>
+              <g transform="translate(-570 -1946) translate(570 1946)">
+                <rect width="28" height="28" fill="#86868B" rx="7"/>
+                <g fill="#F9F9F9">
+                  <path d="M8.995.265L1.588 4.744v8.511l1.924 1.131V5.874l5.485-3.329 5.49 3.324.022.013-.002 8.492 1.905-1.119V4.744L8.995.264zm.98 15.191l-.98.599-.98-.602v-9.94l-2.542 1.56v8.511l3.522 2.151 3.552-2.166v-8.5L9.976 5.504v9.951z" transform="translate(5.09 5.09)"/>
+                </g>
+              </g>
+            </g>
+          </g>
+        </svg>            
+      </pe-coupons-prefix>
+      <span>Magento</span>
+      <pe-coupons-suffix>
+        <pe-coupons-slide-toggle></pe-coupons-slide-toggle>
+      </pe-coupons-suffix>
+    </pe-coupons-form-field> 
+
+  </form>
+</div>
