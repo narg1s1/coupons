@@ -1,11 +1,9 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
 import { PeCouponsFormFieldComponent } from './coupons-form-field.component';
 
-import { PeCouponsLabelDirective } from './coupons-label.directive';
 import { PeCouponsPrefixDirective } from './coupons-prefix.directive';
-import { PeCouponsSubscriptDirective } from './coupons-subscript.directive';
 import { PeCouponsSuffixDirective } from './coupons-suffix.directive';
 
 
@@ -13,21 +11,17 @@ import { PeCouponsSuffixDirective } from './coupons-suffix.directive';
   declarations: [
     PeCouponsFormFieldComponent,
 
-    PeCouponsLabelDirective,
     PeCouponsPrefixDirective,
-    PeCouponsSubscriptDirective,
-    PeCouponsSuffixDirective,
+    PeCouponsSuffixDirective
   ],
   imports: [
-    CommonModule,
+    CommonModule
   ],
   exports: [
     PeCouponsFormFieldComponent,
 
-    PeCouponsLabelDirective,
     PeCouponsPrefixDirective,
-    PeCouponsSubscriptDirective,
-    PeCouponsSuffixDirective,
+    PeCouponsSuffixDirective
   ],
 })
 export class PeCouponsFormFieldModule {}

@@ -1,14 +1,11 @@
-<label class="radio__label">
+<label class="checkbox__label">
   <input 
     #input 
     hidden 
-    type="radio"
-    (change)="onChange(value)"
-    [name]="name"
-    [value]="value" 
-    [id]="value"
+    type="checkbox"
+    (change)="onChange($event.target.checked)"
   >
-  <div class="radio__checkmark">
+  <div class="checkbox__checkmark">
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="10" viewBox="0 0 14 10" style="margin: auto">
       <g fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
         <g stroke="#FFF" stroke-width="1.4">

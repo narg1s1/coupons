@@ -1,21 +1,9 @@
-<div class="form-field__wrapper">
-
-  <div class="form-field__label">
-    <ng-content select="pe-coupons-label"></ng-content>
+<div class="form-field__infix">
+  <div class="form-field__prefix" #prefix [hidden]="!showPrefix">
+    <ng-content select="pe-coupons-prefix"></ng-content>
   </div>
-
-  <div class="form-field__infix">
-    <div class="form-field__prefix" #prefix [hidden]="!showPrefix">
-      <ng-content select="pe-coupons-prefix"></ng-content>
-    </div>
-    <ng-content></ng-content>
-    <div class="form-field__suffix" #suffix [hidden]="!showSuffix">
-      <ng-content select="pe-coupons-suffix"></ng-content>
-    </div>
+  <ng-content></ng-content>
+  <div class="form-field__suffix" #suffix [hidden]="!showSuffix">
+    <ng-content select="pe-coupons-suffix"></ng-content>
   </div>
-
-  <div class="form-field__subscript" #subscript [hidden]="!showSubscript">
-    <ng-content select="pe-coupons-subscript"></ng-content>
-  </div>
-
 </div>

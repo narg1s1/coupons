@@ -1,0 +1,45 @@
+:host {
+  display: block;
+  margin-top: 28px;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+.form-group {
+
+  &__label {
+    color: rgba(127, 127, 127, 0.95);
+    font-size: 15px;
+    line-height: 1.47;
+    text-transform: uppercase;
+  }
+
+  &__wrapper {
+    background-color: #1c1d1e;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column; 
+    margin-top: 8px;
+    margin-right: -18px;
+    margin-left: -18px;
+
+    ::ng-deep pe-coupons-form-field:not(:first-child) {
+      &::before {
+        background-color: #393939;
+        content: "";
+        height: 1px;
+        position: absolute;
+        top: 0;
+        left: 54px;
+        right: 0;
+      }
+    }
+  }
+
+  &__subscript {
+    color: #7a7a7a;
+    font-size: 16px;
+    line-height: 1.38;
+    margin-top: 13px;
+  }
+}

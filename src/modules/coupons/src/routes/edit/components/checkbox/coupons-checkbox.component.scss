@@ -3,7 +3,7 @@
   position: relative;
 }
 
-.radio {
+.checkbox {
 
   &__label {
     align-items: center;
@@ -17,7 +17,7 @@
     padding-bottom: 6px;
     width: 100%;
   
-    input:checked ~ .radio__checkmark {
+    input:checked ~ .checkbox__checkmark {
       background-color: #0371e2;
       border-color: #fff;
   

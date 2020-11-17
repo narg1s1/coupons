@@ -1,3 +1,9 @@
+
+:host {
+  padding: 8px 18px 8px 8px;
+  position: relative;
+}
+
 // TODO: remove ng-deep
 ::ng-deep input,
 ::ng-deep button {
@@ -9,29 +15,9 @@
 
 .form-field {
 
-  &__wrapper {
-    display: flex;
-    flex-direction: column;
-    padding-left: 18px;
-    padding-right: 18px;
-  }
-
-  &__label {
-    color: rgba(127, 127, 127, 0.95);
-    font-size: 15px;
-    line-height: 1.47;
-    text-transform: uppercase;
-  }
-
   &__infix {
     align-items: center;
-    background-color: #1c1d1e;
-    border-radius: 12px;
     display: flex;
-    margin-top: 8px;
-    margin-right: -18px;
-    margin-left: -18px;
-    padding: 8px 18px 8px 8px;
 
     // TODO: remove ng-deep
     ::ng-deep input[type="text"] {
@@ -54,28 +40,6 @@
       font-size: 20px;
       line-height: 1.1;
       width: 100%;
-    }
-
-    // TODO: remove ng-deep
-    ::ng-deep pe-coupons-radio-group {
-      margin-top: -8px;
-      margin-bottom: -8px;
-      width: 100%;
-    }
-
-    // TODO: remove ng-deep
-    ::ng-deep pe-coupons-radio:not(:first-child) {
-
-      &::before {
-        background-color: #393939;
-        content: "";
-        height: 1px;
-        position: absolute;
-        top: 0;
-        left: 46px;
-        right: -18px;
-      }
-
     }
   }
 
@@ -105,12 +69,5 @@
     span {
       color: #fff;
     }
-  }
-
-  &__subscript {
-    color: #7a7a7a;
-    font-size: 16px;
-    line-height: 1.38;
-    margin-top: 13px;
   }
 }

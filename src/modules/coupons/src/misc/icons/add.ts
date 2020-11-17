@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'peb-coupons-add-icon',
+  selector: 'pe-coupons-icon-add',
   template: `
     <svg width="100" height="100" viewBox="0 0 100 100">
       <g fill="none" fill-rule="evenodd" opacity=".1">

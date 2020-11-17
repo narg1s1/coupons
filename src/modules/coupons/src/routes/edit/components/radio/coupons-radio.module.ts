@@ -1,23 +1,12 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
 import { PeCouponsRadioComponent } from './coupons-radio.component';
-import { PeCouponsRadioGroupDirective } from './coupons-radio-group.directive';
 
 
 @NgModule({
-  declarations: [
-    PeCouponsRadioComponent,
-
-    PeCouponsRadioGroupDirective,
-  ],
-  imports: [
-    CommonModule,
-  ],
-  exports: [
-    PeCouponsRadioComponent,
-
-    PeCouponsRadioGroupDirective,
-  ],
+  declarations: [ PeCouponsRadioComponent ],
+  imports: [ CommonModule ],
+  exports: [ PeCouponsRadioComponent ]
 })
 export class PeCouponsRadioModule {}

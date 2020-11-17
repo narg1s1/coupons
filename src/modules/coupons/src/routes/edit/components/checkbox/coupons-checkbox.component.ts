@@ -3,19 +3,19 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 
 @Component({
-  selector: 'pe-coupons-radio',
-  templateUrl: './coupons-radio.component.html',
-  styleUrls: ['./coupons-radio.component.scss'],
+  selector: 'pe-coupons-checkbox',
+  templateUrl: './coupons-checkbox.component.html',
+  styleUrls: ['./coupons-checkbox.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: forwardRef(() => PeCouponsRadioComponent),
+      useExisting: forwardRef(() => PeCouponsCheckboxComponent),
     }
   ]
 })
-export class PeCouponsRadioComponent implements ControlValueAccessor {
+export class PeCouponsCheckboxComponent implements ControlValueAccessor {
 
   @ViewChild('input', { static: true }) elementRef: ElementRef;
 
@@ -31,7 +31,7 @@ export class PeCouponsRadioComponent implements ControlValueAccessor {
   }
 
   writeValue(value: any): void {
-    this.elementRef.nativeElement.checked = this.value === value;
+    this.elementRef.nativeElement.checked = value;
   }
 
   onChange: (value: any) => void = () => {};

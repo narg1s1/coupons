@@ -17,7 +17,7 @@ import { takeUntil, tap } from 'rxjs/operators';
 
 
 @Component({
-  selector: 'peb-coupons-grid',
+  selector: 'pe-coupons-grid',
   templateUrl: './coupons-grid.component.html',
   styleUrls: ['./coupons-grid.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

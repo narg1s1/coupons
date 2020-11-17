@@ -1,6 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { PeCouponsPrefixDirective } from './coupons-prefix.directive';
-import { PeCouponsSubscriptDirective } from './coupons-subscript.directive';
 import { PeCouponsSuffixDirective } from './coupons-suffix.directive';
 
 
@@ -12,20 +11,17 @@ import { PeCouponsSuffixDirective } from './coupons-suffix.directive';
 })
 export class PeCouponsFormFieldComponent implements AfterViewInit {
 
-  showPrefix = false;
-  showSuffix = false;
-  showSubscript = false;
+  showPrefix: boolean = false;
+  showSuffix: boolean = false;
 
   @ContentChild(PeCouponsPrefixDirective) prefix: PeCouponsPrefixDirective;
   @ContentChild(PeCouponsSuffixDirective) suffix: PeCouponsSuffixDirective;
-  @ContentChild(PeCouponsSubscriptDirective) subscript: PeCouponsSubscriptDirective;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.showPrefix = this.prefix != null;
     this.showSuffix = this.suffix != null;
-    this.showSubscript = this.subscript != null;
     this.changeDetectorRef.detectChanges();
   }
 }

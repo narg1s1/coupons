@@ -85,7 +85,7 @@
       "root": "src/modules/coupons",
       "sourceRoot": "src/modules/coupons/src",
       "projectType": "library",
-      "prefix": "peb-coupons",
+      "prefix": "pe-coupons",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
