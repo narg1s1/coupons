@@ -14,7 +14,7 @@
     <pe-coupons-form-field>
       <pe-coupons-label>Types</pe-coupons-label>
       <pe-coupons-radio-group>
-        <pe-coupons-radio *ngFor="let type of types" [group]="type" [value]="type.value">{{ type.key }}</pe-coupons-radio>
+        <pe-coupons-radio *ngFor="let type of types" [group]="type" [value]="type.value">{{ type.label }}</pe-coupons-radio>
       </pe-coupons-radio-group>
     </pe-coupons-form-field>
 
@@ -29,9 +29,7 @@
     <pe-coupons-form-field>
       <pe-coupons-label>Applies to</pe-coupons-label>
       <pe-coupons-radio-group>
-        <pe-coupons-radio>All products</pe-coupons-radio>
-        <pe-coupons-radio>Specific collections</pe-coupons-radio>
-        <pe-coupons-radio>Specific products</pe-coupons-radio>
+        <pe-coupons-radio *ngFor="let item of appliesTo" [value]="item.value">{{ item.label }}</pe-coupons-radio>
       </pe-coupons-radio-group>
     </pe-coupons-form-field>
 
