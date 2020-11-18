@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+
+import { LocaleConstantsService } from '@pe/i18n';
 
 
 @Component({
@@ -9,6 +12,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PeCouponsEditComponent implements OnInit {
+
+  countries = [];
 
   types = [
     { label: 'Percentage', value: 'percentage' },
@@ -35,22 +40,22 @@ export class PeCouponsEditComponent implements OnInit {
     { label: 'Specific customers', value: 'specific-customers' }
   ];
 
-  couponForm = this.formBuilder.group({
+  couponForm: FormGroup = this.formBuilder.group({
     discountCode: [],
-    type: ['percentage'],
+    type: ['free-shipping'],
     discountValue: [],
-    // countries
+    countries: [[]],
     excludeShippingRates: [false],
     shippingRatesValue: [],
     appliesTo: ['all-products'],
-    // collections
-    // products
+    // collections: [[]],
+    // products: [[]],
     minimumRequirements: [null],
     minimumPurchaseAmout: [],
     minimumQuantityOfItems: [],
     customerEligibility: ['everyone'],
-    // groupsOfCustomers
-    // customers
+    // groupsOfCustomers: [[]],
+    // customers: [[]],
     limitNumberOfTimes: [false],
     limitToOneUse: [false],
     limitNumberOfTimesValue: [],
@@ -61,7 +66,11 @@ export class PeCouponsEditComponent implements OnInit {
     endTime: []
   });
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private matDialog: MatDialog,
+    private localConstantsService: LocaleConstantsService
+  ) {
   }
 
   ngOnInit(): void {
@@ -70,5 +79,29 @@ export class PeCouponsEditComponent implements OnInit {
     this.couponForm.get('type').valueChanges.subscribe(() => {
       this.couponForm.get('discountValue').patchValue(null, { emitEvent: false });
     });
+
+    this.setCountries();
   }
+
+  setCountries() {
+    const countryList = this.localConstantsService.getCountryList();
+
+    Object.keys(countryList).map(countryKey => {
+      const countryValue = countryList[countryKey];
+
+      this.countries.push({
+        key: countryKey,
+        value: Array.isArray(countryValue) ? countryValue[0] : countryValue
+      });
+    })
+  }
+
+  addToArray(value: string, array: any): void {
+    array.push(value);
+  }
+
+  removeFromArray(array: any, index: number): void {
+    array.splice(index, 1);
+  }
+
 }

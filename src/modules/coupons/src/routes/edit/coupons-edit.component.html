@@ -6,7 +6,7 @@
     <pe-coupons-form-group>
       <pe-coupons-label>Discount code</pe-coupons-label>
       <pe-coupons-form-field>
-        <input type="text" placeholder="e.g. SPRINGSALE" formControlName="discountCode">
+        <pe-coupons-input type="text" placeholder="e.g. SPRINGSALE" formControlName="discountCode"></pe-coupons-input>
         <pe-coupons-suffix>
           <button>Generate code</button>
         </pe-coupons-suffix>
@@ -28,7 +28,7 @@
     <pe-coupons-form-group *ngIf="couponForm.get('type').value === 'percentage' || couponForm.get('type').value === 'fixed-amount'">
       <pe-coupons-label>Discount value</pe-coupons-label>
       <pe-coupons-form-field>
-        <input type="text" placeholder="Enter value" formControlName="discountValue">
+        <pe-coupons-input type="text" placeholder="Enter value" formControlName="discountValue"></pe-coupons-input>
         <pe-coupons-suffix>
           <span *ngIf="couponForm.get('type').value === 'percentage'">Percentage (%)</span>
           <span *ngIf="couponForm.get('type').value === 'fixed-amount'">Dollars ($)</span>
@@ -38,9 +38,22 @@
     <!-- DISCOUNT VALUE END -->
 
     <!-- COUNTRIES START -->
-    <pe-coupons-form-group *ngIf="couponForm.get('type').value === 'free-shipping'">
+    <pe-coupons-form-group 
+      *ngIf="couponForm.get('type').value === 'free-shipping'"
+    >
       <pe-coupons-label>Countries</pe-coupons-label>
-      <pe-coupons-form-field></pe-coupons-form-field>
+      <pe-coupons-form-field>
+        <pe-coupons-autocomplete [items]="countries" (onSelected)="addToArray($event, couponForm.get('countries').value)"></pe-coupons-autocomplete>
+        <pe-coupons-suffix>
+          <button>Add Country</button>
+        </pe-coupons-suffix>
+      </pe-coupons-form-field>
+      <pe-coupons-list>
+        <pe-coupons-list-item 
+          *ngFor="let item of couponForm.get('countries').value; let i = index"
+          (onRemove)="removeFromArray(couponForm.get('countries').value, i)"
+        >{{ item }}</pe-coupons-list-item>
+      </pe-coupons-list>
     </pe-coupons-form-group>
     <!-- COUNTRIES END -->
 
@@ -51,7 +64,7 @@
         <pe-coupons-checkbox formControlName="excludeShippingRates">Exclude shipping rates over a certain amount</pe-coupons-checkbox>
       </pe-coupons-form-field>
       <pe-coupons-form-field *ngIf="couponForm.get('excludeShippingRates').value">
-        <input type="text" placeholder="Enter value">
+        <pe-coupons-input type="text" placeholder="Enter value"></pe-coupons-input>
         <pe-coupons-suffix>
           <span>Dollars ($)</span>
         </pe-coupons-suffix>
@@ -95,7 +108,7 @@
     <pe-coupons-form-group *ngIf="couponForm.get('minimumRequirements').value === 'minimum-purchase-amount'">
       <pe-coupons-label>Minimum purchase amount</pe-coupons-label>
       <pe-coupons-form-field>
-        <input formControlName="minimumPurchaseAmout" type="text" placeholder="Enter value">
+        <pe-coupons-input type="text" placeholder="Enter value" formControlName="minimumPurchaseAmout"></pe-coupons-input>
         <pe-coupons-suffix>
           <span>Dollars ($)</span>
         </pe-coupons-suffix>
@@ -107,7 +120,7 @@
     <pe-coupons-form-group *ngIf="couponForm.get('minimumRequirements').value === 'minimum-quantity-of-items'">
       <pe-coupons-label>Minimum quantity of items</pe-coupons-label>
       <pe-coupons-form-field>
-        <input formControlName="minimumQuantityOfItems" type="text" placeholder="Enter value">
+        <pe-coupons-input type="text" placeholder="Enter value" formControlName="minimumQuantityOfItems"></pe-coupons-input>
       </pe-coupons-form-field>
     </pe-coupons-form-group>
     <!-- MINIMUM QUANTITY OF ITEMS END -->
@@ -154,7 +167,7 @@
     <pe-coupons-form-group *ngIf="couponForm.get('limitNumberOfTimes').value">
       <pe-coupons-label>Limit number of times this discount can be used in total</pe-coupons-label>
       <pe-coupons-form-field>
-        <input formControlName="limitNumberOfTimesValue" type="text" placeholder="Enter value">
+        <pe-coupons-input type="text" placeholder="Enter value" formControlName="limitNumberOfTimesValue"></pe-coupons-input>
       </pe-coupons-form-field>
     </pe-coupons-form-group>
     <!-- LIMIT NUMBER OF TIMES END -->
@@ -167,7 +180,7 @@
         <pe-coupons-prefix>
           <pe-coupons-icon-date></pe-coupons-icon-date>
         </pe-coupons-prefix>
-        <input formControlName="startDate" type="text" placeholder="2020-11-10">
+        <pe-coupons-input type="text" placeholder="2020-11-10" formControlName="startDate"></pe-coupons-input>
         <pe-coupons-suffix>
           <span>Set start date</span>
         </pe-coupons-suffix>
@@ -177,7 +190,7 @@
         <pe-coupons-prefix>
           <pe-coupons-icon-time></pe-coupons-icon-time>
         </pe-coupons-prefix>
-        <input formControlName="startTime" type="text" placeholder="11:10">
+        <pe-coupons-input type="text" placeholder="11:10" formControlName="startTime"></pe-coupons-input>
         <pe-coupons-suffix>
           <span>Set start time</span>
         </pe-coupons-suffix>
@@ -191,7 +204,7 @@
         <pe-coupons-prefix>
           <pe-coupons-icon-date></pe-coupons-icon-date>
         </pe-coupons-prefix>
-        <input formControlName="endDate" type="text" placeholder="2020-11-10">
+        <pe-coupons-input type="text" placeholder="2020-11-10" formControlName="endDate"></pe-coupons-input>
         <pe-coupons-suffix>
           <span>Set end date</span>
         </pe-coupons-suffix>
@@ -201,7 +214,7 @@
         <pe-coupons-prefix>
           <pe-coupons-icon-time></pe-coupons-icon-time>
         </pe-coupons-prefix>
-        <input formControlName="endTime" type="text" placeholder="11:10">
+        <pe-coupons-input type="text" placeholder="11:10" formControlName="endTime"></pe-coupons-input>
         <pe-coupons-suffix>
           <span>Set end time</span>
         </pe-coupons-suffix>

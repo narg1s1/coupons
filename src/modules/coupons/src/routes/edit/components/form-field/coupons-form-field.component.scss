@@ -4,36 +4,11 @@
   position: relative;
 }
 
-// TODO: remove ng-deep
-::ng-deep input,
-::ng-deep button {
-  appearance: none;
-  border: unset;
-  font-family: inherit;
-  outline: unset;
-}
-
 .form-field {
 
   &__infix {
     align-items: center;
     display: flex;
-
-    // TODO: remove ng-deep
-    ::ng-deep input[type="text"] {
-      background-color: #111111;
-      border-radius: 8px;
-      caret-color: rgba(255, 255, 255, 0.95);
-      color: rgba(255, 255, 255, 0.95);
-      font-size: 20px;
-      padding: 9px 10px;
-      line-height: 1.1;
-      width: 100%;
-
-      &::placeholder {
-        color: rgba(89, 89, 89, 0.95);
-      }
-    }
 
     ::ng-deep span {
       color: rgba(255, 255, 255, 0.95);

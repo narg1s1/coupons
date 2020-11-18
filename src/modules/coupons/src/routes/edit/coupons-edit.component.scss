@@ -5,6 +5,13 @@
   font-family: 'Roboto';
 }
 
+button {
+  appearance: none;
+  border: unset;
+  font-family: inherit;
+  outline: unset;
+}
+
 .wrapper {
   margin: 0 auto;
   max-width: 836px;
