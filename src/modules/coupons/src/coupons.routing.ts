@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { PeCouponsEditComponent } from './routes/edit/coupons-edit.component';
 
 import { PeCouponsGridComponent } from './routes/grid/coupons-grid.component';
-import { PeCouponsComponent } from './routes/_root/coupons-root.component';
+import { PeCouponsComponent } from './routes/root/coupons-root.component';
 
 const routes: Routes = [
   {
@@ -20,41 +20,13 @@ const routes: Routes = [
         component: PeCouponsGridComponent,
       },
       {
-        path: 'edit',
+        path: ':couponId',
         component: PeCouponsEditComponent,
       },
-      // {
-      //   path: 'create',
-      //   component: PebCampaignCreateComponent,
-      // },
-      // {
-      //   path: 'dashboard',
-      //   component: PebShopDashboardComponent,
-      //   canActivate: [ ShopThemeGuard ]
-      // },
-      // {
-      //   path: 'settings',
-      //   component: PebShopSettingsComponent,
-      //   resolve: [ ShopResolver ],
-      //   children: [
-      //     {
-      //       path: '',
-      //       component: PebShopGeneralSettingsComponent,
-      //     },
-      //     {
-      //       path: 'local-domain',
-      //       component: PebShopLocalDomainSettingsComponent,
-      //     },
-      //     {
-      //       path: 'external-domain',
-      //       component: PebShopExternalDomainSettingsComponent,
-      //     },
-      //     {
-      //       path: 'password',
-      //       component: PebShopPasswordSettingsComponent,
-      //     },
-      //   ],
-      // },
+      {
+        path: 'add',
+        component: PeCouponsEditComponent,
+      },
     ],
   },
 ];
@@ -66,8 +38,6 @@ export const RouterModuleForChild = RouterModule.forChild(routes);
 @NgModule({
   imports: [RouterModuleForChild],
   exports: [RouterModule],
-  providers: [
-    // ShopThemeGuard
-  ]
+  providers: []
 })
 export class PeCouponsRouteModule {}

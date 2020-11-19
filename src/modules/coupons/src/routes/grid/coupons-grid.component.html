@@ -1,6 +1,6 @@
 <pe-data-grid 
   [filters]="filters"
-  [items]="items"
+  [items]="items$"
   [selectedItems]="selectedItems"
   [dataListOptions]="gridOptions"
   [multipleSelectedActions]="multipleSelectedActions"
@@ -65,7 +65,7 @@
   </pe-data-grid-item>
 
   <pe-data-grid-item
-    *ngFor="let item of items"
+    *ngFor="let item of items$ | async"
     inViewport
     [item]="item"
     [actions]="[singleSelectedAction]"

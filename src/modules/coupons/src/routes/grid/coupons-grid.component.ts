@@ -12,8 +12,10 @@ import {
   TreeFilterNode,
 } from '@pe/data-grid';
 import { isEqual, orderBy } from 'lodash';
-import { Subject } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { map, takeUntil, tap } from 'rxjs/operators';
+import { PeCoupon } from '../../misc/interfaces/coupon.model';
+import { PeCouponsApi } from '../../services/abstract.coupons.api';
 
 
 @Component({
@@ -25,6 +27,17 @@ import { takeUntil, tap } from 'rxjs/operators';
 export class PeCouponsGridComponent implements OnInit, OnDestroy {
 
   private readonly destroyed$ = new Subject();
+
+  private itemsSubject = new BehaviorSubject<PeDataGridItem[]>([]);
+  readonly items$ = this.itemsSubject.asObservable();
+
+  get items() {
+    return this.itemsSubject.getValue();
+  }
+
+  set items(items) {
+    this.itemsSubject.next(items);
+  }
 
   filters: PeDataGridFilterType[] = [];
 
@@ -93,48 +106,13 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
     selected: false,
   };
 
-  items: PeDataGridItem[] = [
-    {
-      id: '1',
-      title: 'SPRINGSALE',
-      description: 'Buy 2 get 1 free until 24.04.2021',
-      selected: false,
-      labels: ['active'],
-    },
-    {
-      id: '2',
-      title: 'SUMMERSALE',
-      description: '-20% off on Collenction Name',
-      selected: false,
-    },
-    {
-      id: '3',
-      title: 'BLACKFRIDAY',
-      description: '-80% off on all items until 18.11.2021',
-      selected: false,
-    },
-    {
-      id: '4',
-      title: 'CHRISTMASOFF',
-      description: '-15% on all items until 30.12.2021',
-      selected: false,
-    },
-    {
-      id: '5',
-      title: 'Free shipping',
-      description: 'Free shipping on all items above $200',
-      selected: false,
-    },
-  ];
-
   selectedItems: PeDataGridItem[] = [];
 
   public addActions: PeDataGridSingleSelectedAction[] = [
     {
       label: 'New Coupon',
       callback: () => {
-        // this.router.navigate(['/coupons/edit'], this.getNavigateParams());
-        this.router.navigate(['/coupons/edit']);
+        this.router.navigate(['/coupons/add']);
       },
     }
   ];
@@ -142,9 +120,7 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   public singleSelectedAction: PeDataGridSingleSelectedAction = {
     label: 'Open',
     callback: (id: string) => {
-      console.log('open');
-      // this.loadingProductIdStream$.next(id);
-      // this.router.navigate(['../edit', id], this.getNavigateParams());
+      this.router.navigate(['../coupons/', id]);
     },
   };
 
@@ -182,12 +158,33 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
+    private apiService: PeCouponsApi,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private router: Router,
   ) {}
 
+  private couponGridItemPipe(coupon: PeCoupon) {
+    return {
+      id: coupon._id,
+      title: coupon.code,
+      description: coupon.description,
+      labels: [coupon.status],
+    };
+  }
+
+  private getCouponsList() {
+    this.apiService.getCouponsList().pipe(
+      takeUntil(this.destroyed$),
+      tap(couponsList => {
+        return this.items = couponsList.map(coupon => this.couponGridItemPipe(coupon));
+      }),
+    ).subscribe();
+  }
+
   ngOnInit() {
+    this.getCouponsList();
+
     this.formGroup.valueChanges.pipe(
       takeUntil(this.destroyed$),
       tap(value => console.log(value)),
@@ -197,24 +194,6 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();
-  }
-
-  private getNavigateParams(): NavigationExtras {
-    const navigateParams: NavigationExtras = {};
-    if (this.canUseRelativeNavigate()) {
-      navigateParams.relativeTo = this.activatedRoute;
-      navigateParams.queryParams = {};
-      navigateParams.queryParams.addExisting = true;
-      navigateParams.queryParams.prevProductsPath = this.activatedRoute.snapshot.url[0].path;
-    }
-    navigateParams.queryParamsHandling = 'merge';
-    return navigateParams;
-  }
-
-  private canUseRelativeNavigate(): boolean {
-    return (
-      this.activatedRoute.snapshot.pathFromRoot.filter((route: ActivatedRouteSnapshot) => route.url.length > 0).length > 0
-    );
   }
 
   onFiltersChanged(event) {

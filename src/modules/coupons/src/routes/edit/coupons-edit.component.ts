@@ -1,8 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 
 import { LocaleConstantsService } from '@pe/i18n';
+import { ReplaySubject } from 'rxjs';
+import { filter, map, takeUntil, tap } from 'rxjs/operators';
+import { PeCoupon } from '../../misc/interfaces/coupon.model';
+import { PeCouponsApi } from '../../services/abstract.coupons.api';
 
 
 @Component({
@@ -13,19 +18,25 @@ import { LocaleConstantsService } from '@pe/i18n';
 })
 export class PeCouponsEditComponent implements OnInit {
 
+  readonly destroyed$ = new ReplaySubject<boolean>();
+
+  coupon: PeCoupon;
+
   countries = [];
+  products = [];
+  collections = [];
 
   types = [
-    { label: 'Percentage', value: 'percentage' },
-    { label: 'Fixed amount', value: 'fixed-amount' },
-    { label: 'Free shipping', value: 'free-shipping' },
-    { label: 'Buy X get Y', value: 'buy-x-get-y' }
+    { label: 'Percentage', value: 'PERCENTAGE' },
+    { label: 'Fixed amount', value: 'FIXED_AMOUNT' },
+    { label: 'Free shipping', value: 'FREE_SHIPPING' },
+    { label: 'Buy X get Y', value: 'BUY_X_GET_Y' }
   ];
 
   appliesTo = [
-    { label: 'All products', value: 'all-products' },
-    { label: 'Specific collections', value: 'specific-collections' },
-    { label: 'Specific products', value: 'specific-products' }
+    { label: 'All products', value: 'ALL_PRODUCTS' },
+    { label: 'Specific collections', value: 'SPECIFIC_COLLECTIONS' },
+    { label: 'Specific products', value: 'SPECIFIC_PRODUCTS' }
   ];
 
   minimumRequirements = [
@@ -41,62 +52,122 @@ export class PeCouponsEditComponent implements OnInit {
   ];
 
   couponForm: FormGroup = this.formBuilder.group({
-    discountCode: [],
-    type: ['free-shipping'],
-    discountValue: [],
-    countries: [[]],
-    excludeShippingRates: [false],
-    shippingRatesValue: [],
-    appliesTo: ['all-products'],
-    // collections: [[]],
-    // products: [[]],
-    minimumRequirements: [null],
-    minimumPurchaseAmout: [],
-    minimumQuantityOfItems: [],
-    customerEligibility: ['everyone'],
-    // groupsOfCustomers: [[]],
-    // customers: [[]],
-    limitNumberOfTimes: [false],
-    limitToOneUse: [false],
-    limitNumberOfTimesValue: [],
-    startDate: [],
-    startTime: [],
-    setEndDate: [false],
+    appliesToProducts: [[]],
+    appliesToCollections: [[]],
+    // businessId: [],
+    // channelSetsIds: [],
+    code: [],
+    // contacts: [],
+    // createdAt: [],
+    сustomerEligibilityCustomerGroups: [[]],
+    customerEligibilitySpecificCustomers: [[]],
+    // description: [],
     endDate: [],
-    endTime: []
+    // isAutomaticDiscount: [],
+    limits: this.formBuilder.group({
+      limitOneCustomer: [],
+      limitUsage: [],
+      limitUsageAmount: [],
+    }),
+    // name: [],
+    // products: [],
+    startDate: [],
+    // status: [],
+    type: this.formBuilder.group({
+      appliesTo: [], // need remove
+      // appliesToCollections: [[]],
+      // appliesToProducts: [[]],
+      discountValue: [],
+      type: [],
+    }),
+    // updateAt: [],
+
+    setEndDate: [],
+
+    // countries: [[]],
+    // excludeShippingRates: [],
+    // shippingRatesValue: [],
+    // minimumRequirements: [],
+    // minimumPurchaseAmout: [],
+    // minimumQuantityOfItems: [],
+    // customerEligibility: [],
+    // // groupsOfCustomers: [[]],
+    // // customers: [[]],
+    
   });
 
   constructor(
+    private apiService: PeCouponsApi,
     private formBuilder: FormBuilder,
-    private matDialog: MatDialog,
-    private localConstantsService: LocaleConstantsService
+    private localConstantsService: LocaleConstantsService,
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
   }
 
   ngOnInit(): void {
+    const couponId = this.activatedRoute.snapshot.params.couponId;
+
+    this.apiService.getCouponById(couponId).subscribe(coupon => console.log(coupon));
+
+    this.apiService.getCouponById(couponId).pipe(
+      tap((coupon: PeCoupon) => {
+        this.coupon = coupon;
+        this.couponForm.patchValue(coupon);
+        this.couponForm.controls.setEndDate.patchValue(coupon.endDate ? true : false)
+        this.changeDetectorRef.markForCheck();
+      }),
+      takeUntil(this.destroyed$),
+    ).subscribe();
+
     this.couponForm.valueChanges.subscribe(change => console.log(change));
 
-    this.couponForm.get('type').valueChanges.subscribe(() => {
-      this.couponForm.get('discountValue').patchValue(null, { emitEvent: false });
-    });
+    // this.couponForm.get('type').valueChanges.subscribe(() => {
+    //   this.couponForm.get('discountValue').patchValue(null, { emitEvent: false });
+    // });
 
-    this.setCountries();
+    this.getCountries();
+    this.getProducts();
+    this.getCollections();
   }
 
-  setCountries() {
+  ngOnDestroy() {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
+
+  getCountries() {
     const countryList = this.localConstantsService.getCountryList();
 
     Object.keys(countryList).map(countryKey => {
-      const countryValue = countryList[countryKey];
-
       this.countries.push({
         key: countryKey,
-        value: Array.isArray(countryValue) ? countryValue[0] : countryValue
+        value: Array.isArray(countryList[countryKey]) ? countryList[countryKey][0] : countryList[countryKey]
       });
     })
   }
 
+  getProducts() {
+    this.apiService.getProducts().pipe(
+      map(request => request.data.getProducts.products.filter(product => !!product)),
+      tap(products => this.products = products),
+      takeUntil(this.destroyed$)
+    ).subscribe();
+  }
+
+  getCollections() {
+    this.apiService.getCategories().pipe(
+      map(request => request.data.getCategories.filter(collection => !!collection)),
+      tap(collections => {
+        console.log(collections);
+        return this.collections = collections
+      }),
+      takeUntil(this.destroyed$)
+    ).subscribe();
+  }
+
   addToArray(value: string, array: any): void {
+    console.log(value, array);
     array.push(value);
   }
 

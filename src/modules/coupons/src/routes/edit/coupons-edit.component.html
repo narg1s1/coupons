@@ -6,7 +6,7 @@
     <pe-coupons-form-group>
       <pe-coupons-label>Discount code</pe-coupons-label>
       <pe-coupons-form-field>
-        <pe-coupons-input type="text" placeholder="e.g. SPRINGSALE" formControlName="discountCode"></pe-coupons-input>
+        <pe-coupons-input type="text" placeholder="e.g. SPRINGSALE" formControlName="code"></pe-coupons-input>
         <pe-coupons-suffix>
           <button>Generate code</button>
         </pe-coupons-suffix>
@@ -16,7 +16,7 @@
     <!-- DISCOUNT CODE END -->
 
     <!-- TYPES START  -->
-    <pe-coupons-form-group>
+    <pe-coupons-form-group formGroupName="type">
       <pe-coupons-label>Types</pe-coupons-label>
       <pe-coupons-form-field *ngFor="let item of types">
         <pe-coupons-radio formControlName="type" name="type" [value]="item.value">{{ item.label }}</pe-coupons-radio>
@@ -25,20 +25,22 @@
     <!-- TYPES END -->
 
     <!-- DISCOUNT VALUE START -->
-    <pe-coupons-form-group *ngIf="couponForm.get('type').value === 'percentage' || couponForm.get('type').value === 'fixed-amount'">
-      <pe-coupons-label>Discount value</pe-coupons-label>
-      <pe-coupons-form-field>
-        <pe-coupons-input type="text" placeholder="Enter value" formControlName="discountValue"></pe-coupons-input>
-        <pe-coupons-suffix>
-          <span *ngIf="couponForm.get('type').value === 'percentage'">Percentage (%)</span>
-          <span *ngIf="couponForm.get('type').value === 'fixed-amount'">Dollars ($)</span>
-        </pe-coupons-suffix>
-      </pe-coupons-form-field>
-    </pe-coupons-form-group>
+    <ng-container *ngIf="couponForm.value.type.type === 'PERCENTAGE' || couponForm.value.type.type === 'FIXED_AMOUNT'">
+      <pe-coupons-form-group formGroupName="type">
+        <pe-coupons-label>Discount value</pe-coupons-label>
+        <pe-coupons-form-field>
+          <pe-coupons-input type="text" placeholder="Enter value" formControlName="discountValue"></pe-coupons-input>
+          <pe-coupons-suffix>
+            <span *ngIf="couponForm.value.type.type === 'PERCENTAGE'">Percentage (%)</span>
+            <span *ngIf="couponForm.value.type.type === 'FIXED_AMOUNT'">Dollars ($)</span>
+          </pe-coupons-suffix>
+        </pe-coupons-form-field>
+      </pe-coupons-form-group>
+    </ng-container>
     <!-- DISCOUNT VALUE END -->
 
     <!-- COUNTRIES START -->
-    <pe-coupons-form-group 
+    <!-- <pe-coupons-form-group 
       *ngIf="couponForm.get('type').value === 'free-shipping'"
     >
       <pe-coupons-label>Countries</pe-coupons-label>
@@ -54,11 +56,11 @@
           (onRemove)="removeFromArray(couponForm.get('countries').value, i)"
         >{{ item }}</pe-coupons-list-item>
       </pe-coupons-list>
-    </pe-coupons-form-group>
+    </pe-coupons-form-group> -->
     <!-- COUNTRIES END -->
 
     <!-- SHIPPING RATES -->
-    <pe-coupons-form-group *ngIf="couponForm.get('type').value === 'free-shipping'">
+    <!-- <pe-coupons-form-group *ngIf="couponForm.get('type').value === 'free-shipping'">
       <pe-coupons-label>Shipping rates</pe-coupons-label>
       <pe-coupons-form-field>
         <pe-coupons-checkbox formControlName="excludeShippingRates">Exclude shipping rates over a certain amount</pe-coupons-checkbox>
@@ -69,11 +71,11 @@
           <span>Dollars ($)</span>
         </pe-coupons-suffix>
       </pe-coupons-form-field>
-    </pe-coupons-form-group>
+    </pe-coupons-form-group> -->
     <!-- SHIPPING RATES -->
 
     <!-- APPLIES TO START -->
-    <pe-coupons-form-group>
+    <pe-coupons-form-group formGroupName="type">
       <pe-coupons-label>Applies to</pe-coupons-label>
       <pe-coupons-form-field *ngFor="let item of appliesTo">
         <pe-coupons-radio formControlName="appliesTo" name="appliesTo" [value]="item.value">{{ item.label }}</pe-coupons-radio>
@@ -82,30 +84,56 @@
     <!-- APPLIES TO END -->
 
     <!-- ADD COLLECTIONS START -->
-    <pe-coupons-form-group *ngIf="couponForm.get('appliesTo').value === 'specific-collections'">
-      <pe-coupons-label>Add collections</pe-coupons-label>
-      <pe-coupons-form-field></pe-coupons-form-field>
-    </pe-coupons-form-group>
+    <ng-container *ngIf="couponForm.value.type.appliesTo === 'SPECIFIC_COLLECTIONS'">
+      <pe-coupons-form-group formGroupName="type">
+        <pe-coupons-label>Add collections</pe-coupons-label>
+        <pe-coupons-form-field>
+          <pe-coupons-autocomplete [items]="collections" (onSelected)="addToArray($event, couponForm.get('appliesToCollections').value)"></pe-coupons-autocomplete>
+          <pe-coupons-suffix>
+            <button>Browse</button>
+          </pe-coupons-suffix>
+        </pe-coupons-form-field>
+        <pe-coupons-list>
+          <pe-coupons-list-item 
+            *ngFor="let item of couponForm.get('appliesToCollections').value; let i = index"
+            (onRemove)="removeFromArray(couponForm.get('appliesToCollections').value, i)"
+          >{{ item }}</pe-coupons-list-item>
+        </pe-coupons-list>
+      </pe-coupons-form-group>
+    </ng-container>
     <!-- ADD COLLECTIONS END -->
 
     <!-- ADD PRODUCTS START -->
-    <pe-coupons-form-group *ngIf="couponForm.get('appliesTo').value === 'specific-products'">
-      <pe-coupons-label>Add products</pe-coupons-label>
-      <pe-coupons-form-field></pe-coupons-form-field>
-    </pe-coupons-form-group>
+    <ng-container *ngIf="couponForm.value.type.appliesTo === 'SPECIFIC_PRODUCTS'">
+      <pe-coupons-form-group formGroupName="type">
+        <pe-coupons-label>Add products</pe-coupons-label>
+        <pe-coupons-form-field>
+          <pe-coupons-autocomplete [items]="products" (onSelected)="addToArray($event, couponForm.get('appliesToProducts').value)"></pe-coupons-autocomplete>
+          <pe-coupons-suffix>
+            <button>Browse</button>
+          </pe-coupons-suffix>
+        </pe-coupons-form-field>
+        <pe-coupons-list>
+          <pe-coupons-list-item 
+            *ngFor="let item of couponForm.get('appliesToProducts').value; let i = index"
+            (onRemove)="removeFromArray(couponForm.get('appliesToProducts').value, i)"
+          >{{ item }}</pe-coupons-list-item>
+        </pe-coupons-list>
+      </pe-coupons-form-group>
+    </ng-container>
     <!-- ADD PRODUCTS END -->
 
     <!-- MINIMUM REQUIREMENTS START -->
-    <pe-coupons-form-group>
+    <!-- <pe-coupons-form-group>
       <pe-coupons-label>Minimum requirements</pe-coupons-label>
       <pe-coupons-form-field *ngFor="let item of minimumRequirements">
         <pe-coupons-radio formControlName="minimumRequirements" name="minimumRequirements" [value]="item.value">{{ item.label }}</pe-coupons-radio>
       </pe-coupons-form-field>
-    </pe-coupons-form-group>
+    </pe-coupons-form-group> -->
     <!-- MINIMUM REQUIREMENTS END -->
 
     <!-- MINIMUM PURCHASE AMOUNT START -->
-    <pe-coupons-form-group *ngIf="couponForm.get('minimumRequirements').value === 'minimum-purchase-amount'">
+    <!-- <pe-coupons-form-group *ngIf="couponForm.get('minimumRequirements').value === 'minimum-purchase-amount'">
       <pe-coupons-label>Minimum purchase amount</pe-coupons-label>
       <pe-coupons-form-field>
         <pe-coupons-input type="text" placeholder="Enter value" formControlName="minimumPurchaseAmout"></pe-coupons-input>
@@ -113,63 +141,65 @@
           <span>Dollars ($)</span>
         </pe-coupons-suffix>
       </pe-coupons-form-field>
-    </pe-coupons-form-group>
+    </pe-coupons-form-group> -->
     <!-- MINIMUM PURCASE AMOUNT END -->
 
     <!-- MINIMUM QUANTITY OF ITEMS START -->
-    <pe-coupons-form-group *ngIf="couponForm.get('minimumRequirements').value === 'minimum-quantity-of-items'">
+    <!-- <pe-coupons-form-group *ngIf="couponForm.get('minimumRequirements').value === 'minimum-quantity-of-items'">
       <pe-coupons-label>Minimum quantity of items</pe-coupons-label>
       <pe-coupons-form-field>
         <pe-coupons-input type="text" placeholder="Enter value" formControlName="minimumQuantityOfItems"></pe-coupons-input>
       </pe-coupons-form-field>
-    </pe-coupons-form-group>
+    </pe-coupons-form-group> -->
     <!-- MINIMUM QUANTITY OF ITEMS END -->
 
     <!-- CUSTOMER ELIGIBILITY START -->
-    <pe-coupons-form-group>
+    <!-- <pe-coupons-form-group>
       <pe-coupons-label>Customer eligibility</pe-coupons-label>
       <pe-coupons-form-field *ngFor="let item of customerEligibility">
         <pe-coupons-radio formControlName="customerEligibility" name="customerEligibility" [value]="item.value">{{ item.label }}</pe-coupons-radio>
       </pe-coupons-form-field>
-    </pe-coupons-form-group>
+    </pe-coupons-form-group> -->
     <!-- CUSTOMER ELIGIBILITY END -->
 
     <!-- ADD GROUPS OF CUSTOMER START -->
-    <pe-coupons-form-group *ngIf="couponForm.get('customerEligibility').value === 'specific-groups-of-customers'">
+    <!-- <pe-coupons-form-group *ngIf="couponForm.get('customerEligibility').value === 'specific-groups-of-customers'">
       <pe-coupons-label>Add groups of customers</pe-coupons-label>
       <pe-coupons-form-field></pe-coupons-form-field>
-    </pe-coupons-form-group>
+    </pe-coupons-form-group> -->
     <!-- ADD GROUPS OF CUSTOMER END -->
 
     <!-- ADD CUSTOMERS START -->
-    <pe-coupons-form-group *ngIf="couponForm.get('customerEligibility').value === 'specific-customers'">
+    <!-- <pe-coupons-form-group *ngIf="couponForm.get('customerEligibility').value === 'specific-customers'">
       <pe-coupons-label>Add customers</pe-coupons-label>
       <pe-coupons-form-field></pe-coupons-form-field>
-    </pe-coupons-form-group>
+    </pe-coupons-form-group> -->
     <!-- ADD CUSTOMER END -->
 
     <!-- USAGE LIMITS START -->
-    <pe-coupons-form-group>
+    <pe-coupons-form-group formGroupName="limits">
       <pe-coupons-label>Usage limits</pe-coupons-label>
 
       <pe-coupons-form-field>
-        <pe-coupons-checkbox formControlName="limitNumberOfTimes">Limit number of times this discount can be used in total</pe-coupons-checkbox>
+        <pe-coupons-checkbox formControlName="limitUsage">Limit number of times this discount can be used in total</pe-coupons-checkbox>
       </pe-coupons-form-field>
 
       <pe-coupons-form-field>
-        <pe-coupons-checkbox formControlName="limitToOneUse">Limit to one use per customer</pe-coupons-checkbox>
+        <pe-coupons-checkbox formControlName="limitOneCustomer">Limit to one use per customer</pe-coupons-checkbox>
       </pe-coupons-form-field>
 
     </pe-coupons-form-group>
     <!-- USAGE LIMITS END -->
 
     <!-- LIMIT NUMBER OF TIMES START -->
-    <pe-coupons-form-group *ngIf="couponForm.get('limitNumberOfTimes').value">
-      <pe-coupons-label>Limit number of times this discount can be used in total</pe-coupons-label>
-      <pe-coupons-form-field>
-        <pe-coupons-input type="text" placeholder="Enter value" formControlName="limitNumberOfTimesValue"></pe-coupons-input>
-      </pe-coupons-form-field>
-    </pe-coupons-form-group>
+    <ng-container *ngIf="couponForm.value.limits.limitUsage">
+      <pe-coupons-form-group formGroupName="limits">
+        <pe-coupons-label>Limit number of times this discount can be used in total</pe-coupons-label>
+        <pe-coupons-form-field>
+          <pe-coupons-input type="text" placeholder="Enter value" formControlName="limitUsageAmount"></pe-coupons-input>
+        </pe-coupons-form-field>
+      </pe-coupons-form-group>
+    </ng-container>
     <!-- LIMIT NUMBER OF TIMES END -->
 
     <!-- ACTIVE DATES START -->
@@ -187,16 +217,6 @@
       </pe-coupons-form-field>
 
       <pe-coupons-form-field>
-        <pe-coupons-prefix>
-          <pe-coupons-icon-time></pe-coupons-icon-time>
-        </pe-coupons-prefix>
-        <pe-coupons-input type="text" placeholder="11:10" formControlName="startTime"></pe-coupons-input>
-        <pe-coupons-suffix>
-          <span>Set start time</span>
-        </pe-coupons-suffix>
-      </pe-coupons-form-field>
-
-      <pe-coupons-form-field>
         <pe-coupons-checkbox formControlName="setEndDate">Set end date</pe-coupons-checkbox>
       </pe-coupons-form-field>
 
@@ -210,21 +230,11 @@
         </pe-coupons-suffix>
       </pe-coupons-form-field>
 
-      <pe-coupons-form-field *ngIf="couponForm.get('setEndDate').value">
-        <pe-coupons-prefix>
-          <pe-coupons-icon-time></pe-coupons-icon-time>
-        </pe-coupons-prefix>
-        <pe-coupons-input type="text" placeholder="11:10" formControlName="endTime"></pe-coupons-input>
-        <pe-coupons-suffix>
-          <span>Set end time</span>
-        </pe-coupons-suffix>
-      </pe-coupons-form-field>
-
     </pe-coupons-form-group>
     <!-- ACTIVE DATES END -->
 
     <!-- CHANNELS START -->
-    <pe-coupons-form-group>
+    <!-- <pe-coupons-form-group>
       <pe-coupons-label>Channels</pe-coupons-label>
 
       <pe-coupons-form-field>
@@ -257,7 +267,7 @@
         </pe-coupons-suffix>
       </pe-coupons-form-field>
 
-    </pe-coupons-form-group>
+    </pe-coupons-form-group> -->
     <!-- CHANNELS END -->
 
   </form>

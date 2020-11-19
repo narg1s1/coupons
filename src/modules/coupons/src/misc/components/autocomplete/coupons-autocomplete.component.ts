@@ -39,9 +39,10 @@ export class PeCouponsAutocompleteComponent implements OnInit {
   }
 
   private filter(value: string): string[] {
+    console.log(value);
     const filterValue: string = this.normalizeValue(value);
 
-    return this.items.filter(item => this.normalizeValue(item.value).includes(filterValue));
+    return this.items.filter(item => this.normalizeValue(item.title).includes(filterValue));
   }
 
   private normalizeValue(value: string): string {

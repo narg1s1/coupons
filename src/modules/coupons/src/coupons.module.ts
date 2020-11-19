@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-
 import { PebViewerModule } from '@pe/builder-viewer';
 import { PeDataGridModule } from '@pe/data-grid';
 
@@ -17,16 +15,16 @@ import { PeCouponsIconPointOfSaleComponent } from './misc/icons/point-of-sale';
 import { PeCouponsIconShopComponent } from './misc/icons/shop';
 import { PeCouponsIconTimeComponent } from './misc/icons/time';
 
-import { PeCouponsAutocompleteModule } from './routes/edit/components/autocomplete/coupons-autocomplete.module';
-import { PeCouponsCheckboxModule } from './routes/edit/components/checkbox/coupons-checkbox.module';
-import { PeCouponsFormFieldModule } from './routes/edit/components/form-field/coupons-form-field.module';
-import { PeCouponsFormGroupModule } from './routes/edit/components/form-group/coupons-form-group.module';
-import { PeCouponsInputModule } from './routes/edit/components/input/coupons-input.module';
-import { PeCouponsListModule } from './routes/edit/components/list/coupons-list.module';
-import { PeCouponsRadioModule } from './routes/edit/components/radio/coupons-radio.module';
-import { PeCouponsSlideToggleModule } from './routes/edit/components/slide-toggle/coupons-slide-toggle.module';
+import { PeCouponsAutocompleteModule } from './misc/components/autocomplete/coupons-autocomplete.module';
+import { PeCouponsCheckboxModule } from './misc/components/checkbox/coupons-checkbox.module';
+import { PeCouponsFormFieldModule } from './misc/components/form-field/coupons-form-field.module';
+import { PeCouponsFormGroupModule } from './misc/components/form-group/coupons-form-group.module';
+import { PeCouponsInputModule } from './misc/components/input/coupons-input.module';
+import { PeCouponsListModule } from './misc/components/list/coupons-list.module';
+import { PeCouponsRadioModule } from './misc/components/radio/coupons-radio.module';
+import { PeCouponsSlideToggleModule } from './misc/components/slide-toggle/coupons-slide-toggle.module';
 
-import { PeCouponsComponent } from './routes/_root/coupons-root.component';
+import { PeCouponsComponent } from './routes/root/coupons-root.component';
 import { PeCouponsEditComponent } from './routes/edit/coupons-edit.component';
 import { PeCouponsGridComponent } from './routes/grid/coupons-grid.component';
 
@@ -75,8 +73,6 @@ const icons = [
     PeCouponsGridComponent,
     PeCouponsEditComponent
   ],
-  providers: [
-    // ShopResolver,
-  ],
+  providers: [],
 })
 export class PeCouponsModule {}
