@@ -3,8 +3,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PortalModule as CdkPortalModule } from '@angular/cdk/portal';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -20,7 +18,7 @@ import { SandboxEnv } from './sandbox.env';
 import { SandboxMessageBus } from './shared/services/message-bus.service';
 import { PeEnvInitializer, PeEnvProvider } from './env.provider';
 import { PeCouponsApi } from '../../../modules/coupons/src/services/abstract.coupons.api';
-import { ActualPeCouponsApi, PE_COUPONS_API_PATH, PE_PRODUCTS_API_PATH } from '../../../modules/coupons/src/services/actual.coupons.api';
+import { ActualPeCouponsApi, PE_CONTACTS_API_PATH, PE_COUPONS_API_PATH, PE_PRODUCTS_API_PATH } from '../../../modules/coupons/src/services/actual.coupons.api';
 import { TokenInterceptor } from '../dev/token.interceptor';
 import { SandboxMockCouponsBackend } from '../dev/coupons.api-local';
 
@@ -57,6 +55,10 @@ import { SandboxMockCouponsBackend } from '../dev/coupons.api-local';
       provide: PE_PRODUCTS_API_PATH,
       useValue: 'https://products-backend.test.devpayever.com',
       // useValue: 'https://products-backend.staging.devpayever.com',
+    },
+    {
+      provide: PE_CONTACTS_API_PATH,
+      useValue: 'https://contacts-backend.test.devpayever.com',
     },
     {
       provide: PEB_ENTITY_NAME,

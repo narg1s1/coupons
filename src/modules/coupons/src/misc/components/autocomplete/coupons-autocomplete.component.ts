@@ -31,16 +31,15 @@ export class PeCouponsAutocompleteComponent implements OnInit {
     );
   }
 
-  optionSelected(value: string): void {
+  optionSelected(item: any): void {
     this.elementRef.nativeElement.blur();
     this.formControl.patchValue('');
 
-    this.onSelected.emit(value);
+    this.onSelected.emit(item);
   }
 
-  private filter(value: string): string[] {
-    console.log(value);
-    const filterValue: string = this.normalizeValue(value);
+  private filter(value: string | any): string[] {
+    const filterValue: string = this.normalizeValue(value.title ?? value);
 
     return this.items.filter(item => this.normalizeValue(item.title).includes(filterValue));
   }

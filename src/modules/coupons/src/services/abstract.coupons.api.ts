@@ -21,4 +21,8 @@ export abstract class PeCouponsApi {
   abstract getProducts(): Observable<any>;
 
   abstract getCategories(): Observable<any>;
+
+  abstract getChannel(): Observable<any>;
+
+  abstract getContacts(): Observable<any>;
 }

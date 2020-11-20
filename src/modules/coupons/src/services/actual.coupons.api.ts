@@ -3,13 +3,13 @@ import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { PebEnvService } from '@pe/builder-core';
 
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { PeCoupon } from '../misc/interfaces/coupon.model';
 
 import { PeCouponsApi } from './abstract.coupons.api';
 
 export const PE_COUPONS_API_PATH = new InjectionToken<string>('PE_COUPONS_API_PATH');
 export const PE_PRODUCTS_API_PATH = new InjectionToken<string>('PE_PRODUCTS_API_PATH');
+export const PE_CONTACTS_API_PATH = new InjectionToken<string>('PE_CONTACTS_API_PATH');
 
 @Injectable()
 export class ActualPeCouponsApi extends PeCouponsApi {
@@ -17,8 +17,9 @@ export class ActualPeCouponsApi extends PeCouponsApi {
   constructor(
     @Inject(PE_COUPONS_API_PATH) private couponsApiPath: string,
     @Inject(PE_PRODUCTS_API_PATH) private productsApiPath: string,
+    @Inject(PE_CONTACTS_API_PATH) private contactsApiPath: string,
     private http: HttpClient,
-    // private envService: PebEnvService,
+    private pebEnvService: PebEnvService,
   ) {
     super();
   }
@@ -48,43 +49,81 @@ export class ActualPeCouponsApi extends PeCouponsApi {
   }
 
   getProducts() {
-    return this.http
-      .post(`${this.productsApiPath}/products`, {
-        query: `{
-          getProducts(
-            businessUuid: "3e71661b-4f09-4647-bdb6-0f389e9e7024",
-            paginationLimit: 100,
-            pageNumber: 1,
-            orderBy: "price",
-            orderDirection: "desc",
-            search: ""
-            useNewFiltration: true,
-          ) {
-            products {
-              imagesUrl
-              _id
-              title
-              description
-              price
-              salePrice
-              currency
-            }
+    return this.http.post(`${this.productsApiPath}/products`, {
+      query: `{
+        getProducts(
+          businessUuid: "${this.pebEnvService.businessId}",
+          paginationLimit: 100,
+          pageNumber: 1,
+          orderBy: "price",
+          orderDirection: "desc",
+          search: ""
+          useNewFiltration: true,
+        ) {
+          products {
+            imagesUrl
+            _id
+            title
+            description
+            price
+            salePrice
+            currency
           }
         }
-        `,
-      })
+      }`,
+    })
   }
 
   getCategories() {
     return this.http.post(`${this.productsApiPath}/products`, {
       query: `{
         getCategories (
-          businessUuid: "3e71661b-4f09-4647-bdb6-0f389e9e7024",
+          businessUuid: "${this.pebEnvService.businessId}",
         ) {
           id
           title
         }
       }`,
     });
+  }
+
+  getChannel() {
+    return this.http.get(`https://channels-backend.test.devpayever.com/api/channel`);
+  }
+
+  getContacts() {
+    return this.http.post(`${this.contactsApiPath}/graphql`, { 
+      query: `{
+        contacts(
+          orderBy: CREATED_AT_DESC,
+          first: 100,
+          offset: 0,
+          filter: { and: [
+            {businessId: {equalTo: "${this.pebEnvService.businessId}"}, }
+          ]},
+        ) {
+          nodes {
+            id
+            businessId
+            type
+            contactFields {
+              nodes {
+                id
+                value
+                fieldId
+                field {
+                  id
+                  name
+                }
+              }
+            }
+          }
+          totalCount
+          pageInfo {
+            hasNextPage
+          }
+        }
+      }`
+    })
   }
 }

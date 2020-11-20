@@ -21,13 +21,19 @@ export enum PeCouponTypeFreeShippingTypeEnum {
   SelectedCountries = 'SELECTED_COUNTRIES',
 }
 
-export enum PeCouponTypeBuyXGetYBuyRequirementsEnum {
+export enum PeCouponTypeBuyXGetYBuyRequirementsTypeEnum {
   MinimumQuantityOfItems = 'MINIMUM_QUANTITY_OF_ITEMS',
   MinimumPurchaseAmount = 'MINIMUM_PURCHASE_AMOUNT',
 }
+
 export enum PeCouponTypeBuyXGetYGetDiscountTypesEnum {
   Percentage = 'PERCENTAGE',
   Free = 'FREE',
+}
+
+export enum PeCouponTypeBuyXGetYItemTypeEnum {
+  SpecificCollections = 'SPECIFIC_COLLECTIONS',
+  SpecificProducts = 'SPECIFIC_PRODUCTS',
 }
 
 export enum PeCouponTypeMinimumRequirementsEnum {
@@ -57,11 +63,20 @@ export interface PeCouponProduct {
 }
 
 export interface PeCouponType {
-  type: PeCouponTypeEnum,
-  appliesToCollections: any, //
-  appliesToProducts: any, // 
-  discountValue: 5, 
-  appliesTo: PeCouponTypeAppliedToEnum | string;
+  type: PeCouponTypeEnum;
+  discountValue?: number;
+  freeShippingType?: PeCouponTypeFreeShippingTypeEnum | string;
+  freeShippingToCountries?: string[];
+  appliesToCollections?: string[]; //
+  appliesToProducts?: string[]; //
+  appliesTo?: PeCouponTypeAppliedToEnum | string;
+  buyRequirementType: PeCouponTypeBuyXGetYBuyRequirementsTypeEnum | string;
+  buyValue: number;
+  buyType: PeCouponTypeBuyXGetYItemTypeEnum | string;
+  buyItems: string[];
+  getType: PeCouponTypeBuyXGetYItemTypeEnum | string
+  getItems: string[];
+  getQuantity: number;
 }
 
 export interface PeCoupon {
@@ -71,7 +86,10 @@ export interface PeCoupon {
   channelSetsIds: string[];
   code: string;
   contacts: PeCouponContact[];
-  createdAt?: Date,
+  createdAt?: Date;
+  minimumRequirements: PeCouponTypeMinimumRequirementsEnum | string;
+  minimumRequirementsValue: number;
+  customerEligibility: PeCouponTypeCustomerEligibilityEnum | string;
   customerEligibilityCustomerGroups: string[];
   customerEligibilitySpecificCustomers: string[];
   description: string;
