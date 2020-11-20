@@ -6,6 +6,7 @@
     "start": "ng serve",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "build": "npm run build:coupons",
     "build:coupons": "ng build libs.coupons --prod",
     "serve:coupons": "ng build libs.coupons --watch"
   },
