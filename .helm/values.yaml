@@ -5,7 +5,7 @@ replicas:
   http: 1
 
 image:
-  nginx: registry.devpayever.com/frontend/invoice
+  nginx: registry.devpayever.com/frontend/coupons
   pullSecretName: regsecret
 
 service:
