@@ -3,13 +3,14 @@
   "version": "0.0.1",
   "description": "Сoupons",
   "repository": "https://gitlab.devpayever.com/frontend/coupons",
+  "dependencies": {
+    "tslib": "^1.10.0"
+  },
   "peerDependencies": {
     "@angular/common": "^9.1.4",
     "@angular/core": "^9.1.4",
-    "tslib": "^1.10.0",
-    "@angular/material": "latest",
-    "@angular/cdk": "latest",
-
+    "@angular/material": "^9.2.4",
+    "@angular/cdk": "^9.2.4",
     "@pe/data-grid": "10.0.43"
   }
 }
