@@ -91,6 +91,29 @@ export class ActualPeCouponsApi extends PeCouponsApi {
     return this.http.get(`https://channels-backend.test.devpayever.com/api/channel`);
   }
 
+  getContactGroups() {
+    return this.http.post(`${this.contactsApiPath}/graphql`, { 
+      query: `{
+        groups(
+          first: 100,
+          offset: 0,
+          filter: { and: [
+            {businessId: {equalTo: "${this.pebEnvService.businessId}"}, }
+          ]},
+        ) {
+          nodes {
+            id
+            name
+          }
+          totalCount
+          pageInfo {
+            hasNextPage
+          }
+        }
+      }`
+    })
+  }
+
   getContacts() {
     return this.http.post(`${this.contactsApiPath}/graphql`, { 
       query: `{
@@ -104,15 +127,12 @@ export class ActualPeCouponsApi extends PeCouponsApi {
         ) {
           nodes {
             id
-            businessId
             type
             contactFields {
               nodes {
                 id
                 value
-                fieldId
                 field {
-                  id
                   name
                 }
               }

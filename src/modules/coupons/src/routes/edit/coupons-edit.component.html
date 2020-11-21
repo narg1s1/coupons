@@ -32,10 +32,8 @@
           <pe-coupons-radio formControlName="buyRequirementType" name="buyRequirementType" [value]="item.value">{{ item.label }}</pe-coupons-radio>
         </pe-coupons-form-field>
         <pe-coupons-form-field>
-          <pe-coupons-input type="text" placeholder="Enter value" style="margin-right: 12px; max-width: 325px; width: 69%;"></pe-coupons-input>
-          <select formControlName="buyType">
-            <option *ngFor="let type of buyOrGetType" [value]="type.value">{{ type.label }}</option>
-          </select>
+          <pe-coupons-input formControlName="buyValue" type="text" placeholder="Enter value" style="margin-right: 12px; max-width: 325px; width: 69%;"></pe-coupons-input>
+          <pe-coupons-select formControlName="buyType" [options]="buyOrGetType"></pe-coupons-select>
         </pe-coupons-form-field>
         <ng-container 
           *ngIf="couponForm.value.type.buyType === 'SPECIFIC_PRODUCTS'"
@@ -56,10 +54,8 @@
       <pe-coupons-form-group formGroupName="type">
         <pe-coupons-label>Customer gets</pe-coupons-label>
         <pe-coupons-form-field>
-          <pe-coupons-input type="text" placeholder="Enter value" style="margin-right: 12px; max-width: 325px; width: 69%;"></pe-coupons-input>
-          <select formControlName="getType">
-            <option *ngFor="let type of buyOrGetType" [value]="type.value">{{ type.label }}</option>
-          </select>
+          <pe-coupons-input formControlName="getQuantity" type="text" placeholder="Enter value" style="margin-right: 12px; max-width: 325px; width: 69%;"></pe-coupons-input>
+          <pe-coupons-select formControlName="getType" [options]="buyOrGetType"></pe-coupons-select>
         </pe-coupons-form-field>
         <ng-container 
           *ngIf="couponForm.value.type.getType === 'SPECIFIC_PRODUCTS'"
@@ -137,7 +133,7 @@
           <pe-coupons-list-item 
             *ngFor="let countryId of couponForm.value.type.freeShippingToCountries; let i = index"
             (onRemove)="removeFromArray(couponForm.value.type.freeShippingToCountries, i)"
-          >{{ getCountry(countryId).title }}</pe-coupons-list-item>
+          >{{ getFromArray(countries, countryId)?.title }}</pe-coupons-list-item>
         </pe-coupons-list>
       </pe-coupons-form-group>
     </ng-container>
@@ -173,7 +169,10 @@
     <ng-container *ngIf="couponForm.value.appliesTo === 'SPECIFIC_COLLECTIONS'">
       <pe-coupons-form-group formGroupName="type">
         <pe-coupons-label>Add collections</pe-coupons-label>
-        <ng-container *ngTemplateOutlet="searchCollections"></ng-container>
+        <ng-container 
+          [ngTemplateOutlet]="searchCollections"
+          [ngTemplateOutletContext]="{ control: couponForm.get('appliesToCollections') }"
+        ></ng-container>
       </pe-coupons-form-group>
     </ng-container>
     <!-- ADD COLLECTIONS END -->
@@ -182,7 +181,10 @@
     <ng-container *ngIf="couponForm.value.appliesTo === 'SPECIFIC_PRODUCTS'">
       <pe-coupons-form-group formGroupName="type">
         <pe-coupons-label>Add products</pe-coupons-label>
-        <ng-container *ngTemplateOutlet="searchProducts"></ng-container>
+        <ng-container
+          [ngTemplateOutlet]="searchProducts" 
+          [ngTemplateOutletContext]="{ control: couponForm.get('appliesToProducts') }"
+        ></ng-container>
       </pe-coupons-form-group>
     </ng-container>
     <!-- ADD PRODUCTS END -->
@@ -231,14 +233,44 @@
     <!-- ADD GROUPS OF CUSTOMER START -->
     <pe-coupons-form-group *ngIf="couponForm.value.customerEligibility === 'SPECIFIC_GROUPS_OF_CUSTOMERS'">
       <pe-coupons-label>Add groups of customers</pe-coupons-label>
-      <pe-coupons-form-field></pe-coupons-form-field>
+      <pe-coupons-form-field>
+        <pe-coupons-autocomplete
+          placeholder="Search groups of customers" 
+          [items]="groupsOfCustomers"
+          (onSelected)="addToArray($event, couponForm.value.customerEligibilityCustomerGroups)"
+        ></pe-coupons-autocomplete>
+        <pe-coupons-suffix>
+          <button>Add Group</button>
+        </pe-coupons-suffix>
+      </pe-coupons-form-field>
+      <pe-coupons-list>
+        <pe-coupons-list-item 
+          *ngFor="let groupId of couponForm.value.customerEligibilityCustomerGroups; let i = index"
+          (onRemove)="removeFromArray(couponForm.value.customerEligibilityCustomerGroups, i)"
+        >{{ getFromArray(groupsOfCustomers, groupId)?.title }}</pe-coupons-list-item>
+      </pe-coupons-list>
     </pe-coupons-form-group>
     <!-- ADD GROUPS OF CUSTOMER END -->
 
     <!-- ADD CUSTOMERS START -->
     <pe-coupons-form-group *ngIf="couponForm.value.customerEligibility === 'SPECIFIC_CUSTOMERS'">
       <pe-coupons-label>Add customers</pe-coupons-label>
-      <pe-coupons-form-field></pe-coupons-form-field>
+      <pe-coupons-form-field>
+        <pe-coupons-autocomplete 
+          placeholder="Search customers" 
+          [items]="customers" 
+          (onSelected)="addToArray($event, couponForm.value.customerEligibilitySpecificCustomers)">
+        </pe-coupons-autocomplete>
+        <pe-coupons-suffix>
+          <button>Add Customer</button>
+        </pe-coupons-suffix>
+      </pe-coupons-form-field>
+      <pe-coupons-list>
+        <pe-coupons-list-item 
+          *ngFor="let customerId of couponForm.value.customerEligibilitySpecificCustomers; let i = index"
+          (onRemove)="removeFromArray(couponForm.value.customerEligibilitySpecificCustomers, i)"
+        >{{ getFromArray(customers, customerId)?.title }}</pe-coupons-list-item>
+      </pe-coupons-list>
     </pe-coupons-form-group>
     <!-- ADD CUSTOMER END -->
 
@@ -276,21 +308,21 @@
         <pe-coupons-prefix>
           <pe-coupons-icon-date></pe-coupons-icon-date>
         </pe-coupons-prefix>
-        <pe-coupons-input type="text" placeholder="2020-11-10" formControlName="startDate"></pe-coupons-input>
+        <pe-coupons-input type="text" placeholder="{{ startDatePlaceholder | date: 'yyyy-MM-dd'}}" formControlName="startDate"></pe-coupons-input>
         <pe-coupons-suffix>
           <span>Set start date</span>
         </pe-coupons-suffix>
       </pe-coupons-form-field>
 
       <pe-coupons-form-field>
-        <pe-coupons-checkbox formControlName="setEndDate">Set end date</pe-coupons-checkbox>
+        <pe-coupons-checkbox formControlName="setEndDate" [value]="true">Set end date</pe-coupons-checkbox>
       </pe-coupons-form-field>
 
       <pe-coupons-form-field *ngIf="couponForm.get('setEndDate').value">
         <pe-coupons-prefix>
           <pe-coupons-icon-date></pe-coupons-icon-date>
         </pe-coupons-prefix>
-        <pe-coupons-input type="text" placeholder="2020-11-10" formControlName="endDate"></pe-coupons-input>
+        <pe-coupons-input type="text" placeholder="{{ endDatePlaceholder | date: 'yyyy-MM-dd'}}" formControlName="endDate"></pe-coupons-input>
         <pe-coupons-suffix>
           <span>Set end date</span>
         </pe-coupons-suffix>
@@ -308,26 +340,6 @@
           <pe-coupons-icon-point-of-sale></pe-coupons-icon-point-of-sale>
         </pe-coupons-prefix>
         <span style="padding: 9px 0;">Point of Sale</span>
-        <pe-coupons-suffix>
-          <pe-coupons-slide-toggle></pe-coupons-slide-toggle>
-        </pe-coupons-suffix>
-      </pe-coupons-form-field>
-
-      <pe-coupons-form-field>
-        <pe-coupons-prefix>
-          <pe-coupons-icon-shop></pe-coupons-icon-shop>
-        </pe-coupons-prefix>
-        <span style="padding: 9px 0;">Shop</span>
-        <pe-coupons-suffix>
-          <pe-coupons-slide-toggle></pe-coupons-slide-toggle>
-        </pe-coupons-suffix>
-      </pe-coupons-form-field>
-
-      <pe-coupons-form-field>
-        <pe-coupons-prefix>
-          <pe-coupons-icon-magento></pe-coupons-icon-magento>
-        </pe-coupons-prefix>
-        <span style="padding: 9px 0;">Magento</span>
         <pe-coupons-suffix>
           <pe-coupons-slide-toggle></pe-coupons-slide-toggle>
         </pe-coupons-suffix>
@@ -355,8 +367,8 @@
       *ngFor="let productId of control.value; let i = index"
       (onRemove)="removeFromArray(control.value, i)"
     >
-      <img [src]="getProduct(productId).imagesUrl[0]" alt="" width="38" height="38" style="object-fit: cover; margin-right: -9px 12px -9px 0; border-radius: 8px;">
-      {{ getProduct(productId).title }}
+      <img [src]="getFromArray(products, productId).imagesUrl[0]" alt="" width="38" height="38" style="object-fit: cover; margin: -9px 12px -9px 0; border-radius: 8px;">
+      {{ getFromArray(products, productId)?.title }}
     </pe-coupons-list-item>
   </pe-coupons-list>
 </ng-template>
@@ -376,6 +388,6 @@
     <pe-coupons-list-item 
       *ngFor="let collectionId of control.value; let i = index"
       (onRemove)="removeFromArray(control.value, i)"
-    >{{ getCollection(collectionId).title }}</pe-coupons-list-item>
+    >{{ getFromArray(collections, collectionId)?.title }}</pe-coupons-list-item>
   </pe-coupons-list>
 </ng-template>

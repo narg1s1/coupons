@@ -34,6 +34,9 @@ export class PeCouponsEditComponent implements OnInit {
   countries = [];
   products = [];
   collections = [];
+  customers = [];
+  groupsOfCustomers = [];
+  channels = [];
 
   types = [
     { label: 'Percentage', value: PeCouponTypeEnum.Percentage },
@@ -81,51 +84,41 @@ export class PeCouponsEditComponent implements OnInit {
   ];
 
   couponForm: FormGroup = this.formBuilder.group({
-    appliesTo: [],
+    appliesTo: [PeCouponTypeAppliedToEnum.AllPpoducts],
     appliesToProducts: [[]],
     appliesToCollections: [[]],
-    // businessId: [],
-    // channelSetsIds: [],
     code: [],
-    // contacts: [],
-    // createdAt: [],
-    minimumRequirements: [],
+    minimumRequirements: [PeCouponTypeMinimumRequirementsEnum.None],
     minimumRequirementsValue: [],
-    customerEligibility: [],
-    сustomerEligibilityCustomerGroups: [[]],
+    customerEligibility: [PeCouponTypeCustomerEligibilityEnum.Everyone],
+    customerEligibilityCustomerGroups: [[]],
     customerEligibilitySpecificCustomers: [[]],
-    // description: [],
     endDate: [],
-    // isAutomaticDiscount: [],
     limits: this.formBuilder.group({
       limitOneCustomer: [],
       limitUsage: [],
       limitUsageAmount: [],
     }),
-    // name: [],
-    // products: [],
     startDate: [],
-    // status: [],
     type: this.formBuilder.group({
-      type: [],
+      type: [PeCouponTypeEnum.Percentage],
       discountValue: [],
-      // appliesToCollections: [[]], //
-      // appliesToProducts: [[]], //
       freeShippingType: [],
       freeShippingToCountries: [[]],
       buyRequirementType: [],
       buyValue: [],
-      buyType: [],
+      buyType: [PeCouponTypeBuyXGetYItemTypeEnum.SpecificCollections],
       buyItems: [[]],
-      getType: [],
+      getType: [PeCouponTypeBuyXGetYItemTypeEnum.SpecificCollections],
       getItems: [[]],
       getQuantity: [],
       getDiscountType: [],
     }),
-    // updateAt: [],
-
     setEndDate: [],    
   });
+
+  startDatePlaceholder = new Date();
+  endDatePlaceholder = new Date();
 
   constructor(
     private apiService: PeCouponsApi,
@@ -134,33 +127,24 @@ export class PeCouponsEditComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
+    this.endDatePlaceholder.setDate(this.startDatePlaceholder.getDate() + 1);
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {   
     const couponId = this.activatedRoute.snapshot.params.couponId;
 
-    this.apiService.getCouponById(couponId).pipe(
-      tap((coupon: PeCoupon) => {
-        this.coupon = coupon;
-        this.couponForm.patchValue(coupon);
-        console.log(coupon);
-        this.couponForm.controls.setEndDate.patchValue(coupon.endDate ? true : false)
-        this.changeDetectorRef.markForCheck();
-      }),
-      takeUntil(this.destroyed$),
-    ).subscribe();
+    if (couponId !== 'add') this.getCoupon(couponId);
 
-    this.couponForm.valueChanges.subscribe(change => console.log(change));
-
-    // this.couponForm.get('type').valueChanges.subscribe(() => {
-    //   this.couponForm.get('discountValue').patchValue(null, { emitEvent: false });
-    // });
+    this.couponForm.valueChanges.subscribe(changes => console.log(changes));
 
     this.getChannel();
     this.getCollections();
+    this.getContactGroups();
     this.getContacts();
     this.getCountries();
     this.getProducts();
+
+    this.formChanges();
   }
 
   ngOnDestroy() {
@@ -186,14 +170,39 @@ export class PeCouponsEditComponent implements OnInit {
     })
   }
 
-  getCountry(countryId: string) {
-    return this.countries.find(country => country.id === countryId);
+  getCoupon(couponId: string) {
+    this.apiService.getCouponById(couponId).pipe(
+      tap((coupon: PeCoupon) => {
+        this.coupon = coupon;
+        this.couponForm.patchValue(coupon);
+        this.couponForm.get('setEndDate').patchValue(coupon.endDate ? true : false);
+        this.changeDetectorRef.markForCheck();
+      }),
+      takeUntil(this.destroyed$),
+    ).subscribe();
+  }
+
+  getContactGroups() {
+    this.apiService.getContactGroups().pipe(
+      map(request => request.data.groups.nodes.map(group => {
+        return { id: group.id, title: group.name } 
+      })),
+      tap(groupsOfCustomers => this.groupsOfCustomers = groupsOfCustomers),
+      takeUntil(this.destroyed$)
+    ).subscribe();
   }
 
   getContacts() {
     this.apiService.getContacts().pipe(
-      // map(request => request.data.getProducts.products.filter(product => !!product)),
-      tap(contacts => console.log(contacts)),
+      map(request => {
+        return request.data.contacts.nodes.map(contact => {
+          const customer = { id: contact.id, title: null };
+          contact.contactFields.nodes.map(node => customer[node.field.name] = node.value);
+          customer.title = customer['email'] ?? customer['mobilePhone'];
+          return customer;
+        })
+      }),
+      tap(customers => this.customers = customers),
       takeUntil(this.destroyed$)
     ).subscribe();
   }
@@ -206,11 +215,6 @@ export class PeCouponsEditComponent implements OnInit {
     ).subscribe();
   }
 
-  getProduct(productId: string) {
-    console.log(productId);
-    return this.products.find(product => product._id === productId);
-  }
-
   getCollections() {
     this.apiService.getCategories().pipe(
       map(request => request.data.getCategories.filter(collection => !!collection)),
@@ -219,17 +223,34 @@ export class PeCouponsEditComponent implements OnInit {
     ).subscribe();
   }
 
-  getCollection(collectionId: string) {
-    console.log(collectionId);
-    return this.collections.find(collection => collection.id === collectionId);
+  formChanges() {
+    const type = this.couponForm.get('type');
+
+    type.get('buyType').valueChanges.pipe(
+      tap(changes => {
+        if (changes != type.value.buyType) type.get('buyItems').patchValue([], { emitEvent: false });
+      }),
+      takeUntil(this.destroyed$)
+    ).subscribe();
+
+    type.get('getType').valueChanges.pipe(
+      tap(changes => {
+        if (changes != type.value.getType) type.get('getItems').patchValue([], { emitEvent: false });
+      }),
+      takeUntil(this.destroyed$)
+    ).subscribe();
   }
 
   addToArray(element: any, array: any): void {
-    const elementId = element?.id || element?._id;
+    const elementId = element?.id ?? element?._id;
 
-    if (!array.some(element => element.id === elementId || element._id === elementId)) {
+    if (!array.some(element => element === elementId || element === elementId)) {
       array.push(elementId);
     };
+  }
+
+  getFromArray(array: any, id: string) {
+    return array.find(element => element.id === id || element._id === id);
   }
 
   removeFromArray(array: any, index: number): void {

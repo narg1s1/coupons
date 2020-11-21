@@ -22,6 +22,7 @@ import { PeCouponsFormGroupModule } from './misc/components/form-group/coupons-f
 import { PeCouponsInputModule } from './misc/components/input/coupons-input.module';
 import { PeCouponsListModule } from './misc/components/list/coupons-list.module';
 import { PeCouponsRadioModule } from './misc/components/radio/coupons-radio.module';
+import { PeCouponsSelectModule } from './misc/components/select/coupons-select.module';
 import { PeCouponsSlideToggleModule } from './misc/components/slide-toggle/coupons-slide-toggle.module';
 
 import { PeCouponsComponent } from './routes/root/coupons-root.component';
@@ -55,6 +56,7 @@ const icons = [
     PeCouponsFormFieldModule,
     PeCouponsFormGroupModule,
     PeCouponsRadioModule,
+    PeCouponsSelectModule,
     PeCouponsInputModule,
     PeCouponsListModule,
     PeCouponsSlideToggleModule,
