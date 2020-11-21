@@ -1,4 +1,4 @@
-FROM node:8.11.3 as builder
+FROM node:10.23.0 as builder
 
 COPY . /payever
 RUN echo 'machine gitlab.devpayever.com login deploybot password tVUeMCwr3SUWod4UGxDD' > ~/.netrc

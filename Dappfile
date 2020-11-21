@@ -1,6 +1,6 @@
 dimg_group do
   artifact do
-     docker.from 'node:8.11.3'
+     docker.from 'node:10.23.0'
 
      git do
        add '/' do
