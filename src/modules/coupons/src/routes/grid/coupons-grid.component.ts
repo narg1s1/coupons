@@ -112,7 +112,7 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
     {
       label: 'New Coupon',
       callback: () => {
-        this.router.navigate(['/coupons/add']);
+        this.router.navigate(['../coupons/add']);
       },
     }
   ];

@@ -39,6 +39,11 @@
       cursor: pointer;
       color: #0091df;
       padding: 0;
+
+      &:disabled {
+        opacity: .5;
+        cursor: default;
+      }
     }
 
     span {

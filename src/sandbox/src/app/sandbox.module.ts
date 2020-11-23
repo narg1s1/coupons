@@ -11,6 +11,7 @@ import {
   PebEnvService,
   PEB_ENTITY_NAME,
 } from '@pe/builder-core';
+import { AuthModule } from '@pe/auth';
 
 import { SandboxRootComponent } from './root/root.component';
 import { SandboxRouting } from './sandbox.routing';
@@ -24,6 +25,8 @@ import { SandboxMockCouponsBackend } from '../dev/coupons.api-local';
 
 @NgModule({
   imports: [
+    AuthModule,
+    AuthModule.forRoot(),
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,

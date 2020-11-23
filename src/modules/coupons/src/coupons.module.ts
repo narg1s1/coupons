@@ -29,6 +29,9 @@ import { PeCouponsComponent } from './routes/root/coupons-root.component';
 import { PeCouponsEditComponent } from './routes/edit/coupons-edit.component';
 import { PeCouponsGridComponent } from './routes/grid/coupons-grid.component';
 
+import { PeCouponsApi } from './services/abstract.coupons.api';
+import { ActualPeCouponsApi } from './services/actual.coupons.api';
+
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
 

@@ -1,5 +1,12 @@
 :host {
   width: 100%;
+
+  &.ng-invalid {
+
+    input {
+      border: 1px solid rgba(255, 0, 0, .5);
+    }
+  }
 }
 
 input {
@@ -10,14 +17,19 @@ input {
 
   &[type="text"] {
     background-color: #111111;
+    border: 1px solid #111111;
     border-radius: 8px;
     box-sizing: border-box;
     caret-color: rgba(255, 255, 255, 0.95);
     color: rgba(255, 255, 255, 0.95);
     font-size: 20px;
-    padding: 9px 10px;
+    padding: 7px 8px;
     line-height: 1.1;
     width: 100%;
+
+    &:disabled {
+      color: rgba(255, 255, 255, 0.475);
+    }
 
     &::placeholder {
       color: rgba(89, 89, 89, 0.95);

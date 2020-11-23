@@ -34,6 +34,10 @@ export class PeCouponsInputComponent implements ControlValueAccessor {
     this.elementRef.nativeElement.value = value;
   }
 
+  setDisabledState(isDisabled: boolean): void {
+    this.elementRef.nativeElement.disabled = isDisabled;
+  }
+
   onChange: (value: any) => void = () => {};
   onTouched = () => {};
 }

@@ -53,7 +53,7 @@ export interface PeCouponContact {
 }
 
 export interface PeCouponLimits {
-  limitOneCustomer: boolean;
+  limitOneUsePerCustomer: boolean;
   limitUsage: boolean;
   limitUsageAmount: number;
 }

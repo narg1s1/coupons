@@ -16,7 +16,7 @@ export const SANDBOX_COUPONS = [
     isAutomaticDiscount: false,
     limits: {
       _id: '5fb63bffb52590001171e0a7',
-      limitOneCustomer: true,
+      limitOneUsePerCustomer: true,
       limitUsage: true,
       limitUsageAmount: 200
     },
