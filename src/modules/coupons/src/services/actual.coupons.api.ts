@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { PebEnvService } from '@pe/builder-core';
+import { EnvironmentConfigInterface, PE_ENV } from '@pe/common';
 
 import { Observable } from 'rxjs';
 import { PeCoupon } from '../misc/interfaces/coupon.model';
@@ -8,16 +9,13 @@ import { PeCoupon } from '../misc/interfaces/coupon.model';
 import { PeCouponsApi } from './abstract.coupons.api';
 
 export const PE_COUPONS_API_PATH = new InjectionToken<string>('PE_COUPONS_API_PATH');
-export const PE_PRODUCTS_API_PATH = new InjectionToken<string>('PE_PRODUCTS_API_PATH');
-export const PE_CONTACTS_API_PATH = new InjectionToken<string>('PE_CONTACTS_API_PATH');
 
 @Injectable()
 export class ActualPeCouponsApi extends PeCouponsApi {
   
   constructor(
+    @Inject(PE_ENV) private envConfig: EnvironmentConfigInterface,
     @Inject(PE_COUPONS_API_PATH) private couponsApiPath: string,
-    @Inject(PE_PRODUCTS_API_PATH) private productsApiPath: string,
-    @Inject(PE_CONTACTS_API_PATH) private contactsApiPath: string,
     private http: HttpClient,
     private pebEnvService: PebEnvService,
   ) {
@@ -25,31 +23,31 @@ export class ActualPeCouponsApi extends PeCouponsApi {
   }
 
   getCouponsList(): Observable<any> {
-    return this.http.get(`${this.couponsApiPath}/api/coupons`);
+    return this.http.get(`${this.couponsApiPath}/business/${this.pebEnvService.businessId}/coupons`);
   }
 
   getCouponById(couponId: string): Observable<any> {
-    return this.http.get(`${this.couponsApiPath}/api/coupons/${couponId}`);
+    return this.http.get(`${this.couponsApiPath}/business/${this.pebEnvService.businessId}/coupons/${couponId}`);
   }
 
   getCouponByCode(couponCode: string): Observable<any> {
-    return this.http.get(`${this.couponsApiPath}/api/coupons/by-code/${couponCode}`);
+    return this.http.get(`${this.couponsApiPath}/business/${this.pebEnvService.businessId}/coupons/by-code/${couponCode}`);
   }
 
   createCoupon(coupon: PeCoupon): Observable<any> {
-    return this.http.post(`${this.couponsApiPath}/api/coupons`, coupon);
+    return this.http.post(`${this.couponsApiPath}/business/${this.pebEnvService.businessId}/coupons`, coupon);
   }
 
   updateCoupon(couponId: string, coupon: PeCoupon): Observable<any> {
-    return this.http.put(`${this.couponsApiPath}/api/coupons/${couponId}`, coupon);
+    return this.http.put(`${this.couponsApiPath}/business/${this.pebEnvService.businessId}/coupons/${couponId}`, coupon);
   }
 
   deteleCoupon(couponId: string): Observable<null> {
-    return this.http.delete<null>(`${this.couponsApiPath}/api/coupons/${couponId}`);
+    return this.http.delete<null>(`${this.couponsApiPath}/business/${this.pebEnvService.businessId}/coupons/${couponId}`);
   }
 
   getProducts() {
-    return this.http.post(`${this.productsApiPath}/products`, {
+    return this.http.post(`${this.envConfig.backend.products}/products`, {
       query: `{
         getProducts(
           businessUuid: "${this.pebEnvService.businessId}",
@@ -75,7 +73,7 @@ export class ActualPeCouponsApi extends PeCouponsApi {
   }
 
   getCategories() {
-    return this.http.post(`${this.productsApiPath}/products`, {
+    return this.http.post(`${this.envConfig.backend.products}/products`, {
       query: `{
         getCategories (
           businessUuid: "${this.pebEnvService.businessId}",
@@ -92,7 +90,7 @@ export class ActualPeCouponsApi extends PeCouponsApi {
   }
 
   getContactGroups() {
-    return this.http.post(`${this.contactsApiPath}/graphql`, { 
+    return this.http.post(`${this.envConfig.backend.contacts}/graphql`, { 
       query: `{
         groups(
           first: 100,
@@ -115,7 +113,7 @@ export class ActualPeCouponsApi extends PeCouponsApi {
   }
 
   getContacts() {
-    return this.http.post(`${this.contactsApiPath}/graphql`, { 
+    return this.http.post(`${this.envConfig.backend.contacts}/graphql`, { 
       query: `{
         contacts(
           orderBy: CREATED_AT_DESC,

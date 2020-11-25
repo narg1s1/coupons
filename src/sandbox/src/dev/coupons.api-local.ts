@@ -4,7 +4,7 @@ import { ImitateHttp } from './imitate-http.decorator';
 
 export const SANDBOX_COUPONS = [
   {
-    appliesToCollections: [],
+    appliesToCategories: [],
     appliesToProducts: [],
     channelSetsIds: [],
     code: 'BR9M5UBVK33P',

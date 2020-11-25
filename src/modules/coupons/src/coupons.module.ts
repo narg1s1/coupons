@@ -17,8 +17,8 @@ import { PeCouponsIconTimeComponent } from './misc/icons/time';
 
 import { PeCouponsAutocompleteModule } from './misc/components/autocomplete/coupons-autocomplete.module';
 import { PeCouponsCheckboxModule } from './misc/components/checkbox/coupons-checkbox.module';
-import { PeCouponsFormFieldModule } from './misc/components/form-field/coupons-form-field.module';
-import { PeCouponsFormGroupModule } from './misc/components/form-group/coupons-form-group.module';
+import { PeCouponsDatepickerModule } from './misc/components/datepicker/coupons-datepicker.module';
+// import { PeCouponsFormGroupModule } from './misc/components/form-group/coupons-form-group.module';
 import { PeCouponsInputModule } from './misc/components/input/coupons-input.module';
 import { PeCouponsListModule } from './misc/components/list/coupons-list.module';
 import { PeCouponsRadioModule } from './misc/components/radio/coupons-radio.module';
@@ -29,15 +29,39 @@ import { PeCouponsComponent } from './routes/root/coupons-root.component';
 import { PeCouponsEditComponent } from './routes/edit/coupons-edit.component';
 import { PeCouponsGridComponent } from './routes/grid/coupons-grid.component';
 
-import { PeCouponsApi } from './services/abstract.coupons.api';
-import { ActualPeCouponsApi } from './services/actual.coupons.api';
-
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { AuthModule } from '@pe/auth';
+import { PeOverlayService } from './misc/components/overlay/overlay.service';
+
+
+import { PeCouponsFormComponent } from './routes/form/coupons-form.component';
+
+import { PeCouponsExpansionPanelComponent } from './misc/components/coupons-expansion-panel/coupons-expansion-panel.component';
+import { PeCouponsFormFieldComponent } from './misc/components/coupons-form-field/coupons-form-field.component';
+
+import { PeCouponsFormFieldLabelDirective } from './misc/components/coupons-form-field/coupons-form-field-label.directive';
+import { PeCouponsFormFieldPrefixDirective } from './misc/components/coupons-form-field/coupons-form-field-prefix.directive';
+import { PeCouponsFormFieldSuffixDirective } from './misc/components/coupons-form-field/coupons-form-field-suffix.directive';
+import { PeCouponsFormFieldSubscriptDirective } from './misc/components/coupons-form-field/coupons-form-field-subscript.directive';
+import { PeCouponsFormGroupComponent } from './misc/components/coupons-form-group/coupons-form-group.component';
 
 
 // HACK: fix --prod build
 // https://github.com/angular/angular/issues/23609
 export const PebViewerModuleForRoot: any = PebViewerModule.forRoot();
+
+const components = [
+  PeCouponsExpansionPanelComponent,
+  PeCouponsFormFieldComponent,
+  PeCouponsFormGroupComponent,
+]
+
+const directives = [
+  PeCouponsFormFieldPrefixDirective,
+  PeCouponsFormFieldLabelDirective,
+  PeCouponsFormFieldSubscriptDirective,
+  PeCouponsFormFieldSuffixDirective
+]
 
 const icons = [
   PeCouponsIconAddComponent,
@@ -50,14 +74,15 @@ const icons = [
 
 @NgModule({
   imports: [
+    AuthModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
 
     PeCouponsAutocompleteModule,
     PeCouponsCheckboxModule,
-    PeCouponsFormFieldModule,
-    PeCouponsFormGroupModule,
+    PeCouponsDatepickerModule,
+    // PeCouponsFormGroupModule,
     PeCouponsRadioModule,
     PeCouponsSelectModule,
     PeCouponsInputModule,
@@ -70,14 +95,20 @@ const icons = [
     PebViewerModuleForRoot,
     PeDataGridModule,
 
-    NgScrollbarModule
+    NgScrollbarModule,
   ],
   declarations: [
     ...icons,
     PeCouponsComponent,
     PeCouponsGridComponent,
-    PeCouponsEditComponent
+    PeCouponsEditComponent,
+    PeCouponsFormComponent,
+
+    ...components,
+    ...directives,
   ],
-  providers: [],
+  providers: [
+    PeOverlayService,
+  ],
 })
 export class PeCouponsModule {}

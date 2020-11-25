@@ -26,7 +26,8 @@
             "aot": true,
             "assets": [
               "src/sandbox/src/favicon.ico",
-              "src/sandbox/src/assets"
+              "src/sandbox/src/assets",
+              "src/sandbox/src/env.json"
             ],
             "styles": [
               "src/sandbox/src/styles/material.scss",

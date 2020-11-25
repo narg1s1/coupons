@@ -1,4 +1,5 @@
 <div class="wrapper">
+  <button (click)="openDatepicker()"></button>
   <span class="title">Create discount code</span>
   <form [formGroup]="couponForm">
 
@@ -7,9 +8,9 @@
       <pe-coupons-label>Discount code</pe-coupons-label>
       <pe-coupons-form-field>
         <pe-coupons-input type="text" placeholder="e.g. SPRINGSALE" formControlName="code"></pe-coupons-input>
-        <pe-coupons-suffix>
+        <pe-coupons-form-field-suffix>
           <button (click)="generateCode()" [disabled]="couponForm.get('code').disabled">Generate code</button>
-        </pe-coupons-suffix>
+        </pe-coupons-form-field-suffix>
       </pe-coupons-form-field>
       <pe-coupons-subscript>Customers will enter this discount code at checkout.</pe-coupons-subscript>
     </pe-coupons-form-group>
@@ -45,7 +46,7 @@
           [ngTemplateOutletContext]="{ control: couponForm.get('type').get('buyProducts') }"
         ></ng-container>
         <ng-container 
-          *ngIf="couponForm.value.type.buyType === 'SPECIFIC_COLLECTIONS'"
+          *ngIf="couponForm.value.type.buyType === 'SPECIFIC_CATEGORIES'"
           [ngTemplateOutlet]="searchCollections"
           [ngTemplateOutletContext]="{ control: couponForm.get('type').get('buyCollections') }"
         ></ng-container>
@@ -67,7 +68,7 @@
           [ngTemplateOutletContext]="{ control: couponForm.get('type').get('getProducts') }"
         ></ng-container>
         <ng-container 
-          *ngIf="couponForm.value.type.getType === 'SPECIFIC_COLLECTIONS'"
+          *ngIf="couponForm.value.type.getType === 'SPECIFIC_CATEGORIES'"
           [ngTemplateOutlet]="searchCollections"
           [ngTemplateOutletContext]="{ control: couponForm.get('type').get('getCollections') }"
         ></ng-container>
@@ -100,10 +101,10 @@
         <pe-coupons-form-field>
           <pe-coupons-input *ngIf="couponForm.value.type.type !== 'BUY_X_GET_Y'" type="text" placeholder="Enter value" formControlName="discountValue"></pe-coupons-input>
           <pe-coupons-input *ngIf="couponForm.value.type.type === 'BUY_X_GET_Y'" type="text" placeholder="Enter value" formControlName="getDiscountValue"></pe-coupons-input>
-          <pe-coupons-suffix>
+          <pe-coupons-form-field-suffix>
             <span *ngIf="couponForm.value.type.type === 'PERCENTAGE' || couponForm.value.type.type === 'BUY_X_GET_Y'">Percentage (%)</span>
             <span *ngIf="couponForm.value.type.type === 'FIXED_AMOUNT'">Dollars ($)</span>
-          </pe-coupons-suffix>
+          </pe-coupons-form-field-suffix>
         </pe-coupons-form-field>
       </pe-coupons-form-group>
     </ng-container>
@@ -143,9 +144,9 @@
             [items]="countries" 
             (onSelected)="addToArray($event, couponForm.value.type.freeShippingToCountries)">
           </pe-coupons-autocomplete>
-          <pe-coupons-suffix>
+          <pe-coupons-form-field-suffix>
             <button>Add Country</button>
-          </pe-coupons-suffix>
+          </pe-coupons-form-field-suffix>
         </pe-coupons-form-field>
         <pe-coupons-list>
           <pe-coupons-list-item 
@@ -166,9 +167,9 @@
         </pe-coupons-form-field>
         <pe-coupons-form-field *ngIf="couponForm.value.type.excludeShippingRatesOverCertainAmount">
           <pe-coupons-input formControlName="excludeShippingRatesOverCertainAmountValue" type="text" placeholder="Enter value"></pe-coupons-input>
-          <pe-coupons-suffix>
+          <pe-coupons-form-field-suffix>
             <span>Dollars ($)</span>
-          </pe-coupons-suffix>
+          </pe-coupons-form-field-suffix>
         </pe-coupons-form-field>
       </pe-coupons-form-group>
     </ng-container>
@@ -186,12 +187,12 @@
     <!-- APPLIES TO END -->
 
     <!-- ADD COLLECTIONS START -->
-    <ng-container *ngIf="couponForm.value.type.appliesTo === 'SPECIFIC_COLLECTIONS'">
+    <ng-container *ngIf="couponForm.value.type.appliesTo === 'SPECIFIC_CATEGORIES'">
       <pe-coupons-form-group formGroupName="type">
         <pe-coupons-label>Add collections</pe-coupons-label>
         <ng-container 
           [ngTemplateOutlet]="searchCollections"
-          [ngTemplateOutletContext]="{ control: couponForm.get('type').get('appliesToCollections') }"
+          [ngTemplateOutletContext]="{ control: couponForm.get('type').get('appliesToCategories') }"
         ></ng-container>
       </pe-coupons-form-group>
     </ng-container>
@@ -226,9 +227,9 @@
         <pe-coupons-label>Minimum purchase amount</pe-coupons-label>
         <pe-coupons-form-field>
           <pe-coupons-input type="text" placeholder="Enter value" formControlName="minimumRequirementsValue"></pe-coupons-input>
-          <pe-coupons-suffix>
+          <pe-coupons-form-field-suffix>
             <span>Dollars ($)</span>
-          </pe-coupons-suffix>
+          </pe-coupons-form-field-suffix>
         </pe-coupons-form-field>
       </pe-coupons-form-group>
     </ng-container>
@@ -263,9 +264,9 @@
           [items]="groupsOfCustomers"
           (onSelected)="addToArray($event, couponForm.value.customerEligibilityCustomerGroups)"
         ></pe-coupons-autocomplete>
-        <pe-coupons-suffix>
+        <pe-coupons-form-field-suffix>
           <button>Add Group</button>
-        </pe-coupons-suffix>
+        </pe-coupons-form-field-suffix>
       </pe-coupons-form-field>
       <pe-coupons-list>
         <pe-coupons-list-item 
@@ -285,9 +286,9 @@
           [items]="customers" 
           (onSelected)="addToArray($event, couponForm.value.customerEligibilitySpecificCustomers)">
         </pe-coupons-autocomplete>
-        <pe-coupons-suffix>
+        <pe-coupons-form-field-suffix>
           <button>Add Customer</button>
-        </pe-coupons-suffix>
+        </pe-coupons-form-field-suffix>
       </pe-coupons-form-field>
       <pe-coupons-list>
         <pe-coupons-list-item 
@@ -329,13 +330,13 @@
       <pe-coupons-label>Active dates</pe-coupons-label>
 
       <pe-coupons-form-field>
-        <pe-coupons-prefix>
+        <pe-coupons-form-field-prefix>
           <pe-coupons-icon-date></pe-coupons-icon-date>
-        </pe-coupons-prefix>
+        </pe-coupons-form-field-prefix>
         <pe-coupons-input type="text" placeholder="{{ startDatePlaceholder | date: 'yyyy-MM-dd'}}" formControlName="startDate"></pe-coupons-input>
-        <pe-coupons-suffix>
+        <pe-coupons-form-field-suffix>
           <span>Set start date</span>
-        </pe-coupons-suffix>
+        </pe-coupons-form-field-suffix>
       </pe-coupons-form-field>
 
       <pe-coupons-form-field>
@@ -343,13 +344,13 @@
       </pe-coupons-form-field>
 
       <pe-coupons-form-field *ngIf="couponForm.get('setEndDate').value">
-        <pe-coupons-prefix>
+        <pe-coupons-form-field-prefix>
           <pe-coupons-icon-date></pe-coupons-icon-date>
-        </pe-coupons-prefix>
+        </pe-coupons-form-field-prefix>
         <pe-coupons-input type="text" placeholder="{{ endDatePlaceholder | date: 'yyyy-MM-dd'}}" formControlName="endDate"></pe-coupons-input>
-        <pe-coupons-suffix>
+        <pe-coupons-form-field-suffix>
           <span>Set end date</span>
-        </pe-coupons-suffix>
+        </pe-coupons-form-field-suffix>
       </pe-coupons-form-field>
 
     </pe-coupons-form-group>
@@ -360,19 +361,23 @@
       <pe-coupons-label>Channels</pe-coupons-label>
 
       <pe-coupons-form-field>
-        <pe-coupons-prefix>
+        <pe-coupons-form-field-prefix>
           <pe-coupons-icon-point-of-sale></pe-coupons-icon-point-of-sale>
-        </pe-coupons-prefix>
+        </pe-coupons-form-field-prefix>
         <span style="padding: 9px 0;">Point of Sale</span>
-        <pe-coupons-suffix>
+        <pe-coupons-form-field-suffix>
           <pe-coupons-slide-toggle></pe-coupons-slide-toggle>
-        </pe-coupons-suffix>
+        </pe-coupons-form-field-suffix>
       </pe-coupons-form-field>
 
     </pe-coupons-form-group> -->
     <!-- CHANNELS END -->
 
-    <button class="submit" (click)="onSubmit()">Save coupon</button>
+    <div class="actions">
+      <button class="discard" (click)="onDiscard()">Discard</button>
+      <button class="submit" (click)="onSubmit()">Save coupon</button>
+    </div>
+
 
   </form>
 </div>
@@ -384,9 +389,6 @@
       [items]="products"
       (onSelected)="addToArray($event, control.value)">
     </pe-coupons-autocomplete>
-    <pe-coupons-suffix>
-      <button>Browse</button>
-    </pe-coupons-suffix>
   </pe-coupons-form-field>
   <pe-coupons-list>
     <pe-coupons-list-item 
@@ -406,9 +408,6 @@
       [items]="collections"
       (onSelected)="addToArray($event, control.value)">
     </pe-coupons-autocomplete>
-    <pe-coupons-suffix>
-      <button>Browse</button>
-    </pe-coupons-suffix>
   </pe-coupons-form-field>
   <pe-coupons-list>
     <pe-coupons-list-item 

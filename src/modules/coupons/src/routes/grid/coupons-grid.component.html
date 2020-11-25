@@ -58,6 +58,7 @@
     [actions]="addActions"
     [selectable]="false"
     [isShowGridItemInfo]="false"
+    (click)="open()"
   >
     <div class="coupon__container gray">
       <pe-coupons-icon-add></pe-coupons-icon-add>
@@ -70,7 +71,8 @@
     [item]="item"
     [actions]="[singleSelectedAction]"
     [selectable]="true"
-    [isShowGridItemInfo]="true">
+    [isShowGridItemInfo]="true"
+    >
     <div class="coupon__container orange">
       <div class="coupon__image">
         <span>{{ item.title }}</span>

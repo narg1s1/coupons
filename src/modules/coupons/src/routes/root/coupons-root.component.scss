@@ -1,3 +1,19 @@
 :host {
   display: block;
 }
+
+::ng-deep .pe-coupons-overlay-backdrop {
+  background-color: rgba(0,0,0,.5);
+}
+
+::ng-deep .pe-coupons-overlay-panel {
+  background-color: #24272e;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.5);
+  height: 100%;
+  margin-top: 63px;
+  margin-bottom: 42px;
+  max-height: calc(100% - 105px);
+  max-width: 581px;
+  width: 100%;
+}

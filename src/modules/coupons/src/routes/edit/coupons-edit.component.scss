@@ -1,5 +1,4 @@
 :host {
-  background-color: #24272e;
   display: block;
   min-height: calc(100vh - 2.8em);
   font-family: 'Roboto';
@@ -26,18 +25,38 @@ button {
   padding-left: 18px;
 }
 
-.submit {
-  appearance: none;
-  background: #0371e2;
-  color: white;
-  cursor: pointer;
+.actions {
   display: flex;
+  justify-content: space-between;
   margin-top: 28px;
-  margin-left: auto;
-  height: 56px;
-  align-items: center;
-  padding-left: 18px;
-  padding-right: 18px;
-  border-radius: 8px;
-  font-size: 20px;
+
+  button {
+    appearance: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    height: 56px;
+    align-items: center;
+    padding-left: 18px;
+    padding-right: 18px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 400;
+
+    &.discard {
+      background-color: rgba(0,0,0,.3);
+
+      &:hover {
+        background-color: rgba(0,0,0,.7);
+      }
+    }
+
+    &.submit {
+      background-color: rgba(3, 113, 226, 1);
+
+      &:hover {
+        background-color: rgba(3, 113, 226, .9);
+      }
+    }
+  }
 }

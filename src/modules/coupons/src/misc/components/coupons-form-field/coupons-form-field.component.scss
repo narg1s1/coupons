@@ -1,0 +1,62 @@
+
+.form-field {
+
+  &__flex {
+    background-color: #111111;
+    border-radius: 16px;
+    display: flex;
+    margin-top: 20px;
+    overflow: hidden;
+    padding: 9px 0 7px;
+    position: relative;
+  }
+
+  &__prefix {
+
+  }
+
+  &__infix {
+    align-items: center;
+    display: flex;
+    padding: 16px 16px 0 16px;
+    position: relative;
+    width: 100%;
+
+    ::ng-deep pe-coupons-form-field-label {
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 14px;
+      left: 16;
+      line-height: 1.09;
+      top: 0;
+      position: absolute;
+    }
+  }
+
+  &__suffix {
+    ::ng-deep {
+      pe-coupons-form-field-suffix {
+        background-color: #1c1d1e;
+        color: #ffffff;
+        display: block;
+        font-family: 'Roboto', sans-serif;
+        font-size: 16px;
+        line-height: 1.38;
+        margin: -9px 0 -7px 0;
+        padding: 17px 16px;
+        white-space: nowrap;
+
+        button {
+          color: #0091df;
+          font-size: inherit;
+        }
+      }
+    }
+  }
+
+  &__subscript {
+    color: #7a7a7a;
+    font-size: 16px;
+    line-height: 1.38;
+    margin: 8px 16px 0;
+  }
+}

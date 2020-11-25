@@ -35,11 +35,32 @@ $background-skeleton: #444;
   }
 }
 
-pe-data-grid-item {
-  min-height: 294px;
+::ng-deep { 
+  pe-data-grid-sidebar {
+    top: unset !important;
+    height: calc(100% - 132px) !important;
+  }
 
-  .item-header {
-    z-index: 1;
+  pe-data-grid-item {
+    min-height: 294px;
+  
+    .item-header {
+      z-index: 1;
+    }
+  
+    .item {
+      .item-header__chip {
+        max-height: 28px;
+      }
+    }
+  }
+
+  .sidebar-tree__node-image {
+    min-width: 22px;
+  }
+
+  .mat-menu-panel {
+    overflow: hidden !important;
   }
 }
 

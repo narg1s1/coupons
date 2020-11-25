@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PebEnvService } from '@pe/builder-core';
 import { LocaleConstantsService } from '@pe/i18n';
 import { of, ReplaySubject } from 'rxjs';
 import { catchError, map, takeUntil, tap } from 'rxjs/operators';
+import { PeCouponsDatepickerComponent } from '../../misc/components/datepicker/coupons-datepicker.component';
 
 import { 
   PeCoupon, 
@@ -62,13 +64,13 @@ export class PeCouponsEditComponent implements OnInit {
   ]
 
   buyOrGetType = [
-    { label: 'Specific collections', value: PeCouponTypeBuyXGetYItemTypeEnum.SpecificCollections },
+    { label: 'Specific collections', value: PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories },
     { label: 'Specific products', value: PeCouponTypeBuyXGetYItemTypeEnum.SpecificProducts }
   ]
 
   appliesTo = [
     { label: 'All products', value: PeCouponTypeAppliedToEnum.AllPpoducts },
-    { label: 'Specific collections', value: PeCouponTypeAppliedToEnum.SpecificCollections },
+    { label: 'Specific collections', value: PeCouponTypeAppliedToEnum.SpecificCategories },
     { label: 'Specific products', value: PeCouponTypeAppliedToEnum.SpecificProducts }
   ];
 
@@ -105,7 +107,7 @@ export class PeCouponsEditComponent implements OnInit {
       type: [PeCouponTypeEnum.Percentage],
       appliesTo: [PeCouponTypeAppliedToEnum.AllPpoducts],
       appliesToProducts: [[]],
-      appliesToCollections: [[]],
+      appliesToCategories: [[]],
       minimumRequirements: [PeCouponTypeMinimumRequirementsEnum.None],
       minimumRequirementsValue: [],
       excludeShippingRatesOverCertainAmount: [false],
@@ -114,10 +116,10 @@ export class PeCouponsEditComponent implements OnInit {
       freeShippingToCountries: [[]],
       buyRequirementType: [PeCouponTypeBuyXGetYBuyRequirementsTypeEnum.MinimumQuantityOfItems],
       buyQuantity: [],
-      buyType: [PeCouponTypeBuyXGetYItemTypeEnum.SpecificCollections],
+      buyType: [PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories],
       buyProducts: [[]],
       buyCollections: [[]],
-      getType: [PeCouponTypeBuyXGetYItemTypeEnum.SpecificCollections],
+      getType: [PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories],
       getQuantity: [],
       getProducts: [[]],
       getCollections: [[]],
@@ -140,8 +142,40 @@ export class PeCouponsEditComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private pebEnvService: PebEnvService,
     private router: Router,
+    private matDialog: MatDialog,
   ) {
     this.endDatePlaceholder.setDate(this.startDatePlaceholder.getDate() + 1);
+  }
+
+  openDatepicker(): void {
+    const dialog = this.matDialog.open(PeCouponsDatepickerComponent, {
+      // backdropClass: 'peb-mail-modal-backdrop',
+      panelClass: 'pe-coupons-datepicker-rounded-panel',
+      disableClose: true,
+      // data: {
+      //   schedule: this.formGroup.get('schedule'),
+      //   sendRequest: (schedule: ScheduleModel) => {
+      //     const campaignInput: CampaignInput = {
+      //       name: this.formGroup.get('name').value,
+      //       date: moment().format(),
+      //       status: CampaignStatus.new,
+      //       schedules: [schedule],
+      //       contacts: this.formGroup.get('to').value.map(data => data?.info?.email),
+      //       builderMailId: '',
+      //     };
+      //     return this.saveCampaign(campaignInput);
+      //   },
+      // },
+    });
+    dialog.afterClosed().pipe(
+      takeUntil(this.destroyed$),
+      tap(schedule => {
+        if (schedule) {
+          console.log(schedule)
+          // this.goBack();
+        }
+      }),
+    ).subscribe();
   }
 
   ngOnInit(): void {   
@@ -198,7 +232,10 @@ export class PeCouponsEditComponent implements OnInit {
   getContactGroups() {
     this.apiService.getContactGroups().pipe(
       map(request => request.data.groups.nodes.map(group => {
-        return { id: group.id, title: group.name } 
+        return { 
+          id: group.id,
+          title: group.name
+        } 
       })),
       tap(groupsOfCustomers => this.groupsOfCustomers = groupsOfCustomers),
       takeUntil(this.destroyed$)
@@ -242,7 +279,7 @@ export class PeCouponsEditComponent implements OnInit {
     type.get('buyType').valueChanges.pipe(
       tap(changes => {
         if (changes === PeCouponTypeBuyXGetYItemTypeEnum.SpecificProducts) type.get('buyCollections').patchValue([], { emitEvent: false })
-        if (changes === PeCouponTypeBuyXGetYItemTypeEnum.SpecificCollections) type.get('buyProducts').patchValue([], { emitEvent: false })
+        if (changes === PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories) type.get('buyProducts').patchValue([], { emitEvent: false })
       }),
       takeUntil(this.destroyed$)
     ).subscribe();
@@ -250,7 +287,7 @@ export class PeCouponsEditComponent implements OnInit {
     type.get('getType').valueChanges.pipe(
       tap(changes => {
         if (changes === PeCouponTypeBuyXGetYItemTypeEnum.SpecificProducts) type.get('getCollections').patchValue([], { emitEvent: false })
-        if (changes === PeCouponTypeBuyXGetYItemTypeEnum.SpecificCollections) type.get('getProducts').patchValue([], { emitEvent: false })
+        if (changes === PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories) type.get('getProducts').patchValue([], { emitEvent: false })
       }),
       takeUntil(this.destroyed$)
     ).subscribe();
@@ -281,6 +318,10 @@ export class PeCouponsEditComponent implements OnInit {
     }
 
     this.couponForm.get('code').patchValue(result.toUpperCase());
+  }
+
+  onDiscard() {
+    this.router.navigate(['../'], { relativeTo: this.activatedRoute });
   }
 
   onSubmit() {
@@ -330,11 +371,11 @@ export class PeCouponsEditComponent implements OnInit {
       if (couponId) {
         this.apiService.updateCoupon(couponId, body).pipe(
           takeUntil(this.destroyed$),
-        ).subscribe(() => this.router.navigate(['../coupons/list']))
+        ).subscribe(() => this.router.navigate(['../'], { relativeTo: this.activatedRoute }))
       } else {
         this.apiService.createCoupon(body).pipe(
           takeUntil(this.destroyed$),
-        ).subscribe(() => this.router.navigate(['../coupons/list']))
+        ).subscribe(() => this.router.navigate(['../'], { relativeTo: this.activatedRoute }))
       }
     }
   }
@@ -348,33 +389,7 @@ export class PeCouponsEditComponent implements OnInit {
   }
 
   getPercentage(value) {
-    const limits = (this.couponForm.get('limits') as FormGroup).controls;
-    const type = (this.couponForm.get('type') as FormGroup).controls;
-
-    if (value.limits.limitOneUsePerCustomer) {
-      limits.limitUsageAmount.setValidators([Validators.required])
-      limits.limitUsageAmount.updateValueAndValidity();
-    };
-
-    type.discountValue.setValidators([Validators.required]);
-    type.discountValue.updateValueAndValidity();
-
-    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificCollections) {
-      type.appliesToCollections.setValidators([Validators.required]);
-      type.appliesToCollections.updateValueAndValidity();
-    }
-
-    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificProducts) {
-      type.appliesToProducts.setValidators([Validators.required]);
-      type.appliesToProducts.updateValueAndValidity();
-    }
-
-    if (value.type.minimumRequirements !== PeCouponTypeMinimumRequirementsEnum.None) {
-      type.minimumRequirementsValue.setValidators([Validators.required]);
-      type.minimumRequirementsValue.updateValueAndValidity();
-    }
-
-    return {
+    const body = {
       code: value.code,
       businessId: value.businessId,
       endDate: value.endDate ?? null,
@@ -392,15 +407,45 @@ export class PeCouponsEditComponent implements OnInit {
         discountValue: Number(value.type.discountValue),
         appliesTo: value.type.appliesTo,
         appliesToProducts: value.type.appliesToProducts ?? [],
-        appliesToCollections: value.type.appliesToCollections ?? [],
+        appliesToCategories: value.type.appliesToCategories ?? [],
         minimumRequirements: value.type.minimumRequirements ?? false,
-        minimumRequirementsValue: Number(value.type.minimumRequirementsValue) ?? null
       },
       status: value.status ?? PeCouponsStatusEnum.Unactive,
       customerEligibility: value.customerEligibility,
       customerEligibilitySpecificCustomers: value.customerEligibilitySpecificCustomers ?? [],
       customerEligibilityCustomerGroups: value.customerEligibilityCustomerGroups ?? []
     }
+
+    
+    const limits = (this.couponForm.get('limits') as FormGroup).controls;
+    const type = (this.couponForm.get('type') as FormGroup).controls;
+
+    if (value.limits.limitOneUsePerCustomer) {
+      limits.limitUsageAmount.setValidators([Validators.required])
+      limits.limitUsageAmount.updateValueAndValidity();
+    };
+
+    type.discountValue.setValidators([Validators.required]);
+    type.discountValue.updateValueAndValidity();
+
+    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificCategories) {
+      type.appliesToCategories.setValidators([Validators.required]);
+      type.appliesToCategories.updateValueAndValidity();
+    }
+
+    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificProducts) {
+      type.appliesToProducts.setValidators([Validators.required]);
+      type.appliesToProducts.updateValueAndValidity();
+    }
+
+    if (value.type.minimumRequirements !== PeCouponTypeMinimumRequirementsEnum.None) {
+      body.type['minimumRequirementsValue'] = Number(value.type.minimumRequirementsValue);
+
+      type.minimumRequirementsValue.setValidators([Validators.required]);
+      type.minimumRequirementsValue.updateValueAndValidity();
+    }
+
+    return body;
   }
 
   getBuyXGetY(value) {
@@ -420,7 +465,7 @@ export class PeCouponsEditComponent implements OnInit {
       type.buyProducts.updateValueAndValidity();
     }
 
-    if (value.type.buyType === PeCouponTypeBuyXGetYItemTypeEnum.SpecificCollections) {
+    if (value.type.buyType === PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories) {
       type.buyCollections.setValidators([Validators.required]);
       type.buyCollections.updateValueAndValidity();
     }
@@ -433,7 +478,7 @@ export class PeCouponsEditComponent implements OnInit {
       type.getProducts.updateValueAndValidity();
     }
 
-    if (value.type.getType === PeCouponTypeBuyXGetYItemTypeEnum.SpecificCollections) {
+    if (value.type.getType === PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories) {
       type.getCollections.setValidators([Validators.required]);
       type.getCollections.updateValueAndValidity();
     }
@@ -486,33 +531,7 @@ export class PeCouponsEditComponent implements OnInit {
   } 
 
   getFixedAmount(value) {
-    const limits = (this.couponForm.get('limits') as FormGroup).controls;
-    const type = (this.couponForm.get('type') as FormGroup).controls;
-
-    if (value.limits.limitOneUsePerCustomer) {
-      limits.limitUsageAmount.setValidators([Validators.required])
-      limits.limitUsageAmount.updateValueAndValidity();
-    };
-
-    type.discountValue.setValidators([Validators.required]);
-    type.discountValue.updateValueAndValidity();
-
-    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificCollections) {
-      type.appliesToCollections.setValidators([Validators.required]);
-      type.appliesToCollections.updateValueAndValidity();
-    }
-
-    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificProducts) {
-      type.appliesToProducts.setValidators([Validators.required]);
-      type.appliesToProducts.updateValueAndValidity();
-    }
-
-    if (value.type.minimumRequirements !== PeCouponTypeMinimumRequirementsEnum.None) {
-      type.minimumRequirementsValue.setValidators([Validators.required]);
-      type.minimumRequirementsValue.updateValueAndValidity();
-    }
-
-    return {
+    const body = {
       code: value.code,
       businessId: value.businessId,
       description: value.description,
@@ -530,18 +549,15 @@ export class PeCouponsEditComponent implements OnInit {
         discountValue: Number(value.type.discountValue),
         appliesTo: value.type.appliesTo,
         appliesToProducts: value.type.appliesToProducts ?? [],
-        appliesToCollections: value.type.appliesToCollections ?? [],
+        appliesToCategories: value.type.appliesToCategories ?? [],
         minimumRequirements: value.type.minimumRequirements ?? false,
-        minimumRequirementsValue: Number(value.type.minimumRequirementsValue) ?? null,
       },
       status: value.status ?? PeCouponsStatusEnum.Unactive,
       customerEligibility: value.customerEligibility ?? null,
       customerEligibilitySpecificCustomers: value.customerEligibilitySpecificCustomers ?? [],
       customerEligibilityCustomerGroups: value.customerEligibilityCustomerGroups ?? []
-    }
-  }
+    };
 
-  getFreeShipping(value) {
     const limits = (this.couponForm.get('limits') as FormGroup).controls;
     const type = (this.couponForm.get('type') as FormGroup).controls;
 
@@ -550,22 +566,31 @@ export class PeCouponsEditComponent implements OnInit {
       limits.limitUsageAmount.updateValueAndValidity();
     };
 
-    if (value.type.freeShippingType === PeCouponTypeFreeShippingTypeEnum.SelectedCountries) {
-      type.freeShippingToCountries.setValidators([Validators.required])
-      type.freeShippingToCountries.updateValueAndValidity();
+    type.discountValue.setValidators([Validators.required]);
+    type.discountValue.updateValueAndValidity();
+
+    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificCategories) {
+      type.appliesToCategories.setValidators([Validators.required]);
+      type.appliesToCategories.updateValueAndValidity();
     }
 
-    if (value.type.excludeShippingRatesOverCertainAmount) {
-      type.excludeShippingRatesOverCertainAmountValue.setValidators([Validators.required])
-      type.excludeShippingRatesOverCertainAmountValue.updateValueAndValidity();
+    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificProducts) {
+      type.appliesToProducts.setValidators([Validators.required]);
+      type.appliesToProducts.updateValueAndValidity();
     }
 
     if (value.type.minimumRequirements !== PeCouponTypeMinimumRequirementsEnum.None) {
+      body.type['minimumRequirementsValue'] = Number(value.type.minimumRequirementsValue);
+
       type.minimumRequirementsValue.setValidators([Validators.required]);
       type.minimumRequirementsValue.updateValueAndValidity();
     }
 
-    return {
+    return body;
+  }
+
+  getFreeShipping(value) {
+    const body = {
       code: value.code,
       businessId: value.businessId,
       endDate: value.endDate ?? null,
@@ -585,12 +610,38 @@ export class PeCouponsEditComponent implements OnInit {
         excludeShippingRatesOverCertainAmount: value.type.excludeShippingRatesOverCertainAmount ?? false,
         excludeShippingRatesOverCertainAmountValue: Number(value.type.excludeShippingRatesOverCertainAmountValue) ?? null,
         minimumRequirements: value.type.minimumRequirements ?? false,
-        minimumRequirementsValue: Number(value.type.minimumRequirementsValue) ?? null,
       },
       status: value.status ?? PeCouponsStatusEnum.Unactive,
       customerEligibility: value.customerEligibility ?? null,
       customerEligibilitySpecificCustomers: value.customerEligibilitySpecificCustomers ?? [],
       customerEligibilityCustomerGroups: value.customerEligibilityCustomerGroups ?? []
     }
+
+    const limits = (this.couponForm.get('limits') as FormGroup).controls;
+    const type = (this.couponForm.get('type') as FormGroup).controls;
+
+    if (value.limits.limitOneUsePerCustomer) {
+      limits.limitUsageAmount.setValidators([Validators.required])
+      limits.limitUsageAmount.updateValueAndValidity();
+    };
+
+    if (value.type.freeShippingType === PeCouponTypeFreeShippingTypeEnum.SelectedCountries) {
+      type.freeShippingToCountries.setValidators([Validators.required])
+      type.freeShippingToCountries.updateValueAndValidity();
+    }
+
+    if (value.type.excludeShippingRatesOverCertainAmount) {
+      type.excludeShippingRatesOverCertainAmountValue.setValidators([Validators.required])
+      type.excludeShippingRatesOverCertainAmountValue.updateValueAndValidity();
+    }
+
+    if (value.type.minimumRequirements !== PeCouponTypeMinimumRequirementsEnum.None) {
+      body.type['minimumRequirementsValue'] = Number(value.type.minimumRequirementsValue);
+
+      type.minimumRequirementsValue.setValidators([Validators.required]);
+      type.minimumRequirementsValue.updateValueAndValidity();
+    }
+
+    return body;
   }
 }

@@ -5,7 +5,7 @@
   display: block;
   height: 100%;
   background-image: url('/assets/themes/catalina.jpg');
-  background-color: #1c1c1e;
+  background-color: #24272e;
   background-size: cover;
   background-position: center;
 }
@@ -79,7 +79,7 @@
 
 section.content {
   height: calc(100% - 2.8em);
-
+  overflow: auto;
 }
 
 :host.front-page section.content {

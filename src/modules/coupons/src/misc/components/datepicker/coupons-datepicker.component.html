@@ -1,0 +1,25 @@
+<div class="datepicker">
+  <div class="datepicker__header">
+    <div class="datepicker__header-title">
+      Choose date and time
+    </div>
+  </div>
+
+  <div class="datepicker__calendar-wrapper">
+    <mat-calendar #calendar [selected]="selectedDate" (selectedChange)="selectedChangeOn($event)" [minDate]="minDate" class="datepicker__calendar"></mat-calendar>
+
+    <div class="datepicker__calendar-time">
+      <input [textMask]="{mask: timeMask, guide: true, showMask: true}" type="text" [formControl]="timeControl">
+      <!-- <mat-form-field>
+        <mat-label>Time</mat-label>
+        <input [textMask]="{mask: timeMask, guide: true, showMask: true}" type="text" [formControl]="timeControl">
+       <mat-error *ngIf="timeControl.hasError('timeFormat') || true">Wrong time format</mat-error>
+      </mat-form-field> -->
+    </div>
+  </div>
+
+  <div class="datepicker__actions">
+    <div class="datepicker__button datepicker__button-apply" (click)="applyOn()">Apply</div>
+    <div class="datepicker__button datepicker__button-cancel" [mat-dialog-close]="false">Cancel</div>
+  </div>
+</div>

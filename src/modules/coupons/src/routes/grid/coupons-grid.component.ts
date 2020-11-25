@@ -1,6 +1,8 @@
+import { Overlay } from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute, ActivatedRouteSnapshot, NavigationExtras, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { 
   MenuSidebarFooterData,
   PeDataGridFilterType,
@@ -13,9 +15,12 @@ import {
 } from '@pe/data-grid';
 import { isEqual, orderBy } from 'lodash';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 import { PeCoupon } from '../../misc/interfaces/coupon.model';
 import { PeCouponsApi } from '../../services/abstract.coupons.api';
+import { PeCouponsFormComponent } from '../form/coupons-form.component';
+
+import { PeOverlayRef, PeOverlayService } from '../../misc/components/overlay/overlay.service';
 
 
 @Component({
@@ -88,7 +93,6 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
     headItem: { title: 'Folder Name' },
     menuItems: [
       { title: 'Rename', onClick: () => { console.log('rename') } },
-      { title: 'Upload files', onClick: () => { console.log('upload files') } },
       { title: 'Move', onClick: () => { console.log('move') } },
       { title: 'Settings', onClick: () => { console.log('settings') } },
       { title: 'Add New Album', onClick: () => { console.log('add new album') } },
@@ -102,7 +106,6 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   }
 
   addItem: PeDataGridItem = {
-    id: '0',
     selected: false,
   };
 
@@ -112,7 +115,7 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
     {
       label: 'New Coupon',
       callback: () => {
-        this.router.navigate(['../coupons/add']);
+        this.router.navigate(['../add'], { relativeTo: this.activatedRoute });
       },
     }
   ];
@@ -120,7 +123,7 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   public singleSelectedAction: PeDataGridSingleSelectedAction = {
     label: 'Open',
     callback: (id: string) => {
-      this.router.navigate(['../coupons/', id]);
+      this.router.navigate(['../', id], { relativeTo: this.activatedRoute });
     },
   };
 
@@ -162,7 +165,12 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private router: Router,
+    private overlayService: PeOverlayService,
   ) {}
+
+  open() {
+    let dialogRef: PeOverlayRef = this.overlayService.open({}, PeCouponsFormComponent);
+  }
 
   private couponGridItemPipe(coupon: PeCoupon) {
     return {
@@ -170,6 +178,13 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
       title: coupon.code,
       description: coupon.description,
       labels: [coupon.status],
+      selected: false,
+      actions: [
+        {
+          label: 'Edit',
+          callback: (id: string) => this.router.navigate(['../', id], { relativeTo: this.activatedRoute }),
+        },
+      ],
     };
   }
 
@@ -183,6 +198,8 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log('0.0.1-COUPONF-1.8');
+    
     this.getCouponsList();
 
     this.formGroup.valueChanges.pipe(
@@ -196,6 +213,10 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
+  addCoupon() {
+    this.router.navigate(['../add'], { relativeTo: this.activatedRoute })
+  }
+
   onFiltersChanged(event) {
     console.log(event);
   }
@@ -203,4 +224,5 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   onSearchChanged(string: string): void {
     console.log(string);
   }
+
 }

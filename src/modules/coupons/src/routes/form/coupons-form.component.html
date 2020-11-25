@@ -1,0 +1,42 @@
+<div class="coupons-form__wrapper">
+  <div class="coupons-form__header">
+    <button class="coupons-form__cancel">Cancel</button>
+    <span class="coupons-form__title">Create discount code</span>
+    <button class="coupons-form__done">Done</button>
+  </div>
+  <pe-coupons-expansion-panel>
+    <span class="pe-coupons-expansion-panel-header-title">Discount code</span>
+    <div class="pe-coupons-expansion-panel-content">
+
+      <!-- DISCOUNT CODE START -->
+      <pe-coupons-form-field>
+        <pe-coupons-form-field-label>Discount code</pe-coupons-form-field-label>
+        <pe-coupons-input placeholder="e.g. SPRINGSALE"></pe-coupons-input>
+        <pe-coupons-form-field-suffix>
+          <button>Generate code</button>
+        </pe-coupons-form-field-suffix>
+        <pe-coupons-form-field-subscript>Customers will enter this discount code at checkout.</pe-coupons-form-field-subscript>
+      </pe-coupons-form-field>
+      <!-- DISCOUNT CODE END -->
+
+      <pe-coupons-form-group>
+
+        <!-- TYPES START -->
+        <pe-coupons-form-field>
+          <pe-coupons-form-field-label>Types</pe-coupons-form-field-label>
+          <pe-coupons-input placeholder="e.g. SPRINGSALE"></pe-coupons-input>
+        </pe-coupons-form-field>
+        <!-- TYPES END -->
+
+        <!-- DISCOUNT VALUE START -->
+        <pe-coupons-form-field>
+          <pe-coupons-form-field-label>Discount value</pe-coupons-form-field-label>
+          <pe-coupons-input placeholder="Enter value"></pe-coupons-input>
+          <pe-coupons-form-field-suffix>Percentage (%)</pe-coupons-form-field-suffix>  
+        </pe-coupons-form-field>
+        <!-- DISCOUNT VALUE END -->
+      </pe-coupons-form-group>
+
+    </div>
+  </pe-coupons-expansion-panel>
+</div>

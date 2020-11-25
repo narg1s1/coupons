@@ -12,7 +12,7 @@ export enum PeCouponsStatusEnum {
 
 export enum PeCouponTypeAppliedToEnum {
   AllPpoducts = 'ALL_PRODUCTS',
-  SpecificCollections = 'SPECIFIC_COLLECTIONS',
+  SpecificCategories = 'SPECIFIC_CATEGORIES',
   SpecificProducts = 'SPECIFIC_PRODUCTS',
 }
 
@@ -32,7 +32,7 @@ export enum PeCouponTypeBuyXGetYGetDiscountTypesEnum {
 }
 
 export enum PeCouponTypeBuyXGetYItemTypeEnum {
-  SpecificCollections = 'SPECIFIC_COLLECTIONS',
+  SpecificCategories = 'SPECIFIC_CATEGORIES',
   SpecificProducts = 'SPECIFIC_PRODUCTS',
 }
 
@@ -67,7 +67,7 @@ export interface PeCouponType {
   discountValue?: number;
   freeShippingType?: PeCouponTypeFreeShippingTypeEnum | string;
   freeShippingToCountries?: string[];
-  appliesToCollections?: string[]; //
+  appliesToCategories?: string[]; //
   appliesToProducts?: string[]; //
   appliesTo?: PeCouponTypeAppliedToEnum | string;
   buyRequirementType: PeCouponTypeBuyXGetYBuyRequirementsTypeEnum | string;
@@ -80,7 +80,7 @@ export interface PeCouponType {
 }
 
 export interface PeCoupon {
-  appliesToCollections: string[];
+  appliesToCategories: string[];
   appliesToProducts: string[];
   businessId: string; 
   channelSetsIds: string[];
