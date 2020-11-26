@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, InjectionToken, Injector } from '@angular/core';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
-import { ComponentPortal, ComponentType } from '@angular/cdk/portal';
+import { ComponentPortal, ComponentType, PortalInjector } from '@angular/cdk/portal';
+import { Subject } from 'rxjs';
 
 interface PeOverlayConfig {
   panelClass?: string;
   hasBackdrop?: boolean;
   backdropClass?: string;
+  data?: any;
 }
 
 const DEFAULT_CONFIG: PeOverlayConfig = {
@@ -14,10 +16,15 @@ const DEFAULT_CONFIG: PeOverlayConfig = {
   panelClass: 'pe-coupons-overlay-panel'
 }
 
+export const PE_OVERLAY_DATA = new InjectionToken<any>('PE_OVERLAY_DATA');
+
 @Injectable()
 export class PeOverlayService {
 
-  constructor(private overlay: Overlay) { }
+  constructor(
+    private injector: Injector,
+    private overlay: Overlay
+  ) { }
 
   private getOverlayConfig(config: PeOverlayConfig): OverlayConfig {
     const positionStrategy = this.overlay.position()
@@ -40,10 +47,21 @@ export class PeOverlayService {
     return this.overlay.create(overlayConfig)
   }
 
+  private createInjector(config: PeOverlayConfig, dialogRef: PeOverlayRef): PortalInjector {
+    const injectionTokens = new WeakMap();
+
+    injectionTokens.set(PeOverlayRef, dialogRef);
+    injectionTokens.set(PE_OVERLAY_DATA, config.data);
+
+    return new PortalInjector(this.injector, injectionTokens);
+  }
+
   open(config: PeOverlayConfig, component: ComponentType<any>) {
-    const overlay = this.createOverlay({ ...DEFAULT_CONFIG, ...config });
-    const portal = new ComponentPortal(component);
+    const dialogConfig = { ...DEFAULT_CONFIG, ...config };
+    const overlay = this.createOverlay(dialogConfig);
     const dialogRef = new PeOverlayRef(overlay);
+    const injector = this.createInjector(dialogConfig, dialogRef)
+    const portal = new ComponentPortal(component, null, injector);
 
     overlay.attach(portal);
     overlay.backdropClick().subscribe(() => dialogRef.close());
@@ -55,9 +73,14 @@ export class PeOverlayService {
 
 export class PeOverlayRef {
 
+  afterClosed = new Subject<any>();
+
   constructor(private overlayRef: OverlayRef) { }
 
-  close(): void {
+  close(data?: any): void {
     this.overlayRef.dispose();
+
+    this.afterClosed.next(data);
+    this.afterClosed.complete();
   }
 }

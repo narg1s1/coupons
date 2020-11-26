@@ -8,15 +8,13 @@ input {
   font-family: inherit;
   outline: unset;
   
-  background-color: #111111 !important;
-  border-radius: 8px;
-  box-sizing: border-box;
-  caret-color: rgba(255, 255, 255, 0.95);
-  color: rgba(255, 255, 255, 0.95);
-  font-size: 20px;
-  font-weight: 400;
-  padding: 9px 10px !important;
-  line-height: 1.1;
+  background-color: transparent;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  padding: 0;
   width: 100%;
 
   &::placeholder {
@@ -39,7 +37,7 @@ input {
   color: rgba(255, 255, 255, 0.95);
   height: 46px;
   font-family: 'Roboto', sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.1;
   padding-left: 10px;

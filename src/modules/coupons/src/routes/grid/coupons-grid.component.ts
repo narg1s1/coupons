@@ -18,9 +18,9 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
 import { PeCoupon } from '../../misc/interfaces/coupon.model';
 import { PeCouponsApi } from '../../services/abstract.coupons.api';
-import { PeCouponsFormComponent } from '../form/coupons-form.component';
 
 import { PeOverlayRef, PeOverlayService } from '../../misc/components/overlay/overlay.service';
+import { PeCouponsFormComponent } from '../form/coupons-form.component';
 
 
 @Component({
@@ -115,7 +115,7 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
     {
       label: 'New Coupon',
       callback: () => {
-        this.router.navigate(['../add'], { relativeTo: this.activatedRoute });
+        this.open();
       },
     }
   ];
@@ -123,7 +123,7 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   public singleSelectedAction: PeDataGridSingleSelectedAction = {
     label: 'Open',
     callback: (id: string) => {
-      this.router.navigate(['../', id], { relativeTo: this.activatedRoute });
+      this.open(id);
     },
   };
 
@@ -162,14 +162,21 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
 
   constructor(
     private apiService: PeCouponsApi,
-    private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private router: Router,
     private overlayService: PeOverlayService,
   ) {}
 
-  open() {
-    let dialogRef: PeOverlayRef = this.overlayService.open({}, PeCouponsFormComponent);
+  open(couponId?: string) {
+    const data = { id: couponId };
+
+    const dialogRef = this.overlayService.open({ data: data }, PeCouponsFormComponent);
+
+    dialogRef.afterClosed.pipe(
+      tap(data => {
+        if (data) this.getCouponsList();
+      }),
+      takeUntil(this.destroyed$)
+    ).subscribe();
   }
 
   private couponGridItemPipe(coupon: PeCoupon) {
@@ -182,7 +189,7 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
       actions: [
         {
           label: 'Edit',
-          callback: (id: string) => this.router.navigate(['../', id], { relativeTo: this.activatedRoute }),
+          callback: (id: string) => this.open(id),
         },
       ],
     };
@@ -197,9 +204,7 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
     ).subscribe();
   }
 
-  ngOnInit() {
-    console.log('0.0.1-COUPONF-1.8');
-    
+  ngOnInit() {    
     this.getCouponsList();
 
     this.formGroup.valueChanges.pipe(
@@ -211,10 +216,6 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();
-  }
-
-  addCoupon() {
-    this.router.navigate(['../add'], { relativeTo: this.activatedRoute })
   }
 
   onFiltersChanged(event) {

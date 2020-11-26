@@ -17,9 +17,13 @@ button {
 
   &__header {
     align-items: center;
+    background-color: #24272e;
     display: flex;
     justify-content: space-between;
-    padding-top: 24px;
+    padding: 24px 16px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
 
   &__cancel,

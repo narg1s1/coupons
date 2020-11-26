@@ -35,19 +35,33 @@
   &__suffix {
     ::ng-deep {
       pe-coupons-form-field-suffix {
-        background-color: #1c1d1e;
-        color: #ffffff;
-        display: block;
-        font-family: 'Roboto', sans-serif;
-        font-size: 16px;
-        line-height: 1.38;
-        margin: -9px 0 -7px 0;
-        padding: 17px 16px;
-        white-space: nowrap;
+        button,
+        span {
+          background-color: #1c1d1e;
+          display: block;
+          font-family: 'Roboto', sans-serif;
+          font-size: 16px;
+          line-height: 1.38;
+          margin: -9px 0 -7px 0;
+          padding: 17px 16px;
+          white-space: nowrap;
+        }
 
         button {
-          color: #0091df;
-          font-size: inherit;
+          color: rgb(0, 145, 223);
+
+          &:disabled {
+            cursor: default;
+            color: rgba(0, 145, 223, .5);
+          }
+        }
+
+        span {
+          color: #ffffff;
+        }
+
+        .icon {
+          padding: 5px 14px 7px;
         }
       }
     }

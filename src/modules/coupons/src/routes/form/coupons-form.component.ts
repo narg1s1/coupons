@@ -1,4 +1,29 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { PebEnvService } from '@pe/builder-core';
+import { LocaleConstantsService } from '@pe/i18n';
+import { ReplaySubject } from 'rxjs';
+import { map, takeUntil, tap } from 'rxjs/operators';
+
+
+import { 
+  PeCouponTypeEnum,
+  PeCouponTypeAppliedToEnum,
+  PeCouponTypeMinimumRequirementsEnum,
+  PeCouponTypeCustomerEligibilityEnum,
+  PeCouponTypeFreeShippingTypeEnum,
+  PeCouponTypeBuyXGetYBuyRequirementsTypeEnum,
+  PeCouponTypeBuyXGetYItemTypeEnum,
+  PeCouponTypeBuyXGetYGetDiscountTypesEnum,
+  PeCouponsStatusEnum
+} from '../../misc/interfaces/coupon.model';
+import { PeCouponsApi } from '../../services/abstract.coupons.api';
+import { PeOverlayRef, PE_OVERLAY_DATA } from '../../misc/components/overlay/overlay.service';
+import { PeCouponsDatepickerComponent } from '../../misc/components/coupons-datepicker/coupons-datepicker.component';
+
+import * as moment_ from 'moment';
+const moment = moment_;
 
 @Component({
   selector: 'pe-coupons-form',
@@ -6,6 +31,590 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./coupons-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PeCouponsFormComponent {
+export class PeCouponsFormComponent implements OnInit, OnDestroy {
+
+  readonly destroyed$ = new ReplaySubject<boolean>();
+
+  coupon;
+
+  edit: boolean = false;
+
+  categories;
+  countries;
+  customers;
+  groupsOfCustomers;
+  products;
+
+  types = [
+    { label: 'Percentage', value: PeCouponTypeEnum.Percentage },
+    { label: 'Fixed amount', value: PeCouponTypeEnum.FixedAmount },
+    { label: 'Free shipping', value: PeCouponTypeEnum.FreeShipping },
+    { label: 'Buy X get Y', value: PeCouponTypeEnum.BuyXGetY }
+  ];
+
+  appliesTo = [
+    { label: 'All products', value: PeCouponTypeAppliedToEnum.AllPpoducts },
+    { label: 'Specific categories', value: PeCouponTypeAppliedToEnum.SpecificCategories },
+    { label: 'Specific products', value: PeCouponTypeAppliedToEnum.SpecificProducts }
+  ];
+
+  minimumRequirements = [
+    { label: 'None', value: PeCouponTypeMinimumRequirementsEnum.None },
+    { label: 'Minimum purchase amount ($)', value: PeCouponTypeMinimumRequirementsEnum.MinimumPurchaseAmount },
+    { label: 'Minimum quantity of items', value: PeCouponTypeMinimumRequirementsEnum.MinimumQuantityOfItems }
+  ];
+
+  customerEligibility = [
+    { label: 'Everyone', value: PeCouponTypeCustomerEligibilityEnum.Everyone },
+    { label: 'Specific groups of customers', value: PeCouponTypeCustomerEligibilityEnum.SpecificGroupsOfCustomers },
+    { label: 'Specific customers', value: PeCouponTypeCustomerEligibilityEnum.SpecificCustomers }
+  ];
+
+  freeShippingType = [
+    { label: 'All countries', value: PeCouponTypeFreeShippingTypeEnum.AllCountries },
+    { label: 'Selected countries', value: PeCouponTypeFreeShippingTypeEnum.SelectedCountries },
+  ];
+
+  buyRequirementType = [
+    { label: 'Minimum quantity of items', value: PeCouponTypeBuyXGetYBuyRequirementsTypeEnum.MinimumQuantityOfItems },
+    { label: 'Minimum purchase amount', value: PeCouponTypeBuyXGetYBuyRequirementsTypeEnum.MinimumPurchaseAmount },
+  ];
+
+  buyOrGetType = [
+    { label: 'Specific categories', value: PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories },
+    { label: 'Specific products', value: PeCouponTypeBuyXGetYItemTypeEnum.SpecificProducts }
+  ];
+
+  atADiscountedValue = [
+    { label: 'Percentage', value: PeCouponTypeBuyXGetYGetDiscountTypesEnum.Percentage },
+    { label: 'Free', value: PeCouponTypeBuyXGetYGetDiscountTypesEnum.Free },
+  ];
+
+  couponForm: FormGroup = this.formBuilder.group({
+    businessId: [this.pebEnvService.businessId],
+    code: [],
+    customerEligibility: [PeCouponTypeCustomerEligibilityEnum.Everyone],
+    customerEligibilityCustomerGroups: [[]],
+    customerEligibilitySpecificCustomers: [[]],
+    description: ['description'], // TODO: it is necessary to form a description based on the data in the form 
+    endDate: [],
+    endDateDate: [],
+    endDateTime: [],
+    setEndDate: [false],
+    startDate: [],
+    startDateDate: [],
+    startDateTime: [],
+    limits: this.formBuilder.group({
+      limitOneUsePerCustomer: [false],
+      limitUsage: [false],
+      limitUsageAmount: [],
+    }),
+    name: ['name'], // ???
+    type: this.formBuilder.group({
+      appliesTo: [PeCouponTypeAppliedToEnum.AllPpoducts],
+      appliesToProducts: [[]],
+      appliesToCategories: [[]],
+      buyRequirementType: [PeCouponTypeBuyXGetYBuyRequirementsTypeEnum.MinimumQuantityOfItems],
+      buyQuantity: [],
+      buyType: [PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories],
+      buyProducts: [[]],
+      buyCategories: [[]],
+      discountValue: [],
+      freeShippingType: [PeCouponTypeFreeShippingTypeEnum.AllCountries],
+      freeShippingToCountries: [[]],
+      getType: [PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories],
+      getQuantity: [],
+      getProducts: [[]],
+      getCategories: [[]],
+      getDiscountType: [PeCouponTypeBuyXGetYGetDiscountTypesEnum.Percentage],
+      getDiscountValue: [],
+      maxUsesPerOrder: [false],
+      maxUsesPerOrderValue: [],
+      minimumRequirements: [PeCouponTypeMinimumRequirementsEnum.None],
+      minimumRequirementsValue: [],
+      type: [PeCouponTypeEnum.Percentage],
+    }),
+  });
+
+  constructor(
+    private changeDetectorRef: ChangeDetectorRef,
+    private formBuilder: FormBuilder,
+    private localConstantsService: LocaleConstantsService,
+    private matDialog: MatDialog,
+    private peOverlayRef: PeOverlayRef,
+    private peApiService: PeCouponsApi,
+    private pebEnvService: PebEnvService,
+    @Inject(PE_OVERLAY_DATA) public overlayData: any
+  ) {}
+
+  ngOnInit() {
+    const couponId = this.overlayData.id;
+
+    if (couponId) this.getCoupon(couponId);
+
+    this.getCategories();
+    this.getCountries();
+    this.getCustomers();
+    this.getGroupsOfCustomers();
+    this.getProducts();
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
+
+  addToArray(element: any, array: any): void {
+    const elementId = element?.id ?? element?._id;
+
+    if (!array.some(element => element === elementId || element === elementId)) {
+      array.push(elementId);
+    };
+  }
+
+  getFromArray(array: any, id: string) {
+    return array.find(element => element.id === id || element._id === id);
+  }
+
+  removeFromArray(array: any, index: number): void {
+    array.splice(index, 1);
+  }
+
+  getCategories() {
+    this.peApiService.getCategories().pipe(
+      map(request => request.data.getCategories.filter(categories => !!categories)),
+      tap(categories => this.categories = categories),
+      takeUntil(this.destroyed$)
+    ).subscribe();
+  }
+
+  getCountries() {
+    const countryList = this.localConstantsService.getCountryList();
+
+    this.countries = [];
+
+    Object.keys(countryList).map(countryKey => {
+      this.countries.push({
+        id: countryKey,
+        title: Array.isArray(countryList[countryKey]) ? countryList[countryKey][0] : countryList[countryKey]
+      });
+    })
+  }
+
+  getCoupon(couponId: string) {
+    this.peApiService.getCouponById(couponId).pipe(
+      tap((coupon) => {
+        this.edit = true;
+
+        this.coupon = coupon;
+        this.couponForm.patchValue(coupon);
+        this.couponForm.controls.code.disable();
+
+        if (coupon.startDate) {
+          this.couponForm.get('startDateDate').patchValue(moment(coupon.startDate).format('DD.MM.YYYY'));
+          this.couponForm.get('startDateTime').patchValue(moment(coupon.startDate).format('hh:mm'));
+        }
+        
+        if (coupon.endDate) {
+          this.couponForm.get('setEndDate').patchValue(coupon.endDate ? true : false);
+
+          this.couponForm.get('endDateDate').patchValue(moment(coupon.endDate).format('DD.MM.YYYY'));
+          this.couponForm.get('endDateTime').patchValue(moment(coupon.endDate).format('hh:mm'));
+        }
+
+        this.changeDetectorRef.markForCheck();
+      }),
+      takeUntil(this.destroyed$),
+    ).subscribe();
+  }
+
+  getCustomers() {
+    this.peApiService.getContacts().pipe(
+      map(request => {
+        return request.data.contacts.nodes.map(contact => {
+          const customer = { id: contact.id, title: null };
+          contact.contactFields.nodes.map(node => customer[node.field.name] = node.value);
+          customer.title = customer['email'] ?? customer['mobilePhone'];
+          return customer;
+        })
+      }),
+      tap(customers => this.customers = customers),
+      takeUntil(this.destroyed$)
+    ).subscribe();
+  }
+
+  getGroupsOfCustomers() {
+    this.peApiService.getContactGroups().pipe(
+      map(request => request.data.groups.nodes.map(group => {
+        return { 
+          id: group.id,
+          title: group.name
+        } 
+      })),
+      tap(groupsOfCustomers => this.groupsOfCustomers = groupsOfCustomers),
+      takeUntil(this.destroyed$)
+    ).subscribe();
+  }
+  
+  getProducts() {
+    this.peApiService.getProducts().pipe(
+      map(request => request.data.getProducts.products.filter(product => !!product)),
+      tap(products => this.products = products),
+      takeUntil(this.destroyed$)
+    ).subscribe();
+  }
+
+  generateCode() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    let result = '';
+
+    for (let i = 0; i < 12; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+    this.couponForm.get('code').patchValue(result.toUpperCase());
+  }
+
+  onClose() {
+    this.peOverlayRef.close();
+  }
+
+  openDatepicker(controlName: string): void {
+    const dialog = this.matDialog.open(PeCouponsDatepickerComponent);
+    dialog.afterClosed().pipe(
+      takeUntil(this.destroyed$),
+      tap(value => {
+        if (value) {
+          const date = moment(value).format('DD.MM.YYYY');
+
+          this.couponForm.get(controlName).patchValue(date)
+        }
+      }),
+    ).subscribe();
+  }
+
+  // 
+  // start shit
+  // 
+
+  onSave() {
+    const couponId = this.coupon?._id;
+
+    const controls = this.couponForm.controls;
+    controls.code.enable();
+
+    this.couponForm.clearValidators();
+
+    controls.code.setValidators([Validators.required]);
+    controls.code.updateValueAndValidity();
+    controls.businessId.setValidators([Validators.required]);
+    controls.businessId.updateValueAndValidity();
+    controls.description.setValidators([Validators.required]);
+    controls.description.updateValueAndValidity();
+    controls.name.setValidators([Validators.required]);
+    controls.name.updateValueAndValidity();
+    controls.startDateDate.setValidators([Validators.required]);
+    controls.startDateDate.updateValueAndValidity();
+    controls.startDateTime.setValidators([Validators.required]);
+    controls.startDateTime.updateValueAndValidity();
+
+    const value = this.couponForm.value;
+
+    value.startDate = moment(`${value.startDateDate} ${value.startDateTime}`, 'DD.MM.YYYY hh:mm').toDate();
+
+    if (value.setEndDate) {
+      controls.endDateDate.setValidators([Validators.required]);
+      controls.endDateDate.updateValueAndValidity();
+
+      value.endDate = moment(`${value.endDateDate} ${value.endDateTime}`, 'DD.MM.YYYY hh:mm').toDate();
+    }
+
+    if (value.customerEligibility === PeCouponTypeCustomerEligibilityEnum.SpecificCustomers) {
+      controls.customerEligibilitySpecificCustomers.setValidators([Validators.required]);
+      controls.customerEligibilitySpecificCustomers.updateValueAndValidity();
+    }
+
+    if (value.customerEligibility === PeCouponTypeCustomerEligibilityEnum.SpecificGroupsOfCustomers) {
+      controls.customerEligibilityCustomerGroups.setValidators([Validators.required]);
+      controls.customerEligibilityCustomerGroups.updateValueAndValidity();
+    }
+
+    let body;
+
+    if (this.couponForm.value.type.type === PeCouponTypeEnum.Percentage) body = this.getPercentage(value);
+    if (this.couponForm.value.type.type === PeCouponTypeEnum.FixedAmount) body = this.getFixedAmount(value);
+    if (this.couponForm.value.type.type === PeCouponTypeEnum.FreeShipping) body = this.getFreeShipping(value);
+    if (this.couponForm.value.type.type === PeCouponTypeEnum.BuyXGetY) body = this.getBuyXGetY(value);
+
+    if (this.couponForm.valid) {
+      if (couponId) {
+        this.peApiService.updateCoupon(couponId, body).pipe(
+          takeUntil(this.destroyed$),
+        ).subscribe(() => this.peOverlayRef.close());
+      } else {
+        this.peApiService.createCoupon(body).pipe(
+          takeUntil(this.destroyed$),
+        ).subscribe(() => this.peOverlayRef.close(true));
+      }
+    }
+  }
+
+  getPercentage(value) {
+    const body = {
+      code: value.code,
+      businessId: value.businessId,
+      endDate: value.endDate ?? null,
+      description: value.description,
+      name: value.name,
+      startDate: value.startDate,
+      limits: {
+        limitOneUsePerCustomer: value.limits.limitOneUsePerCustomer ?? false,
+        limitUsage: value.limits.limitUsage ?? false,
+        limitUsageAmount: Number(value.limits.limitUsageAmount) ?? null,
+      },
+      channelSetsIds: value.channelSetsIds ?? [],
+      type: {
+        type: value.type.type,
+        discountValue: Number(value.type.discountValue),
+        appliesTo: value.type.appliesTo,
+        appliesToProducts: value.type.appliesToProducts ?? [],
+        appliesToCategories: value.type.appliesToCategories ?? [],
+        minimumRequirements: value.type.minimumRequirements ?? false,
+      },
+      status: value.status ?? PeCouponsStatusEnum.Unactive,
+      customerEligibility: value.customerEligibility,
+      customerEligibilitySpecificCustomers: value.customerEligibilitySpecificCustomers ?? [],
+      customerEligibilityCustomerGroups: value.customerEligibilityCustomerGroups ?? []
+    }
+
+    
+    const limits = (this.couponForm.get('limits') as FormGroup).controls;
+    const type = (this.couponForm.get('type') as FormGroup).controls;
+
+    if (value.limits.limitOneUsePerCustomer) {
+      limits.limitUsageAmount.setValidators([Validators.required])
+      limits.limitUsageAmount.updateValueAndValidity();
+    };
+
+    type.discountValue.setValidators([Validators.required]);
+    type.discountValue.updateValueAndValidity();
+
+    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificCategories) {
+      type.appliesToCategories.setValidators([Validators.required]);
+      type.appliesToCategories.updateValueAndValidity();
+    }
+
+    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificProducts) {
+      type.appliesToProducts.setValidators([Validators.required]);
+      type.appliesToProducts.updateValueAndValidity();
+    }
+
+    if (value.type.minimumRequirements !== PeCouponTypeMinimumRequirementsEnum.None) {
+      body.type['minimumRequirementsValue'] = Number(value.type.minimumRequirementsValue);
+
+      type.minimumRequirementsValue.setValidators([Validators.required]);
+      type.minimumRequirementsValue.updateValueAndValidity();
+    }
+
+    return body;
+  }
+
+  getBuyXGetY(value) {
+    const limits = (this.couponForm.get('limits') as FormGroup).controls;
+    const type = (this.couponForm.get('type') as FormGroup).controls;
+
+    if (value.limits.limitOneUsePerCustomer) {
+      limits.limitUsageAmount.setValidators([Validators.required])
+      limits.limitUsageAmount.updateValueAndValidity();
+    };
+
+    type.buyQuantity.setValidators([Validators.required]);
+    type.buyQuantity.updateValueAndValidity();
+
+    if (value.type.buyType === PeCouponTypeBuyXGetYItemTypeEnum.SpecificProducts) {
+      type.buyProducts.setValidators([Validators.required]);
+      type.buyProducts.updateValueAndValidity();
+    }
+
+    if (value.type.buyType === PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories) {
+      type.buyCategories.setValidators([Validators.required]);
+      type.buyCategories.updateValueAndValidity();
+    }
+
+    type.getQuantity.setValidators([Validators.required]);
+    type.getQuantity.updateValueAndValidity();
+
+    if (value.type.getType === PeCouponTypeBuyXGetYItemTypeEnum.SpecificProducts) {
+      type.getProducts.setValidators([Validators.required]);
+      type.getProducts.updateValueAndValidity();
+    }
+
+    if (value.type.getType === PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories) {
+      type.getCategories.setValidators([Validators.required]);
+      type.getCategories.updateValueAndValidity();
+    }
+
+    if (value.type.getDiscountType === PeCouponTypeBuyXGetYGetDiscountTypesEnum.Percentage) {
+      type.getDiscountValue.setValidators([Validators.required]);
+      type.getDiscountValue.updateValueAndValidity();
+    }
+
+    if (value.type.maxUsesPerOrder) {
+      type.maxUsesPerOrderValue.setValidators([Validators.required]);
+      type.maxUsesPerOrderValue.updateValueAndValidity();
+    }
+    
+    return {
+      code: value.code,
+      businessId: value.businessId,
+      endDate: value.endDate ?? null,
+      description: value.description,
+      name: value.description,
+      startDate: value.startDate,
+      limits: {
+        limitOneUsePerCustomer: value.limits.limitOneUsePerCustomer ?? false,
+        limitUsage: value.limits.limitUsage ?? false,
+        limitUsageAmount: Number(value.limits.limitUsageAmount) ?? null
+      },
+      channelSetsIds: value.channelSetsIds ?? [],
+      type: {
+        type: value.type.type,
+        buyRequirementType: value.type.buyRequirementType,
+        buyQuantity: Number(value.type.buyQuantity),
+        buyType: value.type.buyType,
+        buyProducts: value.type.buyProducts ?? [],
+        buyCategories: value.type.buyCategories ?? [],
+        getQuantity: Number(value.type.getQuantity),
+        getType: value.type.getType,
+        getProducts: value.type.getProducts ?? [],
+        getCategories: value.type.getCategories ?? [],
+
+        getDiscountType: value.type.getDiscountType,
+        getDiscountValue: Number(value.type.getDiscountValue),
+        maxUsesPerOrder: value.type.maxUsesPerOrder ?? false,
+        maxUsesPerOrderValue: Number(value.type.maxUsesPerOrderValue)
+      },
+      status: value.status ?? PeCouponsStatusEnum.Unactive,
+      customerEligibility: value.customerEligibility,
+      customerEligibilitySpecificCustomers: value.customerEligibilitySpecificCustomers ?? [],
+      customerEligibilityCustomerGroups: value.customerEligibilityCustomerGroups ?? []
+    }
+  } 
+
+  getFixedAmount(value) {
+    const body = {
+      code: value.code,
+      businessId: value.businessId,
+      description: value.description,
+      endDate: value.endDate ?? null,
+      name: value.name,
+      startDate: value.startDate,
+      limits: {
+        limitOneUsePerCustomer: value.limits.limitOneUsePerCustomer ?? false,
+        limitUsage: value.limits.limitUsage ?? false,
+        limitUsageAmount: Number(value.limits.limitUsageAmount) ?? null,
+      },
+      channelSetsIds: value.channelSetsIds ?? [],
+      type: {
+        type: value.type.type,
+        discountValue: Number(value.type.discountValue),
+        appliesTo: value.type.appliesTo,
+        appliesToProducts: value.type.appliesToProducts ?? [],
+        appliesToCategories: value.type.appliesToCategories ?? [],
+        minimumRequirements: value.type.minimumRequirements ?? false,
+      },
+      status: value.status ?? PeCouponsStatusEnum.Unactive,
+      customerEligibility: value.customerEligibility ?? null,
+      customerEligibilitySpecificCustomers: value.customerEligibilitySpecificCustomers ?? [],
+      customerEligibilityCustomerGroups: value.customerEligibilityCustomerGroups ?? []
+    };
+
+    const limits = (this.couponForm.get('limits') as FormGroup).controls;
+    const type = (this.couponForm.get('type') as FormGroup).controls;
+
+    if (value.limits.limitOneUsePerCustomer) {
+      limits.limitUsageAmount.setValidators([Validators.required])
+      limits.limitUsageAmount.updateValueAndValidity();
+    };
+
+    type.discountValue.setValidators([Validators.required]);
+    type.discountValue.updateValueAndValidity();
+
+    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificCategories) {
+      type.appliesToCategories.setValidators([Validators.required]);
+      type.appliesToCategories.updateValueAndValidity();
+    }
+
+    if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificProducts) {
+      type.appliesToProducts.setValidators([Validators.required]);
+      type.appliesToProducts.updateValueAndValidity();
+    }
+
+    if (value.type.minimumRequirements !== PeCouponTypeMinimumRequirementsEnum.None) {
+      body.type['minimumRequirementsValue'] = Number(value.type.minimumRequirementsValue);
+
+      type.minimumRequirementsValue.setValidators([Validators.required]);
+      type.minimumRequirementsValue.updateValueAndValidity();
+    }
+
+    return body;
+  }
+
+  getFreeShipping(value) {
+    const body = {
+      code: value.code,
+      businessId: value.businessId,
+      endDate: value.endDate ?? null,
+      description: value.description,
+      name: value.name,
+      startDate: value.startDate,
+      limits: {
+        limitOneUsePerCustomer: value.limits.limitOneUsePerCustomer ?? false,
+        limitUsage: value.limits.limitUsage ?? false,
+        limitUsageAmount: Number(value.limits.limitUsageAmount) ?? null
+      },
+      channelSetsIds: value.channelSetsIds ?? [],
+      type: {
+        type: value.type.type,
+        freeShippingToCountries: value.type.freeShippingToCountries ?? [],
+        freeShippingType: value.type.freeShippingType ?? null,
+        excludeShippingRatesOverCertainAmount: value.type.excludeShippingRatesOverCertainAmount ?? false,
+        excludeShippingRatesOverCertainAmountValue: Number(value.type.excludeShippingRatesOverCertainAmountValue) ?? null,
+        minimumRequirements: value.type.minimumRequirements ?? false,
+      },
+      status: value.status ?? PeCouponsStatusEnum.Unactive,
+      customerEligibility: value.customerEligibility ?? null,
+      customerEligibilitySpecificCustomers: value.customerEligibilitySpecificCustomers ?? [],
+      customerEligibilityCustomerGroups: value.customerEligibilityCustomerGroups ?? []
+    }
+
+    const limits = (this.couponForm.get('limits') as FormGroup).controls;
+    const type = (this.couponForm.get('type') as FormGroup).controls;
+
+    if (value.limits.limitOneUsePerCustomer) {
+      limits.limitUsageAmount.setValidators([Validators.required])
+      limits.limitUsageAmount.updateValueAndValidity();
+    };
+
+    if (value.type.freeShippingType === PeCouponTypeFreeShippingTypeEnum.SelectedCountries) {
+      type.freeShippingToCountries.setValidators([Validators.required])
+      type.freeShippingToCountries.updateValueAndValidity();
+    }
+
+    if (value.type.excludeShippingRatesOverCertainAmount) {
+      type.excludeShippingRatesOverCertainAmountValue.setValidators([Validators.required])
+      type.excludeShippingRatesOverCertainAmountValue.updateValueAndValidity();
+    }
+
+    if (value.type.minimumRequirements !== PeCouponTypeMinimumRequirementsEnum.None) {
+      body.type['minimumRequirementsValue'] = Number(value.type.minimumRequirementsValue);
+
+      type.minimumRequirementsValue.setValidators([Validators.required]);
+      type.minimumRequirementsValue.updateValueAndValidity();
+    }
+
+    return body;
+  }
 
 }

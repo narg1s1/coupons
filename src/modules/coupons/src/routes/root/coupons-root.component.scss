@@ -10,7 +10,8 @@
   background-color: #24272e;
   border-radius: 16px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.5);
-  height: 100%;
+  height: auto;
+  overflow: auto;
   margin-top: 63px;
   margin-bottom: 42px;
   max-height: calc(100% - 105px);

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 
@@ -15,12 +15,24 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     }
   ]
 })
-export class PeCouponsInputComponent implements ControlValueAccessor {
+export class PeCouponsInputComponent implements ControlValueAccessor, OnInit {
 
   @ViewChild('input', { static: true }) elementRef: ElementRef;
 
   @Input() placeholder?: string = '';
   @Input() type?: string = 'text';
+
+  mask: any | boolean = false;
+
+  ngOnInit() {
+    if (this.type === 'tim') {
+      this.mask = [/\d/, /\d/, ':', /\d/, /\d/];
+    }
+
+    if (this.type === 'dat') {
+      this.mask = [/\d/, /\d/, '.', /\d/, /\d/, '.', /\d/, /\d/, /\d/, /\d/];
+    }
+  }
 
   registerOnChange(fn: (value: any) => void): void {
     this.onChange = fn;

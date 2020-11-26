@@ -1,14 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PeCouponsEditComponent } from './routes/edit/coupons-edit.component';
 
 import { PeCouponsGridComponent } from './routes/grid/coupons-grid.component';
-import { PeCouponsComponent } from './routes/root/coupons-root.component';
+import { PeCouponsRootComponent } from './routes/root/coupons-root.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: PeCouponsComponent,
+    component: PeCouponsRootComponent,
     children: [
       {
         path: '',
@@ -18,14 +17,6 @@ const routes: Routes = [
       {
         path: 'list',
         component: PeCouponsGridComponent,
-      },
-      {
-        path: ':couponId',
-        component: PeCouponsEditComponent,
-      },
-      {
-        path: 'add',
-        component: PeCouponsEditComponent,
       },
     ],
   },
