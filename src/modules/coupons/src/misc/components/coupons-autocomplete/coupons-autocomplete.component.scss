@@ -1,5 +1,15 @@
 :host {
   width: 100%;
+
+  &.ng-invalid {
+    input {
+      color: #eb4653;
+
+      &::placeholder {
+        color: rgba(235, 70, 83, .5);
+      }
+    }
+  }
 }
 
 input {

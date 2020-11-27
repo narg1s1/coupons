@@ -49,6 +49,21 @@ button {
     margin: 0 16px;
     text-align: center;
     width: 100%;
+  }  
+}
+
+.error {
+  align-items: center;
+  background-color: #eb4653;
+  border-radius: 10px;
+  display: flex;
+  padding: 9px 16px;
+  margin-top: 12px;
+
+  span {
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 1.38;
+    margin-left: 9px;
   }
-  
 }

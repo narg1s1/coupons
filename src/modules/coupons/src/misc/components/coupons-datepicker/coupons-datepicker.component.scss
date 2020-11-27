@@ -1,3 +1,10 @@
+::ng-deep {
+  .mat-dialog-container {
+    background-color: #4e4e4e !important;
+    padding: 24px !important;
+  }
+}
+
 .datepicker {
 
   &__header {
@@ -22,6 +29,8 @@
   }
 
   &__calendar {
+    background-color: transparent !important;
+    width: 347px;
 
     ::ng-deep {
       .mat-calendar-table-header-divider::after {
@@ -57,53 +66,4 @@
     }
   }
 
-  &__calendar-time {
-    width: 100%;
-    padding-left: 12px;
-    padding-right: 12px;
-    padding-top: 24px;
-    border-top: 1px solid #979797;
-    box-sizing: border-box;
-
-    mat-form-field {
-      width: 100%;
-      font-size: 15px;
-    }
-
-    ::ng-deep {
-      .mat-form-field {
-        &:not(.mat-form-field-invalid) {
-          .mat-form-field-label {
-            color: #adadad;
-          }
-        }
-      }
-
-      .mat-form-field-label-wrapper {
-        padding-top: 18px !important;
-      }
-
-      .mat-input-element {
-        caret-color: #ffffff;
-      }
-    }
-  }
-
-  &__button {
-    margin-top: 12px;
-    border-radius: 12px;
-    padding: 12px;
-    text-align: center;
-    width: 100%;
-    box-sizing: border-box;
-    cursor: pointer;
-
-    &-apply {
-      background-color: #0371e2;
-    }
-
-    &-cancel {
-      background-color: #86868b;
-    }
-  }
 }

@@ -22,13 +22,19 @@
     position: relative;
     width: 100%;
 
-    ::ng-deep pe-coupons-form-field-label {
-      color: rgba(255, 255, 255, 0.75);
-      font-size: 14px;
-      left: 16;
-      line-height: 1.09;
-      top: 0;
-      position: absolute;
+    ::ng-deep {
+      pe-coupons-form-field-label {
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 14px;
+        left: 16;
+        line-height: 1.09;
+        top: 0;
+        position: absolute;
+
+        &.ng-invalid {
+          color: #eb4653;
+        }
+      }
     }
   }
 

@@ -11,14 +11,16 @@
   
         <!-- DISCOUNT CODE START -->
         <pe-coupons-form-field>
-          <pe-coupons-form-field-label>Discount code</pe-coupons-form-field-label>
-          <pe-coupons-input placeholder="e.g. SPRINGSALE" formControlName="code"></pe-coupons-input>
+          <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('code').invalid">Discount code</pe-coupons-form-field-label>
+          <pe-coupons-input type="text" placeholder="e.g. SPRINGSALE" formControlName="code"></pe-coupons-input>
           <pe-coupons-form-field-suffix>
             <button (click)="generateCode()" [disabled]="couponForm.get('code').disabled">Generate code</button>
           </pe-coupons-form-field-suffix>
           <pe-coupons-form-field-subscript>Customers will enter this discount code at checkout.</pe-coupons-form-field-subscript>
         </pe-coupons-form-field>
         <!-- DISCOUNT CODE END -->
+
+        <ng-container *ngIf="couponForm.get('code').invalid" [ngTemplateOutlet]="error"></ng-container>
   
         <pe-coupons-form-group formGroupName="type">
           <!-- TYPES START -->
@@ -30,8 +32,8 @@
   
           <!-- DISCOUNT VALUE START -->
           <pe-coupons-form-field *ngIf="couponForm.value.type.type === 'PERCENTAGE' || couponForm.value.type.type === 'FIXED_AMOUNT'">
-            <pe-coupons-form-field-label>Discount value</pe-coupons-form-field-label>
-            <pe-coupons-input formControlName="discountValue" placeholder="Enter value"></pe-coupons-input>
+            <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('type').get('discountValue').invalid">Discount value</pe-coupons-form-field-label>
+            <pe-coupons-input [max]="couponForm.value.type.type === 'PERCENTAGE' ? 100 : null" formControlName="discountValue" placeholder="Enter value"></pe-coupons-input>
             <pe-coupons-form-field-suffix>
               <span *ngIf="couponForm.value.type.type === 'PERCENTAGE'">Percentage (%)</span>
               <span *ngIf="couponForm.value.type.type === 'FIXED_AMOUNT'">Dollars ($)</span>
@@ -40,93 +42,122 @@
           <!-- DISCOUNT VALUE END -->
         </pe-coupons-form-group>
 
-        <pe-coupons-form-group *ngIf="couponForm.value.type.type === 'PERCENTAGE' || couponForm.value.type.type === 'FIXED_AMOUNT'">
-          <!-- APPLIES TO START -->
-          <pe-coupons-form-field formGroupName="type">
-            <pe-coupons-form-field-label>Applies to</pe-coupons-form-field-label>
-            <pe-coupons-select formControlName="appliesTo" [options]="appliesTo"></pe-coupons-select>
-          </pe-coupons-form-field>
-          <!-- APPLIES TO END -->
+        <ng-container *ngIf="(couponForm.value.type.type === 'PERCENTAGE' || couponForm.value.type.type === 'FIXED_AMOUNT') && couponForm.get('type').get('discountValue').invalid" [ngTemplateOutlet]="error"></ng-container>
 
-          <!-- ADD CATEGORIES START -->
-          <ng-container 
-            *ngIf="categories && couponForm.value.type.appliesTo === 'SPECIFIC_CATEGORIES'"
-            [ngTemplateOutlet]="searchCategories"
-            [ngTemplateOutletContext]="{ control: couponForm.get('type').get('appliesToCategories') }"
-          ></ng-container>
-          <!-- ADD CATEGORIES END -->
+        <ng-container *ngIf="couponForm.value.type.type === 'PERCENTAGE' || couponForm.value.type.type === 'FIXED_AMOUNT'">
+          <pe-coupons-form-group>
+            <!-- APPLIES TO START -->
+            <pe-coupons-form-field formGroupName="type">
+              <pe-coupons-form-field-label>Applies to</pe-coupons-form-field-label>
+              <pe-coupons-select formControlName="appliesTo" [options]="appliesTo"></pe-coupons-select>
+            </pe-coupons-form-field>
+            <!-- APPLIES TO END -->
+  
+            <!-- ADD CATEGORIES START -->
+            <ng-container 
+              *ngIf="categories && couponForm.value.type.appliesTo === 'SPECIFIC_CATEGORIES'"
+              [ngTemplateOutlet]="searchCategories"
+              [ngTemplateOutletContext]="{ control: couponForm.get('type').get('appliesToCategories') }"
+            ></ng-container>
+            <!-- ADD CATEGORIES END -->
+  
+            <!-- ADD PRODUCTS START -->
+            <ng-container 
+              *ngIf="products && couponForm.value.type.appliesTo === 'SPECIFIC_PRODUCTS'"
+              [ngTemplateOutlet]="searchProducts"
+              [ngTemplateOutletContext]="{ control: couponForm.get('type').get('appliesToProducts') }"
+            ></ng-container>
+            <!-- ADD PRODUCTS END -->
+          </pe-coupons-form-group>
+  
+          <ng-container *ngIf="couponForm.get('type').get('appliesToCategories').invalid || couponForm.get('type').get('appliesToProducts').invalid" [ngTemplateOutlet]="error"></ng-container>
+        </ng-container>
 
-          <!-- ADD PRODUCTS START -->
-          <ng-container 
-            *ngIf="products && couponForm.value.type.appliesTo === 'SPECIFIC_PRODUCTS'"
-            [ngTemplateOutlet]="searchProducts"
-            [ngTemplateOutletContext]="{ control: couponForm.get('type').get('appliesToProducts') }"
-          ></ng-container>
-          <!-- ADD PRODUCTS END -->
-        </pe-coupons-form-group>
+        <ng-container *ngIf="couponForm.value.type.type === 'FREE_SHIPPING'">
+          <pe-coupons-form-group formGroupName="type">
+  
+            <!-- COUNTRIES START -->
+            <pe-coupons-form-field>
+              <pe-coupons-form-field-label>Countries</pe-coupons-form-field-label>
+              <pe-coupons-select formControlName="freeShippingType" [options]="freeShippingType"></pe-coupons-select>
+            </pe-coupons-form-field>
+            <!-- COUNTRIES END -->
+  
+            <!-- ADD COUNTRIES START -->
+            <pe-coupons-form-field *ngIf="couponForm.value.type.freeShippingType === 'SELECTED_COUNTRIES'">
+              <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('type').get('freeShippingToCountries').invalid">Add countries</pe-coupons-form-field-label>
+              <pe-coupons-autocomplete
+                [class.ng-invalid]="couponForm.get('type').get('freeShippingToCountries').invalid" 
+                placeholder="Search countries" 
+                [items]="countries" 
+                (onSelected)="addToArray($event, couponForm.value.type.freeShippingToCountries)">
+              </pe-coupons-autocomplete>
+              <pe-coupons-form-field-suffix>
+                <button>Add country</button>
+              </pe-coupons-form-field-suffix>
+            </pe-coupons-form-field>
+            <pe-coupons-list>
+              <pe-coupons-list-item 
+                *ngFor="let countryId of couponForm.value.type.freeShippingToCountries; let i = index"
+                (onRemove)="removeFromArray(couponForm.value.type.freeShippingToCountries, i)"
+              >{{ getFromArray(countries, countryId)?.title }}</pe-coupons-list-item>
+            </pe-coupons-list>
+            <!-- ADD COUNTRIES END -->
+          </pe-coupons-form-group>
+  
+          <ng-container *ngIf="couponForm.get('type').get('freeShippingToCountries').invalid" [ngTemplateOutlet]="error"></ng-container>
+        </ng-container>
 
-        <pe-coupons-form-group *ngIf="couponForm.value.type.type === 'FREE_SHIPPING'" formGroupName="type">
-
-          <!-- COUNTRIES START -->
-          <pe-coupons-form-field>
-            <pe-coupons-form-field-label>Countries</pe-coupons-form-field-label>
-            <pe-coupons-select formControlName="freeShippingType" [options]="freeShippingType"></pe-coupons-select>
-          </pe-coupons-form-field>
-          <!-- COUNTRIES END -->
-
-          <!-- ADD COUNTRIES START -->
-          <pe-coupons-form-field *ngIf="couponForm.value.type.freeShippingType === 'SELECTED_COUNTRIES'">
-            <pe-coupons-form-field-label>Add countries</pe-coupons-form-field-label>
-            <pe-coupons-autocomplete 
-              placeholder="Search countries" 
-              [items]="countries" 
-              (onSelected)="addToArray($event, couponForm.value.type.freeShippingToCountries)">
-            </pe-coupons-autocomplete>
-            <pe-coupons-form-field-suffix>
-              <button>Add country</button>
-            </pe-coupons-form-field-suffix>
-          </pe-coupons-form-field>
-          <pe-coupons-list>
-            <pe-coupons-list-item 
-              *ngFor="let countryId of couponForm.value.type.freeShippingToCountries; let i = index"
-              (onRemove)="removeFromArray(couponForm.value.type.freeShippingToCountries, i)"
-            >{{ getFromArray(countries, countryId)?.title }}</pe-coupons-list-item>
-          </pe-coupons-list>
-          <!-- ADD COUNTRIES END -->
-        </pe-coupons-form-group>
-
-        <pe-coupons-form-group *ngIf="couponForm.value.type.type !== 'BUY_X_GET_Y'" formGroupName="type">
-          <!-- MINIMUM REQUIREMENTS START -->
-          <pe-coupons-form-field>
-            <pe-coupons-form-field-label>Minimum requirements</pe-coupons-form-field-label>
-            <pe-coupons-select formControlName="minimumRequirements" [options]="minimumRequirements"></pe-coupons-select>
-          </pe-coupons-form-field>
-          <!-- MINIMUM REQUIREMENTS END -->
-
-          <pe-coupons-form-field *ngIf="couponForm.value.type.minimumRequirements !== 'NONE'">
-            <pe-coupons-form-field-label *ngIf="couponForm.value.type.minimumRequirements === 'MINIMUM_QUANTITY_OF_ITEMS'">Quantity</pe-coupons-form-field-label>
-            <pe-coupons-form-field-label *ngIf="couponForm.value.type.minimumRequirements === 'MINIMUM_PURCHASE_AMOUNT'">Amount</pe-coupons-form-field-label>
-            <pe-coupons-input type="text" placeholder="Enter value" formControlName="minimumRequirementsValue"></pe-coupons-input>
-            <pe-coupons-form-field-suffix *ngIf="couponForm.value.type.minimumRequirements === 'MINIMUM_PURCHASE_AMOUNT'">
-              <span>Dollars ($)</span>
-            </pe-coupons-form-field-suffix>
-          </pe-coupons-form-field>
-          
-        </pe-coupons-form-group>
+        <ng-container *ngIf="couponForm.value.type.type !== 'BUY_X_GET_Y'">
+          <pe-coupons-form-group formGroupName="type">
+            <!-- MINIMUM REQUIREMENTS START -->
+            <pe-coupons-form-field>
+              <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('type').get('minimumRequirements').invalid">Minimum requirements</pe-coupons-form-field-label>
+              <pe-coupons-select formControlName="minimumRequirements" [options]="minimumRequirements"></pe-coupons-select>
+            </pe-coupons-form-field>
+            <!-- MINIMUM REQUIREMENTS END -->
+  
+            <pe-coupons-form-field *ngIf="couponForm.value.type.minimumRequirements === 'MINIMUM_PURCHASE_AMOUNT'">
+              <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('type').get('minimumRequirementsPurchaseAmount').invalid">Amount</pe-coupons-form-field-label>
+              <pe-coupons-input placeholder="Enter value" formControlName="minimumRequirementsPurchaseAmount"></pe-coupons-input>
+              <pe-coupons-form-field-suffix>
+                <span>Dollars ($)</span>
+              </pe-coupons-form-field-suffix>
+            </pe-coupons-form-field>
+  
+            <pe-coupons-form-field *ngIf="couponForm.value.type.minimumRequirements === 'MINIMUM_QUANTITY_OF_ITEMS'">
+              <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('type').get('minimumRequirementsQuantityOfItems').invalid">Quantity</pe-coupons-form-field-label>
+              <pe-coupons-input placeholder="Enter value" formControlName="minimumRequirementsQuantityOfItems"></pe-coupons-input>
+            </pe-coupons-form-field>
+            
+          </pe-coupons-form-group>
+  
+          <ng-container *ngIf="couponForm.get('type').get('minimumRequirementsPurchaseAmount').invalid || couponForm.get('type').get('minimumRequirementsQuantityOfItems').invalid" [ngTemplateOutlet]="error"></ng-container>
+        </ng-container>
 
         <!-- CUSTOMER BUYS START -->
-        <pe-coupons-form-group *ngIf="couponForm.value.type.type === 'BUY_X_GET_Y'" formGroupName="type">
-          <pe-coupons-form-field>
-            <pe-coupons-form-field-label *ngIf="couponForm.value.type.buyRequirementType === 'MINIMUM_QUANTITY_OF_ITEMS'">Customer buys</pe-coupons-form-field-label>
-            <pe-coupons-form-field-label *ngIf="couponForm.value.type.buyRequirementType === 'MINIMUM_PURCHASE_AMOUNT'">Customer spends</pe-coupons-form-field-label>
-            <pe-coupons-select formControlName="buyRequirementType" [options]="buyRequirementType"></pe-coupons-select>
-          </pe-coupons-form-field>
-          <pe-coupons-form-field>
-            <pe-coupons-form-field-label *ngIf="couponForm.value.type.buyRequirementType === 'MINIMUM_QUANTITY_OF_ITEMS'">Quantity</pe-coupons-form-field-label>
-            <pe-coupons-form-field-label *ngIf="couponForm.value.type.buyRequirementType === 'MINIMUM_PURCHASE_AMOUNT'">Amount</pe-coupons-form-field-label>
-            <pe-coupons-input formControlName="buyQuantity" placeholder="Enter value"></pe-coupons-input>
-          </pe-coupons-form-field>
-        </pe-coupons-form-group>
+        <ng-container *ngIf="couponForm.value.type.type === 'BUY_X_GET_Y'">
+          <pe-coupons-form-group formGroupName="type">
+            <pe-coupons-form-field>
+              <pe-coupons-form-field-label *ngIf="couponForm.value.type.buyRequirementType === 'MINIMUM_QUANTITY_OF_ITEMS'">Customer buys</pe-coupons-form-field-label>
+              <pe-coupons-form-field-label *ngIf="couponForm.value.type.buyRequirementType === 'MINIMUM_PURCHASE_AMOUNT'">Customer spends</pe-coupons-form-field-label>
+              <pe-coupons-select formControlName="buyRequirementType" [options]="buyRequirementType"></pe-coupons-select>
+            </pe-coupons-form-field>
+            <pe-coupons-form-field>
+              <pe-coupons-form-field-label 
+                *ngIf="couponForm.value.type.buyRequirementType === 'MINIMUM_QUANTITY_OF_ITEMS'"
+                [class.ng-invalid]="couponForm.get('type').get('buyQuantity').invalid"
+              >Quantity</pe-coupons-form-field-label>
+              <pe-coupons-form-field-label 
+                *ngIf="couponForm.value.type.buyRequirementType === 'MINIMUM_PURCHASE_AMOUNT'"
+                [class.ng-invalid]="couponForm.get('type').get('buyQuantity').invalid"
+              >Amount</pe-coupons-form-field-label>
+              <pe-coupons-input formControlName="buyQuantity" placeholder="Enter value"></pe-coupons-input>
+            </pe-coupons-form-field>
+          </pe-coupons-form-group>
+
+          <ng-container *ngIf="couponForm.get('type').get('buyQuantity').invalid" [ngTemplateOutlet]="error"></ng-container>
+        </ng-container>
 
         <pe-coupons-form-group *ngIf="couponForm.value.type.type === 'BUY_X_GET_Y'" formGroupName="type">
           <pe-coupons-form-field>
@@ -152,51 +183,65 @@
         <!-- CUSTOMER BUYS END -->
 
         <!-- CUSTOMER GETS START -->
-        <pe-coupons-form-group *ngIf="couponForm.value.type.type === 'BUY_X_GET_Y'" formGroupName="type">
-          <pe-coupons-form-field>
-            <pe-coupons-form-field-label>Customer gets</pe-coupons-form-field-label>
-            <pe-coupons-select formControlName="getType" [options]="buyOrGetType"></pe-coupons-select>
-          </pe-coupons-form-field>
-          <pe-coupons-form-field>
-            <pe-coupons-form-field-label>Quantity</pe-coupons-form-field-label>
-            <pe-coupons-input formControlName="getQuantity" placeholder="Enter value"></pe-coupons-input>
-          </pe-coupons-form-field>
-          <ng-container 
-            *ngIf="products && couponForm.value.type.getType === 'SPECIFIC_PRODUCTS'"
-            [ngTemplateOutlet]="searchProducts"
-            [ngTemplateOutletContext]="{ control: couponForm.get('type').get('getProducts') }"
-          ></ng-container>
-          <ng-container 
-            *ngIf="categories && couponForm.value.type.getType === 'SPECIFIC_CATEGORIES'"
-            [ngTemplateOutlet]="searchCategories"
-            [ngTemplateOutletContext]="{ control: couponForm.get('type').get('getCategories') }"
-          ></ng-container>
-        </pe-coupons-form-group>
+        <ng-container *ngIf="couponForm.value.type.type === 'BUY_X_GET_Y'">
+          <pe-coupons-form-group *ngIf="couponForm.value.type.type === 'BUY_X_GET_Y'" formGroupName="type">
+            <pe-coupons-form-field>
+              <pe-coupons-form-field-label>Customer gets</pe-coupons-form-field-label>
+              <pe-coupons-select formControlName="getType" [options]="buyOrGetType"></pe-coupons-select>
+            </pe-coupons-form-field>
+            <pe-coupons-form-field>
+              <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('type').get('getQuantity').invalid">Quantity</pe-coupons-form-field-label>
+              <pe-coupons-input formControlName="getQuantity" placeholder="Enter value"></pe-coupons-input>
+            </pe-coupons-form-field>
+            <ng-container 
+              *ngIf="products && couponForm.value.type.getType === 'SPECIFIC_PRODUCTS'"
+              [ngTemplateOutlet]="searchProducts"
+              [ngTemplateOutletContext]="{ control: couponForm.get('type').get('getProducts') }"
+            ></ng-container>
+            <ng-container 
+              *ngIf="categories && couponForm.value.type.getType === 'SPECIFIC_CATEGORIES'"
+              [ngTemplateOutlet]="searchCategories"
+              [ngTemplateOutletContext]="{ control: couponForm.get('type').get('getCategories') }"
+            ></ng-container>
+          </pe-coupons-form-group>
+          
+          <ng-container *ngIf="couponForm.get('type').get('getQuantity').invalid" [ngTemplateOutlet]="error"></ng-container>
+        </ng-container>
         <!-- CUSTOMER GETS END -->
 
+
         <!-- AT A DISCOUNT VALUE START -->
-        <pe-coupons-form-group *ngIf="couponForm.value.type.type === 'BUY_X_GET_Y'" formGroupName="type">
-          <pe-coupons-form-field>
-            <pe-coupons-form-field-label>At a discounted value</pe-coupons-form-field-label>
-            <pe-coupons-select formControlName="getDiscountType" [options]="atADiscountedValue"></pe-coupons-select>
-          </pe-coupons-form-field>
-          <pe-coupons-form-field *ngIf="couponForm.value.type.getDiscountType === 'PERCENTAGE'">
-            <pe-coupons-form-field-label>Set percentage</pe-coupons-form-field-label>
-            <pe-coupons-input placeholder="Enter value" formControlName="getDiscountValue"></pe-coupons-input>
-          </pe-coupons-form-field>
-        </pe-coupons-form-group>
+        <ng-container *ngIf="couponForm.value.type.type === 'BUY_X_GET_Y'">
+          <pe-coupons-form-group formGroupName="type">
+            <pe-coupons-form-field>
+              <pe-coupons-form-field-label>At a discounted value</pe-coupons-form-field-label>
+              <pe-coupons-select formControlName="getDiscountType" [options]="atADiscountedValue"></pe-coupons-select>
+            </pe-coupons-form-field>
+            <pe-coupons-form-field *ngIf="couponForm.value.type.getDiscountType === 'PERCENTAGE'">
+              <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('type').get('getDiscountValue').invalid">Set percentage</pe-coupons-form-field-label>
+              <pe-coupons-input max="100" placeholder="Enter value" formControlName="getDiscountValue"></pe-coupons-input>
+            </pe-coupons-form-field>
+          </pe-coupons-form-group>
+
+          <ng-container *ngIf="couponForm.get('type').get('getDiscountValue').invalid" [ngTemplateOutlet]="error"></ng-container>
+        </ng-container>
         <!-- AT A DISCOUNT VALUE END -->
 
         <!-- MAX USES PER ORDER START -->
-        <pe-coupons-form-group *ngIf="couponForm.value.type.type === 'BUY_X_GET_Y'" formGroupName="type">
-          <pe-coupons-form-field>
-            <pe-coupons-checkbox formControlName="maxUsesPerOrder">Set a maximum number of uses per order</pe-coupons-checkbox>
-          </pe-coupons-form-field>
-          <pe-coupons-form-field *ngIf="couponForm.value.type.maxUsesPerOrder">
-            <pe-coupons-form-field-label>Value</pe-coupons-form-field-label>
-            <pe-coupons-input placeholder="Enter value" formControlName="maxUsesPerOrderValue"></pe-coupons-input>
-          </pe-coupons-form-field>
-        </pe-coupons-form-group>
+
+        <ng-container *ngIf="couponForm.value.type.type === 'BUY_X_GET_Y'">
+          <pe-coupons-form-group formGroupName="type">
+            <pe-coupons-form-field>
+              <pe-coupons-checkbox formControlName="maxUsesPerOrder">Set a maximum number of uses per order</pe-coupons-checkbox>
+            </pe-coupons-form-field>
+            <pe-coupons-form-field *ngIf="couponForm.value.type.maxUsesPerOrder">
+              <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('type').get('maxUsesPerOrderValue').invalid">Value</pe-coupons-form-field-label>
+              <pe-coupons-input placeholder="Enter value" formControlName="maxUsesPerOrderValue"></pe-coupons-input>
+            </pe-coupons-form-field>
+          </pe-coupons-form-group>
+
+          <ng-container *ngIf="couponForm.get('type').get('maxUsesPerOrderValue').invalid" [ngTemplateOutlet]="error"></ng-container>
+        </ng-container>
         <!-- MAX USES PER ORDER END -->
 
         <pe-coupons-form-group>
@@ -210,8 +255,12 @@
           <!-- GROUPS OF CUSTOMERS START -->
           <ng-container *ngIf="groupsOfCustomers && couponForm.value.customerEligibility === 'SPECIFIC_GROUPS_OF_CUSTOMERS'">
             <pe-coupons-form-field>
-              <pe-coupons-form-field-label>Groups of customers</pe-coupons-form-field-label>
-              <pe-coupons-autocomplete placeholder="Search groups of customers" [items]="groupsOfCustomers" (onSelected)="addToArray($event, couponForm.value.customerEligibilityCustomerGroups)"></pe-coupons-autocomplete>
+              <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('customerEligibilityCustomerGroups').invalid">Groups of customers</pe-coupons-form-field-label>
+              <pe-coupons-autocomplete
+                [class.ng-invalid]="couponForm.get('customerEligibilityCustomerGroups').invalid"
+                placeholder="Search groups of customers"
+                [items]="groupsOfCustomers"
+                (onSelected)="addToArray($event, couponForm.value.customerEligibilityCustomerGroups)"></pe-coupons-autocomplete>
               <pe-coupons-form-field-suffix>
                 <button>Add Group</button>
               </pe-coupons-form-field-suffix>
@@ -228,8 +277,12 @@
           <!-- CUSTOMERS START -->
           <ng-container *ngIf="customers && couponForm.value.customerEligibility === 'SPECIFIC_CUSTOMERS'">
             <pe-coupons-form-field>
-              <pe-coupons-form-field-label>Customers</pe-coupons-form-field-label>
-              <pe-coupons-autocomplete placeholder="Search customers" [items]="customers" (onSelected)="addToArray($event, couponForm.value.customerEligibilitySpecificCustomers)"></pe-coupons-autocomplete>
+              <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('customerEligibilitySpecificCustomers').invalid">Customers</pe-coupons-form-field-label>
+              <pe-coupons-autocomplete 
+                [class.ng-invalid]="couponForm.get('customerEligibilitySpecificCustomers').invalid"
+                placeholder="Search customers"
+                [items]="customers"
+                (onSelected)="addToArray($event, couponForm.value.customerEligibilitySpecificCustomers)"></pe-coupons-autocomplete>
               <pe-coupons-form-field-suffix>
                 <button>Add Customer</button>
               </pe-coupons-form-field-suffix>
@@ -245,6 +298,8 @@
 
         </pe-coupons-form-group>
 
+        <ng-container *ngIf="couponForm.get('customerEligibilityCustomerGroups').invalid || couponForm.get('customerEligibilitySpecificCustomers').invalid" [ngTemplateOutlet]="error"></ng-container>
+
         <!-- USAGE LIMITS START -->
         <pe-coupons-form-field formGroupName="limits">
           <pe-coupons-checkbox formControlName="limitOneUsePerCustomer">Limit to one use per customer</pe-coupons-checkbox>
@@ -255,11 +310,13 @@
             <pe-coupons-checkbox formControlName="limitUsage">Limit number of times this discount can be used in total</pe-coupons-checkbox>
           </pe-coupons-form-field>
           <pe-coupons-form-field *ngIf="couponForm.value.limits.limitUsage">
-            <pe-coupons-form-field-label>Value</pe-coupons-form-field-label>
+            <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('limits').get('limitUsageAmount').invalid">Value</pe-coupons-form-field-label>
             <pe-coupons-input formControlName="limitUsageAmount" placeholder="Enter value"></pe-coupons-input>
           </pe-coupons-form-field>
         </pe-coupons-form-group>
         <!-- USAGE LIMITS END -->
+
+        <ng-container *ngIf="couponForm.get('limits').get('limitUsageAmount').invalid" [ngTemplateOutlet]="error"></ng-container>
   
       </pe-coupons-expansion-panel-content>
     </pe-coupons-expansion-panel>
@@ -271,7 +328,7 @@
         <pe-coupons-form-group>
           <!-- START DATE START -->
           <pe-coupons-form-field>
-            <pe-coupons-form-field-label>Start date</pe-coupons-form-field-label>
+            <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('startDateDate').invalid">Start date</pe-coupons-form-field-label>
             <pe-coupons-input type="dat" formControlName="startDateDate" placeholder="DD.MM.YYYY" (click)="openDatepicker('startDateDate')"></pe-coupons-input>
             <pe-coupons-form-field-suffix>
               <pe-coupons-icon-date class="icon" (click)="openDatepicker('startDateDate')"></pe-coupons-icon-date>
@@ -281,7 +338,7 @@
 
           <!-- START TIME START -->
           <pe-coupons-form-field>
-            <pe-coupons-form-field-label>Start time</pe-coupons-form-field-label>
+            <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('startDateDate').invalid">Start time</pe-coupons-form-field-label>
             <pe-coupons-input type="tim" formControlName="startDateTime" placeholder="HH:MM"></pe-coupons-input> 
             <pe-coupons-form-field-suffix>
               <pe-coupons-icon-time class="icon"></pe-coupons-icon-time>
@@ -289,6 +346,8 @@
           </pe-coupons-form-field>
           <!-- START TIME END -->
         </pe-coupons-form-group>
+
+        <ng-container *ngIf="couponForm.get('startDateDate').invalid || couponForm.get('startDateTime').invalid" [ngTemplateOutlet]="error"></ng-container>
 
         <pe-coupons-form-group>
 
@@ -301,7 +360,7 @@
           <ng-container *ngIf="couponForm.value.setEndDate">
             <!-- END DATE START -->
             <pe-coupons-form-field>
-              <pe-coupons-form-field-label>End date</pe-coupons-form-field-label>
+              <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('endDateDate').invalid">End date</pe-coupons-form-field-label>
               <pe-coupons-input type="dat" formControlName="endDateDate" placeholder="DD.MM.YYYY" (click)="openDatepicker('endDateDate')"></pe-coupons-input>
               <pe-coupons-form-field-suffix>
                 <pe-coupons-icon-date class="icon" (click)="openDatepicker('endDateDate')"></pe-coupons-icon-date>
@@ -311,7 +370,7 @@
 
             <!-- END TIME START -->
             <pe-coupons-form-field>
-              <pe-coupons-form-field-label>End time</pe-coupons-form-field-label>
+              <pe-coupons-form-field-label [class.ng-invalid]="couponForm.get('endDateTime').invalid">End time</pe-coupons-form-field-label>
               <pe-coupons-input type="tim" formControlName="endDateTime" placeholder="HH:MM"></pe-coupons-input> 
               <pe-coupons-form-field-suffix>
                 <pe-coupons-icon-time class="icon"></pe-coupons-icon-time>
@@ -321,18 +380,38 @@
           </ng-container>
         </pe-coupons-form-group>
 
+        <ng-container *ngIf="couponForm.get('endDateDate').invalid || couponForm.get('endDateTime').invalid" [ngTemplateOutlet]="error"></ng-container>
+
       </pe-coupons-expansion-panel-content>
     </pe-coupons-expansion-panel>
   </form>
 </div>
 
+<ng-template #error>
+  <div class="error">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
+      <g fill="none" fill-rule="evenodd">
+        <g>
+          <g>
+            <g>
+              <path fill="#FFFFFF" d="M14.331 4.196L21.8 17.638c.715 1.288.251 2.911-1.036 3.626-.396.22-.842.336-1.295.336H4.532c-1.473 0-2.667-1.194-2.667-2.667 0-.453.116-.899.336-1.295L9.669 4.196c.715-1.287 2.339-1.751 3.626-1.036.435.242.794.6 1.036 1.036z" transform="translate(-413 -84) translate(389 71) translate(23 11)"/>
+              <path fill="#eb4653" fill-rule="nonzero" d="M12.85 15.912l.153-7.512h-2.126l.142 7.512h1.83zm-.855 3.288c.394 0 .694-.105.898-.314.205-.209.307-.473.307-.792 0-.319-.102-.587-.307-.803-.204-.216-.504-.324-.898-.324-.395 0-.693.108-.894.324-.2.216-.301.484-.301.803 0 .32.1.583.301.792.201.21.499.314.894.314z" transform="translate(-413 -84) translate(389 71) translate(23 11)"/>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>  
+    <span>Incorrectly added value.</span>
+  </div>
+</ng-template>
+
 <ng-template #searchProducts let-control="control">
   <pe-coupons-form-field>
-    <pe-coupons-form-field-label>Products</pe-coupons-form-field-label>
-    <pe-coupons-autocomplete placeholder="Search products" [items]="products" (onSelected)="addToArray($event, control.value)"></pe-coupons-autocomplete>
-    <pe-coupons-form-field-suffix>
+    <pe-coupons-form-field-label [class.ng-invalid]="control.invalid">Products</pe-coupons-form-field-label>
+    <pe-coupons-autocomplete [class.ng-invalid]="control.invalid" placeholder="Search products" [items]="products" (onSelected)="addToArray($event, control.value)"></pe-coupons-autocomplete>
+    <!-- <pe-coupons-form-field-suffix>
       <button>Browse</button>
-    </pe-coupons-form-field-suffix>
+    </pe-coupons-form-field-suffix> -->
   </pe-coupons-form-field>
   <pe-coupons-list>
     <pe-coupons-list-item 
@@ -347,11 +426,11 @@
 
 <ng-template #searchCategories let-control="control">
   <pe-coupons-form-field>
-    <pe-coupons-form-field-label>Categories</pe-coupons-form-field-label>
-    <pe-coupons-autocomplete placeholder="Search categories" [items]="categories" (onSelected)="addToArray($event, control.value)"></pe-coupons-autocomplete>
-    <pe-coupons-form-field-suffix>
+    <pe-coupons-form-field-label [class.ng-invalid]="control.invalid">Categories</pe-coupons-form-field-label>
+    <pe-coupons-autocomplete [class.ng-invalid]="control.invalid" placeholder="Search categories" [items]="categories" (onSelected)="addToArray($event, control.value)"></pe-coupons-autocomplete>
+    <!-- <pe-coupons-form-field-suffix>
       <button>Browse</button>
-    </pe-coupons-form-field-suffix>
+    </pe-coupons-form-field-suffix> -->
   </pe-coupons-form-field>
   <pe-coupons-list>
     <pe-coupons-list-item 

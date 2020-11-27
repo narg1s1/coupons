@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PebEnvService } from '@pe/builder-core';
@@ -119,7 +119,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
       buyType: [PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories],
       buyProducts: [[]],
       buyCategories: [[]],
-      discountValue: [],
+      discountValue: [null],
       freeShippingType: [PeCouponTypeFreeShippingTypeEnum.AllCountries],
       freeShippingToCountries: [[]],
       getType: [PeCouponTypeBuyXGetYItemTypeEnum.SpecificCategories],
@@ -131,7 +131,8 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
       maxUsesPerOrder: [false],
       maxUsesPerOrderValue: [],
       minimumRequirements: [PeCouponTypeMinimumRequirementsEnum.None],
-      minimumRequirementsValue: [],
+      minimumRequirementsPurchaseAmount: [],
+      minimumRequirementsQuantityOfItems: [],
       type: [PeCouponTypeEnum.Percentage],
     }),
   });
@@ -302,6 +303,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     const couponId = this.coupon?._id;
 
     const controls = this.couponForm.controls;
+
     controls.code.enable();
 
     this.couponForm.clearValidators();
@@ -321,15 +323,6 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
 
     const value = this.couponForm.value;
 
-    value.startDate = moment(`${value.startDateDate} ${value.startDateTime}`, 'DD.MM.YYYY hh:mm').toDate();
-
-    if (value.setEndDate) {
-      controls.endDateDate.setValidators([Validators.required]);
-      controls.endDateDate.updateValueAndValidity();
-
-      value.endDate = moment(`${value.endDateDate} ${value.endDateTime}`, 'DD.MM.YYYY hh:mm').toDate();
-    }
-
     if (value.customerEligibility === PeCouponTypeCustomerEligibilityEnum.SpecificCustomers) {
       controls.customerEligibilitySpecificCustomers.setValidators([Validators.required]);
       controls.customerEligibilitySpecificCustomers.updateValueAndValidity();
@@ -347,6 +340,22 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     if (this.couponForm.value.type.type === PeCouponTypeEnum.FreeShipping) body = this.getFreeShipping(value);
     if (this.couponForm.value.type.type === PeCouponTypeEnum.BuyXGetY) body = this.getBuyXGetY(value);
 
+    body.startDate = moment(`${value.startDateDate} ${value.startDateTime}`, 'DD.MM.YYYY hh:mm').toDate();
+
+    if (value.setEndDate) {
+      controls.endDateDate.setValidators([Validators.required]);
+      controls.endDateDate.updateValueAndValidity();
+      controls.endDateTime.setValidators([Validators.required]);
+      controls.endDateTime.updateValueAndValidity();
+
+      body.endDate = moment(`${value.endDateDate} ${value.endDateTime}`, 'DD.MM.YYYY hh:mm').toDate();
+
+      if (!moment(value.startDate).isBefore(value.endDate)) {
+        controls.endDateDate.setErrors({ 'isBefore': true });
+        controls.endDateTime.setErrors({ 'isBefore': true });
+      }
+    }
+
     if (this.couponForm.valid) {
       if (couponId) {
         this.peApiService.updateCoupon(couponId, body).pipe(
@@ -357,6 +366,8 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
           takeUntil(this.destroyed$),
         ).subscribe(() => this.peOverlayRef.close(true));
       }
+    } else {
+      if (this.coupon) controls.code.disable();
     }
   }
 
@@ -364,10 +375,8 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     const body = {
       code: value.code,
       businessId: value.businessId,
-      endDate: value.endDate ?? null,
       description: value.description,
       name: value.name,
-      startDate: value.startDate,
       limits: {
         limitOneUsePerCustomer: value.limits.limitOneUsePerCustomer ?? false,
         limitUsage: value.limits.limitUsage ?? false,
@@ -392,13 +401,21 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     const limits = (this.couponForm.get('limits') as FormGroup).controls;
     const type = (this.couponForm.get('type') as FormGroup).controls;
 
-    if (value.limits.limitOneUsePerCustomer) {
+    if (value.limits.limitUsage) {
       limits.limitUsageAmount.setValidators([Validators.required])
       limits.limitUsageAmount.updateValueAndValidity();
+
+      if (!Number.isInteger(Number(value.limits.limitUsageAmount))) {
+        limits.limitUsageAmount.setErrors({ 'notInt': true });
+      }
     };
 
     type.discountValue.setValidators([Validators.required]);
     type.discountValue.updateValueAndValidity();
+
+    if (!Number.isInteger(Number(value.type.discountValue))) {
+      type.discountValue.setErrors({ 'notInt': true });
+    }
 
     if (value.type.appliesTo === PeCouponTypeAppliedToEnum.SpecificCategories) {
       type.appliesToCategories.setValidators([Validators.required]);
@@ -410,11 +427,24 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
       type.appliesToProducts.updateValueAndValidity();
     }
 
-    if (value.type.minimumRequirements !== PeCouponTypeMinimumRequirementsEnum.None) {
-      body.type['minimumRequirementsValue'] = Number(value.type.minimumRequirementsValue);
+    if (value.type.minimumRequirements === PeCouponTypeMinimumRequirementsEnum.MinimumPurchaseAmount) {
+      body.type['minimumRequirementsPurchaseAmount'] = Number(value.type.minimumRequirementsPurchaseAmount);
 
-      type.minimumRequirementsValue.setValidators([Validators.required]);
-      type.minimumRequirementsValue.updateValueAndValidity();
+      type.minimumRequirementsPurchaseAmount.setValidators([Validators.required]);
+      type.minimumRequirementsPurchaseAmount.updateValueAndValidity();
+    }
+
+    if (value.type.minimumRequirements === PeCouponTypeMinimumRequirementsEnum.MinimumQuantityOfItems) {
+      const quantity = Number(value.type.minimumRequirementsQuantityOfItems);
+
+      body.type['minimumRequirementsQuantityOfItems'] = quantity;
+
+      type.minimumRequirementsQuantityOfItems.setValidators([Validators.required]);
+      type.minimumRequirementsQuantityOfItems.updateValueAndValidity();
+
+      if (!Number.isInteger(quantity)) {
+        type.minimumRequirementsQuantityOfItems.setErrors({ 'notInt': true });
+      }
     }
 
     return body;
@@ -424,13 +454,25 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     const limits = (this.couponForm.get('limits') as FormGroup).controls;
     const type = (this.couponForm.get('type') as FormGroup).controls;
 
-    if (value.limits.limitOneUsePerCustomer) {
+    if (value.limits.limitUsage) {
       limits.limitUsageAmount.setValidators([Validators.required])
       limits.limitUsageAmount.updateValueAndValidity();
+
+      if (!Number.isInteger(Number(value.limits.limitUsageAmount))) {
+        limits.limitUsageAmount.setErrors({ 'notInt': true });
+      }
     };
 
     type.buyQuantity.setValidators([Validators.required]);
     type.buyQuantity.updateValueAndValidity();
+
+    if (value.type.buyRequirementType === PeCouponTypeBuyXGetYBuyRequirementsTypeEnum.MinimumQuantityOfItems) {
+      const quantity = Number(value.type.buyQuantity);
+      
+      if (!Number.isInteger(quantity)) {
+        type.buyQuantity.setErrors({ 'notInt': true });
+      }
+    }
 
     if (value.type.buyType === PeCouponTypeBuyXGetYItemTypeEnum.SpecificProducts) {
       type.buyProducts.setValidators([Validators.required]);
@@ -444,6 +486,10 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
 
     type.getQuantity.setValidators([Validators.required]);
     type.getQuantity.updateValueAndValidity();
+      
+    if (!Number.isInteger(Number(value.type.getQuantity))) {
+      type.getQuantity.setErrors({ 'notInt': true });
+    }
 
     if (value.type.getType === PeCouponTypeBuyXGetYItemTypeEnum.SpecificProducts) {
       type.getProducts.setValidators([Validators.required]);
@@ -463,15 +509,19 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     if (value.type.maxUsesPerOrder) {
       type.maxUsesPerOrderValue.setValidators([Validators.required]);
       type.maxUsesPerOrderValue.updateValueAndValidity();
+
+      const quantity = Number(value.type.maxUsesPerOrderValue);
+      
+      if (!Number.isInteger(quantity)) {
+        type.maxUsesPerOrderValue.setErrors({ 'notInt': true });
+      }
     }
     
     return {
       code: value.code,
       businessId: value.businessId,
-      endDate: value.endDate ?? null,
       description: value.description,
       name: value.description,
-      startDate: value.startDate,
       limits: {
         limitOneUsePerCustomer: value.limits.limitOneUsePerCustomer ?? false,
         limitUsage: value.limits.limitUsage ?? false,
@@ -507,9 +557,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
       code: value.code,
       businessId: value.businessId,
       description: value.description,
-      endDate: value.endDate ?? null,
       name: value.name,
-      startDate: value.startDate,
       limits: {
         limitOneUsePerCustomer: value.limits.limitOneUsePerCustomer ?? false,
         limitUsage: value.limits.limitUsage ?? false,
@@ -533,9 +581,13 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     const limits = (this.couponForm.get('limits') as FormGroup).controls;
     const type = (this.couponForm.get('type') as FormGroup).controls;
 
-    if (value.limits.limitOneUsePerCustomer) {
+    if (value.limits.limitUsage) {
       limits.limitUsageAmount.setValidators([Validators.required])
       limits.limitUsageAmount.updateValueAndValidity();
+
+      if (!Number.isInteger(Number(value.limits.limitUsageAmount))) {
+        limits.limitUsageAmount.setErrors({ 'notInt': true });
+      }
     };
 
     type.discountValue.setValidators([Validators.required]);
@@ -551,11 +603,24 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
       type.appliesToProducts.updateValueAndValidity();
     }
 
-    if (value.type.minimumRequirements !== PeCouponTypeMinimumRequirementsEnum.None) {
-      body.type['minimumRequirementsValue'] = Number(value.type.minimumRequirementsValue);
+    if (value.type.minimumRequirements === PeCouponTypeMinimumRequirementsEnum.MinimumPurchaseAmount) {
+      body.type['minimumRequirementsPurchaseAmount'] = Number(value.type.minimumRequirementsPurchaseAmount);
 
-      type.minimumRequirementsValue.setValidators([Validators.required]);
-      type.minimumRequirementsValue.updateValueAndValidity();
+      type.minimumRequirementsPurchaseAmount.setValidators([Validators.required]);
+      type.minimumRequirementsPurchaseAmount.updateValueAndValidity();
+    }
+
+    if (value.type.minimumRequirements === PeCouponTypeMinimumRequirementsEnum.MinimumQuantityOfItems) {
+      const quantity = Number(value.type.minimumRequirementsQuantityOfItems);
+
+      body.type['minimumRequirementsQuantityOfItems'] = quantity;
+
+      type.minimumRequirementsQuantityOfItems.setValidators([Validators.required]);
+      type.minimumRequirementsQuantityOfItems.updateValueAndValidity();
+
+      if (!Number.isInteger(quantity)) {
+        type.minimumRequirementsQuantityOfItems.setErrors({ 'notInt': true });
+      }
     }
 
     return body;
@@ -565,10 +630,8 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     const body = {
       code: value.code,
       businessId: value.businessId,
-      endDate: value.endDate ?? null,
       description: value.description,
       name: value.name,
-      startDate: value.startDate,
       limits: {
         limitOneUsePerCustomer: value.limits.limitOneUsePerCustomer ?? false,
         limitUsage: value.limits.limitUsage ?? false,
@@ -592,9 +655,13 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     const limits = (this.couponForm.get('limits') as FormGroup).controls;
     const type = (this.couponForm.get('type') as FormGroup).controls;
 
-    if (value.limits.limitOneUsePerCustomer) {
+    if (value.limits.limitUsage) {
       limits.limitUsageAmount.setValidators([Validators.required])
       limits.limitUsageAmount.updateValueAndValidity();
+
+      if (!Number.isInteger(Number(value.limits.limitUsageAmount))) {
+        limits.limitUsageAmount.setErrors({ 'notInt': true });
+      }
     };
 
     if (value.type.freeShippingType === PeCouponTypeFreeShippingTypeEnum.SelectedCountries) {
@@ -607,11 +674,24 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
       type.excludeShippingRatesOverCertainAmountValue.updateValueAndValidity();
     }
 
-    if (value.type.minimumRequirements !== PeCouponTypeMinimumRequirementsEnum.None) {
-      body.type['minimumRequirementsValue'] = Number(value.type.minimumRequirementsValue);
+    if (value.type.minimumRequirements === PeCouponTypeMinimumRequirementsEnum.MinimumPurchaseAmount) {
+      body.type['minimumRequirementsPurchaseAmount'] = Number(value.type.minimumRequirementsPurchaseAmount);
 
-      type.minimumRequirementsValue.setValidators([Validators.required]);
-      type.minimumRequirementsValue.updateValueAndValidity();
+      type.minimumRequirementsPurchaseAmount.setValidators([Validators.required]);
+      type.minimumRequirementsPurchaseAmount.updateValueAndValidity();
+    }
+
+    if (value.type.minimumRequirements === PeCouponTypeMinimumRequirementsEnum.MinimumQuantityOfItems) {
+      const quantity = Number(value.type.minimumRequirementsQuantityOfItems);
+
+      body.type['minimumRequirementsQuantityOfItems'] = quantity;
+
+      type.minimumRequirementsQuantityOfItems.setValidators([Validators.required]);
+      type.minimumRequirementsQuantityOfItems.updateValueAndValidity();
+
+      if (!Number.isInteger(quantity)) {
+        type.minimumRequirementsQuantityOfItems.setErrors({ 'notInt': true });
+      }
     }
 
     return body;
