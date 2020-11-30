@@ -1,8 +1,8 @@
 .form-group {
 
   &__wrapper {
-    border-radius: 16px;
-    margin-top: 20px;
+    border-radius: 1em;
+    margin-top: 1.25em;
     overflow: hidden;
 
     ::ng-deep pe-coupons-form-field {
@@ -12,7 +12,7 @@
       }
 
       &:not(:first-child) .form-field__flex {
-        margin-top: 1px;
+        margin-top: 0.0625em;
       }
 
       .form-field__flex {
@@ -23,9 +23,9 @@
 
   &__subscript {
     color: #7a7a7a;
-    font-size: 16px;
+    font-size: 1em;
     font-weight: 400;
     line-height: 1.38;
-    margin-top: 13px;
+    margin-top: 0.8125em;
   }
 }

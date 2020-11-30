@@ -15,12 +15,13 @@ import {
 } from '@pe/data-grid';
 import { isEqual, orderBy } from 'lodash';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil, tap } from 'rxjs/operators';
 import { PeCoupon } from '../../misc/interfaces/coupon.model';
 import { PeCouponsApi } from '../../services/abstract.coupons.api';
 
 import { PeOverlayRef, PeOverlayService } from '../../misc/components/overlay/overlay.service';
 import { PeCouponsFormComponent } from '../form/coupons-form.component';
+import { LocaleConstantsService } from '@pe/i18n';
 
 
 @Component({
@@ -163,11 +164,23 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   constructor(
     private apiService: PeCouponsApi,
     private formBuilder: FormBuilder,
+    private localConstantsService: LocaleConstantsService,
     private overlayService: PeOverlayService,
   ) {}
 
   open(couponId?: string) {
-    const data = { id: couponId };
+    const data = { 
+      id: couponId,
+
+      customersSource: this.customersSource,
+      groupsOfCustomersSource: this.groupsOfCustomersSource,
+      
+      categories: this.categories,
+      countries: this.countries,
+      customers: this.customers,
+      groupsOfCustomers: this.groupsOfCustomers,
+      products: this.products,
+    };
 
     const dialogRef = this.overlayService.open({ data: data }, PeCouponsFormComponent);
 
@@ -207,6 +220,12 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   ngOnInit() {    
     this.getCouponsList();
 
+    this.getCategories();
+    this.getCountries();
+    this.getCustomers();
+    this.getGroupsOfCustomers();
+    this.getProducts();
+
     this.formGroup.valueChanges.pipe(
       takeUntil(this.destroyed$),
       tap(value => console.log(value)),
@@ -224,6 +243,72 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
 
   onSearchChanged(string: string): void {
     console.log(string);
+  }
+
+  customersSource;
+  groupsOfCustomersSource
+
+  categories;
+  countries;
+  customers;
+  groupsOfCustomers;
+  products;
+
+  getCategories() {
+    this.apiService.getCategories().pipe(
+      map(request => request.data.getCategories.filter(categories => !!categories)),
+      tap(categories => this.categories = categories),
+      takeUntil(this.destroyed$)
+    ).subscribe();
+  }
+
+  getCountries() {
+    const countryList = this.localConstantsService.getCountryList();
+
+    this.countries = [];
+
+    Object.keys(countryList).map(countryKey => {
+      this.countries.push({
+        id: countryKey,
+        title: Array.isArray(countryList[countryKey]) ? countryList[countryKey][0] : countryList[countryKey]
+      });
+    })
+  }
+
+  getCustomers() {
+    this.apiService.getContacts().pipe(
+      map(request => {
+        this.customersSource = request.data.contacts.nodes;
+
+        return request.data.contacts.nodes.map(contact => {
+          const customer = { id: contact.id, title: null };
+          contact.contactFields.nodes.map(node => customer[node.field.name] = node.value);
+          customer.title = customer['email'] ?? customer['mobilePhone'];
+          return customer;
+        })
+      }),
+      tap(customers => this.customers = customers),
+      takeUntil(this.destroyed$)
+    ).subscribe();
+  }
+
+  getGroupsOfCustomers() {
+    this.apiService.getContactGroups().pipe(
+      map(request => {
+        this.groupsOfCustomersSource = request.data.groups.nodes;
+        return request.data.groups.nodes.map(group => ({ id: group.id, title: group.name }))
+      }),
+      tap(groupsOfCustomers => this.groupsOfCustomers = groupsOfCustomers),
+      takeUntil(this.destroyed$)
+    ).subscribe();
+  }
+
+  getProducts() {
+    this.apiService.getProducts().pipe(
+      map(request => request.data.getProducts.products.filter(product => !!product)),
+      tap(products => this.products = products),
+      takeUntil(this.destroyed$)
+    ).subscribe();
   }
 
 }

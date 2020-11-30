@@ -21,7 +21,7 @@ input {
   background-color: transparent;
   color: #ffffff;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 1em;
   font-weight: 500;
   line-height: 1.5;
   padding: 0;
@@ -35,7 +35,7 @@ input {
 // TODO: remove ng-deep
 ::ng-deep .mat-autocomplete-panel {
   background-color: #1c1d1e !important;
-  border-radius: 12px !important;
+  border-radius: 0.75em !important;
 
   .mat-option.mat-selected:not(.mat-active):not(:hover):not(.mat-option-disabled) {
     background-color: inherit;
@@ -45,13 +45,13 @@ input {
 
 .mat-option {
   color: rgba(255, 255, 255, 0.95);
-  height: 46px;
+  height: 2.875em;
   font-family: 'Roboto', sans-serif;
-  font-size: 16px;
+  font-size: 1em;
   font-weight: 400;
   line-height: 1.1;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 0.625em;
+  padding-right: 0.625em;
 
   &:hover {
     background-color: #0091df !important;
@@ -61,7 +61,7 @@ input {
     &::before {
       background-color: #393939;
       content: "";
-      height: 1px;
+      height: 0.0625em;
       position: absolute;
       top: 0;
       left: 0;

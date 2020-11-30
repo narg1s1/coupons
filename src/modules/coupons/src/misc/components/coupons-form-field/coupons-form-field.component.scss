@@ -3,11 +3,11 @@
 
   &__flex {
     background-color: #111111;
-    border-radius: 16px;
+    border-radius: 1em;
     display: flex;
-    margin-top: 20px;
+    margin-top: 1.25em;
     overflow: hidden;
-    padding: 9px 0 7px;
+    padding: 0.5625em 0 0.4375em;
     position: relative;
   }
 
@@ -18,14 +18,14 @@
   &__infix {
     align-items: center;
     display: flex;
-    padding: 16px 16px 0 16px;
+    padding: 1em 1em 0 1em;
     position: relative;
     width: 100%;
 
     ::ng-deep {
       pe-coupons-form-field-label {
         color: rgba(255, 255, 255, 0.75);
-        font-size: 14px;
+        font-size: 0.875em;
         left: 16;
         line-height: 1.09;
         top: 0;
@@ -46,10 +46,10 @@
           background-color: #1c1d1e;
           display: block;
           font-family: 'Roboto', sans-serif;
-          font-size: 16px;
+          font-size: 1em;
           line-height: 1.38;
-          margin: -9px 0 -7px 0;
-          padding: 17px 16px;
+          margin: -0.5625em 0 -0.4375em 0;
+          padding: 1.09375em 1em;
           white-space: nowrap;
         }
 
@@ -67,7 +67,14 @@
         }
 
         .icon {
-          padding: 5px 14px 7px;
+          align-items: center;
+          display: flex;
+          padding: 0.3125em 0.875em 0.4375em;
+
+          svg {
+            height: 1.75em;
+            width: 1.75em;
+          }
         }
       }
     }
@@ -75,8 +82,8 @@
 
   &__subscript {
     color: #7a7a7a;
-    font-size: 16px;
+    font-size: 1em;
     line-height: 1.38;
-    margin: 8px 16px 0;
+    margin: 0.5em 1em 0;
   }
 }

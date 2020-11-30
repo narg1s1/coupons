@@ -8,13 +8,13 @@
 
 ::ng-deep .pe-coupons-overlay-panel {
   background-color: #24272e;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 1em;
+  box-shadow: 0 0.125em 0.75em 0 rgba(0, 0, 0, 0.5);
   height: auto;
   overflow: auto;
-  margin-top: 63px;
-  margin-bottom: 42px;
+  margin-top: 3.9375em;
+  margin-bottom: 2.625em;
   max-height: calc(100% - 105px);
-  max-width: 581px;
+  max-width: 36.3125em;
   width: 100%;
 }

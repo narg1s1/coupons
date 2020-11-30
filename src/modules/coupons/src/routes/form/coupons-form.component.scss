@@ -1,6 +1,6 @@
 :host {
   font-family: 'Roboto', sans-serif;
-  // padding: 24px 16px 18px;
+  // padding: 1.5em 1em 1.125em;
   width: 100%;
 }
 
@@ -20,7 +20,7 @@ button {
     background-color: #24272e;
     display: flex;
     justify-content: space-between;
-    padding: 24px 16px 20px;
+    padding: 1.5em 1em 1.25em;
     position: sticky;
     top: 0;
     z-index: 1;
@@ -28,9 +28,9 @@ button {
 
   &__cancel,
   &__done {
-    font-size: 18px;
-    line-height: 24px;
-    margin: 0 16px;
+    font-size: 1.125em;
+    line-height: 1.5em;
+    margin: 0 1em;
   }
 
   &__cancel {
@@ -43,10 +43,10 @@ button {
 
   &__title {
     color: #f5f5f7;
-    font-size: 32px;
+    font-size: 2em;
     font-weight: bold;
     line-height: 1.5;
-    margin: 0 16px;
+    margin: 0 1em;
     text-align: center;
     width: 100%;
   }  
@@ -55,15 +55,23 @@ button {
 .error {
   align-items: center;
   background-color: #eb4653;
-  border-radius: 10px;
+  border-radius: 0.625em;
   display: flex;
-  padding: 9px 16px;
-  margin-top: 12px;
+  padding: 0.5625em 1em;
+  margin-top: 0.75em;
 
   span {
     color: #ffffff;
-    font-size: 16px;
+    font-size: 1em;
     line-height: 1.38;
-    margin-left: 9px;
+    margin-left: 0.5625em;
   }
+}
+
+::ng-deep .cdk-overlay-container {
+  font-size: 12px; 
+  @media (min-width: 1536px) { font-size: 13px; }
+  @media (min-width: 1632px) { font-size: 14px; }
+  @media (min-width: 1728px) { font-size: 15px; }
+  @media (min-width: 1824px) { font-size: 16px; }
 }

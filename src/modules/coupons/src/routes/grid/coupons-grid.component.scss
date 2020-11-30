@@ -12,8 +12,8 @@ $background-skeleton: #444;
   -webkit-backdrop-filter: blur(50px);
   backdrop-filter: blur(50px);
 
-  @media (max-width: 767px) {
-    margin-bottom: 40px;
+  @media (max-width: 47.9375em) {
+    margin-bottom: 2.5em;
   }
 }
 
@@ -27,8 +27,8 @@ $background-skeleton: #444;
   height: 100%;
 
   &__list {
-    margin: 29px;
-    margin-right: 16px;
+    margin: 1.8125em;
+    margin-right: 1em;
     width: 100%;
     max-height: 90%;
     overflow-y: auto;
@@ -38,25 +38,31 @@ $background-skeleton: #444;
 ::ng-deep { 
   pe-data-grid-sidebar {
     top: unset !important;
-    height: calc(100% - 132px) !important;
+    height: calc(100% - 8.25em) !important;
   }
 
   pe-data-grid-item {
-    min-height: 294px;
+    min-height: 18.375em;
   
     .item-header {
       z-index: 1;
     }
   
     .item {
+
+      &__checkbox {
+        margin-top: 0 !important;
+      }
+
       .item-header__chip {
-        max-height: 28px;
+        max-height: 1.75em;
+        padding: 0 10px !important;
       }
     }
   }
 
   .sidebar-tree__node-image {
-    min-width: 22px;
+    min-width: 1.375em;
   }
 
   .mat-menu-panel {
@@ -89,27 +95,27 @@ $background-skeleton: #444;
     height: 100%;
 
     span {
-      font-size: 28px;
+      font-size: 1.75em;
       font-weight: bold;
     }
   }
 
   &__info {
     background-color: #2b2c2d;
-    padding: 11px 12px 7px;
+    padding: 0.6875em 0.75em 0.4375em;
   }
 
   &__title {
     color: #ffffff;
-    font-size: 14px;
+    font-size: 0.875em;
     font-weight: 500;
   }
 
   &__description {
-    font-size: 12px;
+    font-size: 0.75em;
     font-weight: normal;
     line-height: 1;
-    margin-top: 3px;
-    min-height: 33px;
+    margin-top: 0.1875em;
+    min-height: 2.0625em;
   }
 }

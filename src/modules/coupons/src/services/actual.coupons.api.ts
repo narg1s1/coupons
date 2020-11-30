@@ -52,20 +52,30 @@ export class ActualPeCouponsApi extends PeCouponsApi {
         getProducts(
           businessUuid: "${this.pebEnvService.businessId}",
           paginationLimit: 100,
-          pageNumber: 1,
           orderBy: "price",
           orderDirection: "desc",
-          search: ""
-          useNewFiltration: true,
         ) {
           products {
-            imagesUrl
             _id
+            businessUuid
+            images
+            imagesUrl
             title
-            description
             price
+            variants {
+              _id
+              businessUuid
+              images
+              imagesUrl
+              title
+              price
+              sku
+              onSales
+              salePrice
+            }
+            sku
+            onSales
             salePrice
-            currency
           }
         }
       }`,
@@ -78,8 +88,10 @@ export class ActualPeCouponsApi extends PeCouponsApi {
         getCategories (
           businessUuid: "${this.pebEnvService.businessId}",
         ) {
-          id
+          _id
+          slug
           title
+          businessUuid
         }
       }`,
     });
@@ -101,7 +113,9 @@ export class ActualPeCouponsApi extends PeCouponsApi {
         ) {
           nodes {
             id
+            businessId
             name
+            isDefault
           }
           totalCount
           pageInfo {
@@ -126,12 +140,19 @@ export class ActualPeCouponsApi extends PeCouponsApi {
           nodes {
             id
             type
+            businessId
             contactFields {
               nodes {
+                fieldId
                 id
                 value
+                contactId 
                 field {
+                  id
+                  businessId
                   name
+                  type
+                  groupId
                 }
               }
             }

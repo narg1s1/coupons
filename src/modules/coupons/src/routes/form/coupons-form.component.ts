@@ -39,6 +39,9 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
 
   edit: boolean = false;
 
+  customersSource;
+  groupsOfCustomersSource;
+
   categories;
   countries;
   customers;
@@ -151,13 +154,16 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const couponId = this.overlayData.id;
 
-    if (couponId) this.getCoupon(couponId);
+    this.customersSource = this.overlayData.customersSource;
+    this.groupsOfCustomersSource = this.overlayData.groupsOfCustomersSource;
 
-    this.getCategories();
-    this.getCountries();
-    this.getCustomers();
-    this.getGroupsOfCustomers();
-    this.getProducts();
+    this.categories = this.overlayData.categories;
+    this.countries = this.overlayData.countries;
+    this.customers = this.overlayData.customers;
+    this.groupsOfCustomers = this.overlayData.groupsOfCustomers;
+    this.products = this.overlayData.products;
+
+    if (couponId) this.getCoupon(couponId)
   }
 
   ngOnDestroy() {
@@ -165,11 +171,19 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  addToArray(element: any, array: any): void {
+  addToArray(element: any, array: any, arrayName?: string): void {
     const elementId = element?.id ?? element?._id;
 
-    if (!array.some(element => element === elementId || element === elementId)) {
-      array.push(elementId);
+    if (arrayName === 'groupsOfCustomers') {
+      element = this.groupsOfCustomersSource.find(element => element.id === element.id);
+    }
+
+    if (arrayName === 'customers') {
+      element = this.customersSource.find(element => element.id === element.id);
+    }
+
+    if (!array.some(element => element?.id === elementId || element?._id === elementId)) {
+      array.push(arrayName === 'countries' ? { _id: element.id } : element);
     };
   }
 
@@ -181,31 +195,70 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     array.splice(index, 1);
   }
 
-  getCategories() {
-    this.peApiService.getCategories().pipe(
-      map(request => request.data.getCategories.filter(categories => !!categories)),
-      tap(categories => this.categories = categories),
-      takeUntil(this.destroyed$)
-    ).subscribe();
-  }
-
-  getCountries() {
-    const countryList = this.localConstantsService.getCountryList();
-
-    this.countries = [];
-
-    Object.keys(countryList).map(countryKey => {
-      this.countries.push({
-        id: countryKey,
-        title: Array.isArray(countryList[countryKey]) ? countryList[countryKey][0] : countryList[countryKey]
-      });
-    })
-  }
-
   getCoupon(couponId: string) {
     this.peApiService.getCouponById(couponId).pipe(
       tap((coupon) => {
         this.edit = true;
+
+        if (coupon.customerEligibilityCustomerGroups) {
+          coupon.customerEligibilityCustomerGroups = coupon.customerEligibilityCustomerGroups.map(customerGroup => {
+            return this.groupsOfCustomersSource.find(group => group.id === customerGroup);
+          });
+        }
+
+        if (coupon.customerEligibilitySpecificCustomers) {
+          coupon.customerEligibilitySpecificCustomers = coupon.customerEligibilitySpecificCustomers.map(customer => {
+            return this.customersSource.find(contact => contact.id === customer);
+          });
+        }
+
+        // if (coupon.type.appliesToCategories) {
+        //   coupon.type.appliesToCategories = coupon.type.appliesToCategories.map(appliesToCategory => {
+        //     return this.categories.find(category => category._id === appliesToCategory);
+        //   })
+        // }
+
+        if (coupon.type.appliesToProducts) {
+          coupon.type.appliesToProducts = coupon.type.appliesToProducts.map(appliesToProduct => {
+            return this.products.find(product => product._id === appliesToProduct);
+          })
+        }
+
+        if (coupon.type.buyProducts) {
+          coupon.type.buyProducts = coupon.type.buyProducts.map(buyProduct => {
+            return this.products.find(product => product._id === buyProduct);
+          })
+        }
+
+        if (coupon.type.buyCategories) {
+          coupon.type.buyCategories = coupon.type.buyCategories.map(buyCategory => {
+            return this.categories.find(category => category._id === buyCategory);
+          })
+        }
+
+        if (coupon.type.appliesToCategories) {
+          coupon.type.appliesToCategories = coupon.type.appliesToCategories.map(appliesToCategory => {
+            return this.categories.find(category => category._id === appliesToCategory);
+          })
+        }
+
+        if (coupon.type.freeShippingToCountries) {
+          coupon.type.freeShippingToCountries = coupon.type.freeShippingToCountries.map(toCountry => {
+            return { _id: toCountry };
+          })
+        }
+
+        if (coupon.type.getProducts) {
+          coupon.type.getProducts = coupon.type.getProducts.map(getProduct => {
+            return this.products.find(product => product._id === getProduct);
+          })
+        }
+
+        if (coupon.type.getCategories) {
+          coupon.type.getCategories = coupon.type.getCategories.map(getCategory => {
+            return this.categories.find(category => category._id === getCategory);
+          })
+        }
 
         this.coupon = coupon;
         this.couponForm.patchValue(coupon);
@@ -226,42 +279,6 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         this.changeDetectorRef.markForCheck();
       }),
       takeUntil(this.destroyed$),
-    ).subscribe();
-  }
-
-  getCustomers() {
-    this.peApiService.getContacts().pipe(
-      map(request => {
-        return request.data.contacts.nodes.map(contact => {
-          const customer = { id: contact.id, title: null };
-          contact.contactFields.nodes.map(node => customer[node.field.name] = node.value);
-          customer.title = customer['email'] ?? customer['mobilePhone'];
-          return customer;
-        })
-      }),
-      tap(customers => this.customers = customers),
-      takeUntil(this.destroyed$)
-    ).subscribe();
-  }
-
-  getGroupsOfCustomers() {
-    this.peApiService.getContactGroups().pipe(
-      map(request => request.data.groups.nodes.map(group => {
-        return { 
-          id: group.id,
-          title: group.name
-        } 
-      })),
-      tap(groupsOfCustomers => this.groupsOfCustomers = groupsOfCustomers),
-      takeUntil(this.destroyed$)
-    ).subscribe();
-  }
-  
-  getProducts() {
-    this.peApiService.getProducts().pipe(
-      map(request => request.data.getProducts.products.filter(product => !!product)),
-      tap(products => this.products = products),
-      takeUntil(this.destroyed$)
     ).subscribe();
   }
 
@@ -340,7 +357,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     if (this.couponForm.value.type.type === PeCouponTypeEnum.FreeShipping) body = this.getFreeShipping(value);
     if (this.couponForm.value.type.type === PeCouponTypeEnum.BuyXGetY) body = this.getBuyXGetY(value);
 
-    body.startDate = moment(`${value.startDateDate} ${value.startDateTime}`, 'DD.MM.YYYY hh:mm').toDate();
+    body.startDate = moment(`${value.startDateDate} ${value.startDateTime}`, 'DD.MM.YYYY hh:mm:ss').toDate();
 
     if (value.setEndDate) {
       controls.endDateDate.setValidators([Validators.required]);
@@ -348,9 +365,9 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
       controls.endDateTime.setValidators([Validators.required]);
       controls.endDateTime.updateValueAndValidity();
 
-      body.endDate = moment(`${value.endDateDate} ${value.endDateTime}`, 'DD.MM.YYYY hh:mm').toDate();
+      body.endDate = moment(`${value.endDateDate} ${value.endDateTime}`, 'DD.MM.YYYY hh:mm:ss').toDate();
 
-      if (!moment(value.startDate).isBefore(value.endDate)) {
+      if (!moment(body.startDate).isBefore(body.endDate)) {
         controls.endDateDate.setErrors({ 'isBefore': true });
         controls.endDateTime.setErrors({ 'isBefore': true });
       }
@@ -382,7 +399,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         limitUsage: value.limits.limitUsage ?? false,
         limitUsageAmount: Number(value.limits.limitUsageAmount) ?? null,
       },
-      channelSetsIds: value.channelSetsIds ?? [],
+      channelSets: value.channelSets ?? [],
       type: {
         type: value.type.type,
         discountValue: Number(value.type.discountValue),
@@ -527,7 +544,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         limitUsage: value.limits.limitUsage ?? false,
         limitUsageAmount: Number(value.limits.limitUsageAmount) ?? null
       },
-      channelSetsIds: value.channelSetsIds ?? [],
+      channelSets: value.channelSets ?? [],
       type: {
         type: value.type.type,
         buyRequirementType: value.type.buyRequirementType,
@@ -563,7 +580,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         limitUsage: value.limits.limitUsage ?? false,
         limitUsageAmount: Number(value.limits.limitUsageAmount) ?? null,
       },
-      channelSetsIds: value.channelSetsIds ?? [],
+      channelSets: value.channelSets ?? [],
       type: {
         type: value.type.type,
         discountValue: Number(value.type.discountValue),
@@ -637,7 +654,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         limitUsage: value.limits.limitUsage ?? false,
         limitUsageAmount: Number(value.limits.limitUsageAmount) ?? null
       },
-      channelSetsIds: value.channelSetsIds ?? [],
+      channelSets: value.channelSets ?? [],
       type: {
         type: value.type.type,
         freeShippingToCountries: value.type.freeShippingToCountries ?? [],

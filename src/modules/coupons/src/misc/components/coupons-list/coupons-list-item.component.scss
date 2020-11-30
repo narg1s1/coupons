@@ -3,12 +3,12 @@
   background-color: #1c1d1e;
   display: flex;
   justify-content: space-between;
-  padding-top: 17px;
-  padding-right: 18px;
-  padding-bottom: 17px;
-  padding-left: 8px;
+  padding-top: 1.0625em;
+  padding-right: 1.125em;
+  padding-bottom: 1.0625em;
+  padding-left: 0.5em;
   position: relative;
-  margin-top: 1px;
+  margin-top: 0.0625em;
 }
 
 button {
@@ -24,10 +24,10 @@ button {
       align-items: center;
       color: rgba(255, 255, 255, 0.95);
       display: flex;
-      font-size: 16px;
+      font-size: 1em;
       font-weight: 400;
       line-height: 1.1;
-      margin-left: 12px;
+      margin-left: 0.75em;
     }
   }
 
@@ -35,7 +35,7 @@ button {
     background-color: transparent;
     color: #eb4653;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1em;
     font-weight: 400;
     line-height: 1.1;
     padding: 0;
