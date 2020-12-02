@@ -1,8 +1,5 @@
-import { Overlay } from '@angular/cdk/overlay';
-import { ComponentPortal } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { 
   MenuSidebarFooterData,
   PeDataGridFilterType,
@@ -16,10 +13,10 @@ import {
 import { isEqual, orderBy } from 'lodash';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
-import { PeCoupon } from '../../misc/interfaces/coupon.model';
+import { PeCoupon, PeCouponsStatusEnum } from '../../misc/interfaces/coupon.model';
 import { PeCouponsApi } from '../../services/abstract.coupons.api';
 
-import { PeOverlayRef, PeOverlayService } from '../../misc/components/overlay/overlay.service';
+import { PeOverlayService } from '../../misc/components/overlay/overlay.service';
 import { PeCouponsFormComponent } from '../form/coupons-form.component';
 import { LocaleConstantsService } from '@pe/i18n';
 

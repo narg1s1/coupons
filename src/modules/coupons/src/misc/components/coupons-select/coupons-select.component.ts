@@ -6,7 +6,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   selector: 'pe-coupons-select',
   templateUrl: './coupons-select.component.html',
   styleUrls: ['./coupons-select.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

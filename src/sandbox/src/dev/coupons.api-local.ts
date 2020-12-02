@@ -23,7 +23,7 @@ export const SANDBOX_COUPONS = [
     name: 'nameValue',
     products: [],
     startDate: '2021-05-04T19:00:00.000Z',
-    status: 'UNACTIVE',
+    status: 'INACTIVE',
     type: {
       type: 'PERCENTAGE',
       discountValue: 5, 

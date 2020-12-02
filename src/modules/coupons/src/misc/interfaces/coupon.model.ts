@@ -6,7 +6,7 @@ export enum PeCouponTypeEnum {
 }
 
 export enum PeCouponsStatusEnum {
-  Unactive = 'UNACTIVE',
+  Inactive = 'INACTIVE',
   Active = 'ACTIVE',
 }
 

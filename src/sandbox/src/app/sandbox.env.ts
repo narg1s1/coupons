@@ -20,7 +20,7 @@ export class SandboxEnv implements PebEnvService {
   }
 
   get businessId(): string {
-    return '3e71661b-4f09-4647-bdb6-0f389e9e7024';
+    return '2382ffce-5620-4f13-885d-3c069f9dd9b4';
   }
 
   get shopId(): string {

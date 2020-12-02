@@ -1,11 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PebEnvService } from '@pe/builder-core';
-import { LocaleConstantsService } from '@pe/i18n';
 import { ReplaySubject, throwError } from 'rxjs';
 import { catchError, takeUntil, tap } from 'rxjs/operators';
-
 
 import { 
   PeCouponTypeEnum,
@@ -143,7 +141,6 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private formBuilder: FormBuilder,
-    private localConstantsService: LocaleConstantsService,
     private matDialog: MatDialog,
     private peOverlayRef: PeOverlayRef,
     private peApiService: PeCouponsApi,
@@ -175,11 +172,11 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     const elementId = element?.id ?? element?._id;
 
     if (arrayName === 'groupsOfCustomers') {
-      element = this.groupsOfCustomersSource.find(element => element.id === element.id);
+      element = this.groupsOfCustomersSource.find(el => el.id === element.id);
     }
 
     if (arrayName === 'customers') {
-      element = this.customersSource.find(element => element.id === element.id);
+      element = this.customersSource.find(el => el.id === element.id);
     }
 
     if (!array.some(element => element?.id === elementId || element?._id === elementId)) {
@@ -368,18 +365,18 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
 
       const status = moment(moment()).isBetween(body.startDate, body.endDate, 'minute');
 
-      body.status = status ? PeCouponsStatusEnum.Active : PeCouponsStatusEnum.Unactive;
+      body.status = status ? PeCouponsStatusEnum.Active : PeCouponsStatusEnum.Inactive;
     } else {
       const status = moment(moment()).isAfter(body.startDate, 'minute');
 
-      body.status = status ? PeCouponsStatusEnum.Active : PeCouponsStatusEnum.Unactive;
+      body.status = status ? PeCouponsStatusEnum.Active : PeCouponsStatusEnum.Inactive;
     }
 
     if (this.couponForm.valid) {
       if (couponId) {
         this.peApiService.updateCoupon(couponId, body).pipe(
           takeUntil(this.destroyed$),
-        ).subscribe(() => this.peOverlayRef.close());
+        ).subscribe(() => this.peOverlayRef.close(true));
       } else {
         this.peApiService.createCoupon(body).pipe(
           catchError(response => {  
@@ -415,7 +412,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         appliesToCategories: value.type.appliesToCategories ?? [],
         minimumRequirements: value.type.minimumRequirements ?? false,
       },
-      status: value.status ?? PeCouponsStatusEnum.Unactive,
+      status: value.status ?? PeCouponsStatusEnum.Inactive,
       customerEligibility: value.customerEligibility,
       customerEligibilitySpecificCustomers: value.customerEligibilitySpecificCustomers ?? [],
       customerEligibilityCustomerGroups: value.customerEligibilityCustomerGroups ?? []
@@ -569,7 +566,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         maxUsesPerOrder: value.type.maxUsesPerOrder ?? false,
         maxUsesPerOrderValue: Number(value.type.maxUsesPerOrderValue)
       },
-      status: value.status ?? PeCouponsStatusEnum.Unactive,
+      status: value.status ?? PeCouponsStatusEnum.Inactive,
       customerEligibility: value.customerEligibility,
       customerEligibilitySpecificCustomers: value.customerEligibilitySpecificCustomers ?? [],
       customerEligibilityCustomerGroups: value.customerEligibilityCustomerGroups ?? []
@@ -596,7 +593,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         appliesToCategories: value.type.appliesToCategories ?? [],
         minimumRequirements: value.type.minimumRequirements ?? false,
       },
-      status: value.status ?? PeCouponsStatusEnum.Unactive,
+      status: value.status ?? PeCouponsStatusEnum.Inactive,
       customerEligibility: value.customerEligibility ?? null,
       customerEligibilitySpecificCustomers: value.customerEligibilitySpecificCustomers ?? [],
       customerEligibilityCustomerGroups: value.customerEligibilityCustomerGroups ?? []
@@ -670,7 +667,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         excludeShippingRatesOverCertainAmountValue: Number(value.type.excludeShippingRatesOverCertainAmountValue) ?? null,
         minimumRequirements: value.type.minimumRequirements ?? false,
       },
-      status: value.status ?? PeCouponsStatusEnum.Unactive,
+      status: value.status ?? PeCouponsStatusEnum.Inactive,
       customerEligibility: value.customerEligibility ?? null,
       customerEligibilitySpecificCustomers: value.customerEligibilitySpecificCustomers ?? [],
       customerEligibilityCustomerGroups: value.customerEligibilityCustomerGroups ?? []
