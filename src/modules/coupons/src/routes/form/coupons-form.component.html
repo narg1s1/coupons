@@ -1,10 +1,12 @@
 <ng-scrollbar track="vertical">
+
   <div class="coupons-form__wrapper">
     <div class="coupons-form__header">
       <button class="coupons-form__cancel" (click)="onClose()">Cancel</button>
       <span class="coupons-form__title">{{ !edit ? 'Create discount code' : 'Edit discount code' }}</span>
       <button class="coupons-form__done" (click)="onSave()">Done</button>
     </div>
+
     <form [formGroup]="couponForm">
       <pe-coupons-expansion-panel>
         <span class="pe-coupons-expansion-panel-header-title">Discount code</span>
@@ -20,8 +22,12 @@
             <pe-coupons-form-field-subscript>Customers will enter this discount code at checkout.</pe-coupons-form-field-subscript>
           </pe-coupons-form-field>
           <!-- DISCOUNT CODE END -->
-  
-          <ng-container *ngIf="couponForm.get('code').invalid" [ngTemplateOutlet]="error"></ng-container>
+          
+          <ng-container *ngIf="couponForm.get('code').invalid">
+            <ng-container *ngIf="couponForm.get('code').hasError('isNotUnique')" [ngTemplateOutlet]="error" [ngTemplateOutletContext]="{ message: 'Code ' + couponForm.get('code').value + ' is not unique.' }"></ng-container>
+            <ng-container *ngIf="!couponForm.get('code').hasError('isNotUnique')" [ngTemplateOutlet]="error"></ng-container>
+          </ng-container>
+
     
           <pe-coupons-form-group formGroupName="type">
             <!-- TYPES START -->
@@ -93,9 +99,6 @@
                   [items]="countries" 
                   (onSelected)="addToArray($event, couponForm.value.type.freeShippingToCountries, 'countries')">
                 </pe-coupons-autocomplete>
-                <!-- <pe-coupons-form-field-suffix>
-                  <button>Add country</button>
-                </pe-coupons-form-field-suffix> -->
               </pe-coupons-form-field>
               <pe-coupons-list>
                 <pe-coupons-list-item 
@@ -262,9 +265,6 @@
                   placeholder="Search groups of customers"
                   [items]="groupsOfCustomers"
                   (onSelected)="addToArray($event, couponForm.value.customerEligibilityCustomerGroups, 'groupsOfCustomers')"></pe-coupons-autocomplete>
-                <!-- <pe-coupons-form-field-suffix>
-                  <button>Add Group</button>
-                </pe-coupons-form-field-suffix> -->
               </pe-coupons-form-field>
               <pe-coupons-list>
                 <pe-coupons-list-item 
@@ -284,9 +284,6 @@
                   placeholder="Search customers"
                   [items]="customers"
                   (onSelected)="addToArray($event, couponForm.value.customerEligibilitySpecificCustomers, 'customers')"></pe-coupons-autocomplete>
-                <!-- <pe-coupons-form-field-suffix>
-                  <button>Add Customer</button>
-                </pe-coupons-form-field-suffix> -->
               </pe-coupons-form-field>
               <pe-coupons-list>
                 <pe-coupons-list-item 
@@ -385,11 +382,32 @@
   
         </pe-coupons-expansion-panel-content>
       </pe-coupons-expansion-panel>
+
+      <!-- CHANNELS START -->
+      <!-- <pe-coupons-expansion-panel>
+        <span class="pe-coupons-expansion-panel-header-title">Channels</span>
+        <pe-coupons-expansion-panel-content>
+
+          <pe-coupons-form-group>
+            <pe-coupons-form-field>
+              <pe-coupons-form-field-prefix>
+                <pe-coupons-icon-point-of-sale></pe-coupons-icon-point-of-sale>
+              </pe-coupons-form-field-prefix>
+              <span>Point of Sale</span>
+              <pe-coupons-form-field-suffix>
+                <pe-coupons-slide-toggle></pe-coupons-slide-toggle>
+              </pe-coupons-form-field-suffix>
+            </pe-coupons-form-field>
+          </pe-coupons-form-group>
+
+        </pe-coupons-expansion-panel-content> 
+      </pe-coupons-expansion-panel> -->
+      <!-- CHANNELS END -->
     </form>
   </div>
 </ng-scrollbar>
 
-<ng-template #error>
+<ng-template #error let-message="message">
   <div class="error">
     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
       <g fill="none" fill-rule="evenodd">
@@ -403,7 +421,7 @@
         </g>
       </g>
     </svg>  
-    <span>Incorrectly added value.</span>
+    <span>{{ message || 'Incorrectly added value.' }}</span>
   </div>
 </ng-template>
 
@@ -411,9 +429,6 @@
   <pe-coupons-form-field>
     <pe-coupons-form-field-label [class.ng-invalid]="control.invalid">Products</pe-coupons-form-field-label>
     <pe-coupons-autocomplete [class.ng-invalid]="control.invalid" placeholder="Search products" [items]="products" (onSelected)="addToArray($event, control.value)"></pe-coupons-autocomplete>
-    <!-- <pe-coupons-form-field-suffix>
-      <button>Browse</button>
-    </pe-coupons-form-field-suffix> -->
   </pe-coupons-form-field>
   <pe-coupons-list>
     <pe-coupons-list-item 
@@ -430,9 +445,6 @@
   <pe-coupons-form-field>
     <pe-coupons-form-field-label [class.ng-invalid]="control.invalid">Categories</pe-coupons-form-field-label>
     <pe-coupons-autocomplete [class.ng-invalid]="control.invalid" placeholder="Search categories" [items]="categories" (onSelected)="addToArray($event, control.value)"></pe-coupons-autocomplete>
-    <!-- <pe-coupons-form-field-suffix>
-      <button>Browse</button>
-    </pe-coupons-form-field-suffix> -->
   </pe-coupons-form-field>
   <pe-coupons-list>
     <pe-coupons-list-item 

@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PebEnvService } from '@pe/builder-core';
 import { LocaleConstantsService } from '@pe/i18n';
-import { ReplaySubject } from 'rxjs';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { ReplaySubject, throwError } from 'rxjs';
+import { catchError, takeUntil, tap } from 'rxjs/operators';
 
 
 import { 
@@ -212,12 +212,6 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
           });
         }
 
-        // if (coupon.type.appliesToCategories) {
-        //   coupon.type.appliesToCategories = coupon.type.appliesToCategories.map(appliesToCategory => {
-        //     return this.categories.find(category => category._id === appliesToCategory);
-        //   })
-        // }
-
         if (coupon.type.appliesToProducts) {
           coupon.type.appliesToProducts = coupon.type.appliesToProducts.map(appliesToProduct => {
             return this.products.find(product => product._id === appliesToProduct);
@@ -371,6 +365,14 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         controls.endDateDate.setErrors({ 'isBefore': true });
         controls.endDateTime.setErrors({ 'isBefore': true });
       }
+
+      const status = moment(moment()).isBetween(body.startDate, body.endDate, 'minute');
+
+      body.status = status ? PeCouponsStatusEnum.Active : PeCouponsStatusEnum.Unactive;
+    } else {
+      const status = moment(moment()).isAfter(body.startDate, 'minute');
+
+      body.status = status ? PeCouponsStatusEnum.Active : PeCouponsStatusEnum.Unactive;
     }
 
     if (this.couponForm.valid) {
@@ -380,6 +382,11 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         ).subscribe(() => this.peOverlayRef.close());
       } else {
         this.peApiService.createCoupon(body).pipe(
+          catchError(response => {  
+            controls.code.setErrors({ 'isNotUnique': true })
+            this.changeDetectorRef.markForCheck();
+            return throwError(response);
+          }),
           takeUntil(this.destroyed$),
         ).subscribe(() => this.peOverlayRef.close(true));
       }

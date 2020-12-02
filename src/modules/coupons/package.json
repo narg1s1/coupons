@@ -1,6 +1,6 @@
 {
   "name": "@pe/coupons",
-  "version": "0.0.1-COUPONF-1.29",
+  "version": "0.0.1-COUPONF-1.30",
   "description": "Сoupons",
   "repository": "https://gitlab.devpayever.com/frontend/coupons",
   "dependencies": {
