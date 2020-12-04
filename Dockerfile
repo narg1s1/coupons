@@ -1,11 +1,22 @@
-FROM node:8.11.3 as builder
+ARG BUILD_NODE_IMAGE
+ARG PROD_NGINX_IMAGE
+
+FROM $BUILD_NODE_IMAGE AS build
+
+COPY package.json package-lock.json .npmrc /payever/
+RUN cd /payever && npm ci
 
 COPY . /payever
-RUN echo 'machine gitlab.devpayever.com login deploybot password tVUeMCwr3SUWod4UGxDD' > ~/.netrc
-RUN apt-get update && apt-get install -y curl git bzip2 openssh-client --no-install-recommends
-RUN cd /payever/ && npm install
-RUN cd /payever/ && npm run build
+RUN cd /payever && npm run build
 
 
-FROM registry.devpayever.com/nginx:master
-COPY --from=builder /payever/dist /usr/share/nginx/html
+FROM $PROD_NGINX_IMAGE
+
+ARG CI_COMMIT_SHA
+
+COPY --from=build /payever/dist /payever
+
+COPY ./deploy /payever/deploy
+RUN chmod 755 /payever/deploy -R
+
+RUN mkdir /payever/api && echo $CI_COMMIT_SHA && echo $CI_COMMIT_SHA > /payever/api/status

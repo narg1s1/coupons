@@ -1,0 +1,303 @@
+:host {
+  display: block;
+}
+
+.pe-coupons-overlay-backdrop {
+  background-color: rgba(0,0,0,.5);
+}
+
+.pe-coupons-overlay-panel {
+  background-color: #24272e;
+  border-radius: 1em;
+  box-shadow: 0 0.125em 0.75em 0 rgba(0, 0, 0, 0.5);
+  height: auto;
+  overflow: auto;
+  margin-top: 3.9375em;
+  margin-bottom: 2.625em;
+  max-height: calc(100% - 105px);
+  max-width: 36.3125em;
+  width: 100%;
+}
+
+// coupons-autocomplete
+.mat-autocomplete-panel[id^="mat-autocomplete-"] {
+  background-color: #1c1d1e;
+  border-radius: 0.75em;
+
+  .mat-option.mat-selected:not(.mat-active):not(:hover):not(.mat-option-disabled) {
+    background-color: inherit;
+    color: rgba(255, 255, 255, 0.95);
+  }
+}
+
+// coupons-datepicker
+.mat-dialog-container[id^="mat-dialog-"] {
+  background-color: #24272e;
+  padding: 1em;
+  border-radius: 1em;
+
+  pe-coupons-datepicker {
+
+    .mat-calendar-header {
+      padding: .125em 0;
+      margin-bottom: 1px;
+      background-color: rgba(0, 0, 0, 0.3);
+      border-radius: .75em .75em 0 0;
+    }
+    
+    .mat-calendar-controls {
+      align-items: center;
+      justify-content: space-between;
+      margin: 0;
+    
+      .mat-calendar-arrow {
+        display: none;
+      }
+    }
+    
+    .mat-calendar-previous-button { order: 1; }
+    .mat-calendar-period-button { order: 2; }
+    .mat-calendar-next-button { order: 3; }
+    .mat-calendar-spacer { display: none; }
+    
+    .mat-calendar-content {
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 0 0 .75em .75em;
+      padding: 8px 0 0 0;
+    }
+    
+    .mat-calendar-table-header-divider::after {
+      background: #979797;
+      opacity: 0.3;
+      left: 0;
+      right: 0;
+    }
+    
+    .mat-calendar-table-header {
+      color: #ffffff;
+    
+      th {
+        padding-bottom: 8px;
+      }
+    }
+    
+    .mat-calendar-body-cell {
+    
+      &:not(.mat-calendar-body-disabled) {
+        .mat-calendar-body-cell-content {
+          color: #ffffff;
+        }
+      }
+    
+      &.mat-calendar-body-disabled {
+        .mat-calendar-body-cell-content {
+          color: #78787d;
+        }
+      }
+    }
+    
+    .mat-calendar-previous-button[disabled], .mat-calendar-next-button[disabled] {
+      color: #78787d;
+    }
+  }
+}
+
+// coupons-expansion-panel
+.pe-coupons-expansion-panel {
+  &-header-title {
+    color: #f5f5f7;
+    font-size: 1.25em;
+    font-weight: bold;
+    line-height: 0.9;
+    margin-right: 1em;
+  }
+
+  &-content {
+    pe-coupons-expansion-panel-content {
+      display: block;
+      margin-bottom: 1.25em;
+    }
+  }
+}
+
+// coupons-form-field
+.pe-coupons-form-field {
+  &__infix {
+    pe-coupons-form-field-label {
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 0.875em;
+      left: 16;
+      line-height: 1.09;
+      top: 0;
+      position: absolute;
+
+      &.ng-invalid {
+        color: #eb4653;
+      }
+    }
+  }
+
+  &__suffix {
+    pe-coupons-form-field-suffix {
+      button,
+      span {
+        background-color: #1c1d1e;
+        display: block;
+        font-family: 'Roboto', sans-serif;
+        font-size: 1em;
+        line-height: 1.38;
+        margin: -0.5625em 0 -0.4375em 0;
+        padding: 1.09375em 1em;
+        white-space: nowrap;
+      }
+
+      button {
+        color: rgb(0, 145, 223);
+
+        &:disabled {
+          cursor: default;
+          color: rgba(0, 145, 223, .5);
+        }
+      }
+
+      span {
+        color: #ffffff;
+      }
+
+      .icon {
+        align-items: center;
+        display: flex;
+        padding: 0.3125em 0.875em 0.4375em;
+
+        svg {
+          height: 1.75em;
+          width: 1.75em;
+        }
+      }
+    }
+  }
+}
+
+// coupons-form-group
+.pe-coupons-form-group {
+
+  &__wrapper {
+
+    pe-coupons-form-field {
+
+      &:first-child .pe-coupons-form-field__flex {
+        margin-top: 0;
+      }
+
+      &:not(:first-child) .pe-coupons-form-field__flex {
+        margin-top: 0.0625em;
+      }
+
+      .pe-coupons-form-field__flex {
+        border-radius: 0;
+      }
+    }
+  }
+}
+
+// coupons-select
+#pe-coupons-select {
+  .mat-select-value {
+    color: #ffffff;
+    font-size: 1em;
+    line-height: 1.5;
+  }
+
+  .mat-select-arrow {
+    width: 0.625em;
+    height: 0.625em;
+    border-top: 0.125em solid white;
+    border-right: 0.125em solid white;
+    border-left: none;
+    transform: rotate(45deg);
+    margin: -1em 0.125em 0;
+  }
+}
+
+#pe-coupons-select-panel {
+  background-color: #1c1d1e;
+  border-radius: 0.75em;
+  margin-left: 0.375em;
+  min-width: calc(100% + 1.1875em);
+
+  .mat-option {
+    color: rgba(255, 255, 255, 0.95);
+    height: 2.875em;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1em;
+    font-weight: 400;
+    line-height: 1.1;
+    padding-left: 0.625em;
+    padding-right: 0.625em;
+
+    &:hover {
+      background-color: #0091df;
+    }
+
+    &:not(:first-of-type) {
+      &::before {
+        background-color: #393939;
+        content: "";
+        height: 0.0625em;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+    }
+
+    &.mat-selected:not(.mat-option-multiple) {
+      background-color: #0371e2;
+    }
+  }
+}
+
+// 
+.cdk-overlay-container {
+  font-size: 12px; 
+  @media (min-width: 1536px) { font-size: 13px; }
+  @media (min-width: 1632px) { font-size: 14px; }
+  @media (min-width: 1728px) { font-size: 15px; }
+  @media (min-width: 1824px) { font-size: 16px; }
+}
+
+//coupons-grid 
+#pe-coupons-data-grid {
+  pe-data-grid-sidebar {
+    top: unset;
+    height: calc(100% - 8.25em);
+  }
+  
+  pe-data-grid-item {
+    min-height: 18.375em;
+  
+    .item-header {
+      z-index: 1;
+    }
+  
+    .item {
+  
+      &__checkbox {
+        margin-top: 0;
+      }
+  
+      .item-header__chip {
+        max-height: 1.75em;
+        padding: 0 10px;
+      }
+    }
+  }
+  
+  .sidebar-tree__node-image {
+    min-width: 1.375em;
+  }
+  
+  .mat-menu-panel {
+    overflow: hidden;
+  }
+}

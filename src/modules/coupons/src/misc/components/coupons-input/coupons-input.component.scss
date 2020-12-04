@@ -1,0 +1,42 @@
+:host {
+  width: 100%;
+
+  &.ng-invalid {
+    input { 
+      color: rgb(235, 70, 83);
+
+      &::placeholder {
+        color: rgba(235, 70, 83, .5);
+      }
+    }
+  }
+}
+
+input {
+  appearance: none;
+  border: unset;
+  outline: unset;
+
+  background-color: transparent;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 1em;
+  font-weight: 500;
+  line-height: 1.5;
+  padding: 0;
+  width: 100%;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    appearance: none;
+  }
+
+
+  &:disabled {
+    color: rgba(255, 255, 255, 0.475);
+  }
+
+  &::placeholder {
+    color: #78787d;
+  }
+}

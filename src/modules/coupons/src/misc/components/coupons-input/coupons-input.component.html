@@ -1,0 +1,11 @@
+<input 
+  #input 
+  [type]="type" 
+  [max]="max"
+  [min]="min" 
+  [placeholder]="placeholder" 
+  (change)="onChange($event.target.value)" 
+  (keypress)="onKeyPress($event)"
+  (keyup)="onKeyUp()"
+  (focusout)="onFocusOut()"
+  [textMask]="{mask: mask, guide: false, showMask: false}">

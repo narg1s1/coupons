@@ -1,0 +1,87 @@
+<pe-data-grid 
+  id="pe-coupons-data-grid"
+  [filters]="filters"
+  [items]="items$"
+  [selectedItems]="selectedItems"
+  [dataListOptions]="gridOptions"
+  [multipleSelectedActions]="multipleSelectedActions"
+  [sortByActions]="sortByActions"
+  (searchChanged)="onSearchChanged($event)"
+>
+
+  <pe-data-grid-sidebar-filters-wrapper>
+
+    <pe-data-grid-sidebar-header title="Filter"></pe-data-grid-sidebar-header>
+
+    <pe-data-grid-sidebar-filter-wrapper
+      [title]="treeLabel"
+      [expandable]="true"
+      [editable]="false"
+      [active]="treeHeaderActive"
+      (changeTitleOn)="treeLabel = $event"
+      (headerClick)="treeHeaderActive = !treeHeaderActive"
+    >
+      <pe-data-grid-tree-sidebar-filter
+        [tree]="treeData"
+        [multiple]="false"
+        [formControl]="formGroup.get('tree')"
+      >
+        <ng-template #nodeImageTemplate let-node="node">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+            <g fill="none" fill-rule="evenodd">
+              <g>
+                <g transform="translate(-24 -482) translate(24 482)">
+                  <rect width="22" height="22" fill="#86868B" rx="5.5"/>
+                  <g fill="#FFF" fill-rule="nonzero">
+                    <path d="M14.18 0c.96 0 1.742.756 1.815 1.714l.005.139v6.955c0 .98-.743 1.786-1.69 1.854l-.13.005-.402-.001v-.889h.402c.477 0 .875-.375.926-.862l.005-.107V1.854c-.002-.5-.367-.907-.83-.96L14.18.89H5.376c-.478 0-.875.376-.926.863l-.006.106v.364h-.888v-.364c0-.979.743-1.785 1.69-1.853L5.375 0h8.804z" transform="translate(3 4)"/>
+                    <path d="M12.402 1.778c.96 0 1.742.756 1.815 1.714l.005.138v6.956c0 .98-.743 1.786-1.69 1.854l-.13.004H12v-.89l.402.002c.478 0 .875-.376.926-.864l.005-.106V3.632c-.002-.5-.367-.908-.83-.96l-.1-.005H3.597c-.478 0-.875.375-.926.863l-.005.106L2.666 4h-.888v-.364c0-.98.743-1.785 1.69-1.854l.13-.004h8.804z" transform="translate(3 4)"/>
+                    <path d="M10.624 3.556c.96 0 1.742.756 1.815 1.714l.005.138v6.956c0 .979-.743 1.785-1.69 1.854l-.13.004H1.82c-.964 0-1.749-.764-1.815-1.726L0 12.364v-6.95c0-.98.743-1.786 1.69-1.854l.13-.004h8.804zm0 .888H1.82c-.477 0-.875.376-.926.864l-.005.106v6.95c0 .502.366.911.83.964l.101.005h8.804c.478 0 .875-.375.926-.863l.006-.106V5.41c-.002-.501-.367-.908-.83-.96l-.102-.006z" transform="translate(3 4)"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </ng-template>
+      </pe-data-grid-tree-sidebar-filter>
+    </pe-data-grid-sidebar-filter-wrapper>
+
+  </pe-data-grid-sidebar-filters-wrapper>
+
+  <pe-data-grid-sidebar-footer-wrapper>
+    <pe-data-grid-menu-sidebar-footer
+      [menuData]="sidebarFooterData"
+    ></pe-data-grid-menu-sidebar-footer>
+  </pe-data-grid-sidebar-footer-wrapper>
+
+  <pe-data-grid-item
+    [item]="addItem"
+    [actions]="addActions"
+    [selectable]="false"
+    [isShowGridItemInfo]="false"
+    (click)="open()"
+  >
+    <div class="coupon__container gray">
+      <pe-coupons-icon-add></pe-coupons-icon-add>
+    </div>
+  </pe-data-grid-item>
+
+  <pe-data-grid-item
+    *ngFor="let item of items$ | async; trackBy: trackItem"
+    inViewport
+    [item]="item"
+    [actions]="[singleSelectedAction]"
+    [selectable]="true"
+    [isShowGridItemInfo]="true"
+    >
+    <div class="coupon__container orange">
+      <div class="coupon__image">
+        <span>{{ item.title }}</span>
+      </div>
+      <div class="coupon__info">
+        <div class="coupon__title">{{ item.title }}</div>
+        <div class="coupon__description">{{ item.description }}</div>
+      </div>
+    </div>
+  </pe-data-grid-item>
+
+</pe-data-grid>
