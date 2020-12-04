@@ -1,1 +1,8 @@
-<mat-calendar #calendar (selectedChange)="selectedChangeOn($event)" [minDate]="minDate" class="datepicker__calendar"></mat-calendar>
+<div #wrapper>
+  <mat-calendar
+    #calendar
+    (selectedChange)="selectedChangeOn($event)"
+    [minDate]="minDate"
+    id="datepicker__calendar"
+  ></mat-calendar>
+</div>

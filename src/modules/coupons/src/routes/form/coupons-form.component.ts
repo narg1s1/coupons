@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestro
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PebEnvService } from '@pe/builder-core';
-import { ReplaySubject, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { catchError, takeUntil, tap } from 'rxjs/operators';
 
 import { 
@@ -15,9 +15,18 @@ import {
   PeCouponTypeBuyXGetYItemTypeEnum,
   PeCouponTypeBuyXGetYGetDiscountTypesEnum,
   PeCouponsStatusEnum
-} from '../../misc/interfaces/coupon.model';
+} from '../../misc/interfaces/coupon.enum';
+import { PeCoupon } from '../../misc/interfaces/coupon.interface';
+import { PeCouponCategory } from '../../misc/interfaces/coupon-category.interface';
+import { PeCouponCustomer } from '../../misc/interfaces/coupon-customer.interface';
+import { PeCouponCustomerGroup } from '../../misc/interfaces/coupon-customer-group.interface';
+import { PeCouponCountry } from '../../misc/interfaces/coupon-country.interface';
+import { PeCouponOption } from '../../misc/interfaces/coupon-option.interface';
+import { PeCouponProduct } from '../../misc/interfaces/coupon-product.interface';
+
 import { PeCouponsApi } from '../../services/abstract.coupons.api';
-import { PeOverlayRef, PE_OVERLAY_DATA } from '../../misc/components/overlay/overlay.service';
+import { PeOverlayRef, PE_OVERLAY_DATA } from '../../misc/services/coupons-overlay/coupons-overlay.service';
+import { PeCouponsAbstractComponent } from '../../misc/components/coupons-abstract.component';
 import { PeCouponsDatepickerComponent } from '../../misc/components/coupons-datepicker/coupons-datepicker.component';
 
 import * as moment_ from 'moment';
@@ -29,22 +38,22 @@ const moment = moment_;
   styleUrls: ['./coupons-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PeCouponsFormComponent implements OnInit, OnDestroy {
+export class PeCouponsFormComponent extends PeCouponsAbstractComponent implements OnInit, OnDestroy {
 
-  readonly destroyed$ = new ReplaySubject<boolean>();
+  characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-  coupon;
+  coupon: PeCoupon;
 
   edit: boolean = false;
 
-  customersSource;
-  groupsOfCustomersSource;
+  customersSource: PeCouponCustomer[];
+  groupsOfCustomersSource: PeCouponCustomerGroup[];
 
-  categories;
-  countries;
-  customers;
-  groupsOfCustomers;
-  products;
+  categories: PeCouponCategory[];
+  countries: PeCouponCountry[];
+  customers: PeCouponOption[];
+  groupsOfCustomers: PeCouponOption[];
+  products: PeCouponProduct[];
 
   types = [
     { label: 'Percentage', value: PeCouponTypeEnum.Percentage },
@@ -146,7 +155,9 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     private peApiService: PeCouponsApi,
     private pebEnvService: PebEnvService,
     @Inject(PE_OVERLAY_DATA) public overlayData: any
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     const couponId = this.overlayData.id;
@@ -163,11 +174,6 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     if (couponId) this.getCoupon(couponId)
   }
 
-  ngOnDestroy() {
-    this.destroyed$.next(true);
-    this.destroyed$.complete();
-  }
-
   addToArray(element: any, array: any, arrayName?: string): void {
     const elementId = element?.id ?? element?._id;
 
@@ -180,74 +186,79 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     }
 
     if (!array.some(element => element?.id === elementId || element?._id === elementId)) {
-      array.push(arrayName === 'countries' ? { _id: element.id } : element);
+      array.push(arrayName === 'countries' ? { _id: element._id } : element);
     };
   }
 
-  getFromArray(array: any, id: string) {
+  getFromArray(array: {  _id?: string; id?: string; [key: string]: any }[], id: string) {
     return array.find(element => element.id === id || element._id === id);
   }
 
-  removeFromArray(array: any, index: number): void {
+  removeFromArray(
+    array: PeCouponCustomer[] | PeCouponCustomerGroup[] | PeCouponCategory[] | PeCouponCountry[] | PeCouponProduct[],
+    index: number
+  ): void {
     array.splice(index, 1);
   }
 
   getCoupon(couponId: string) {
     this.peApiService.getCouponById(couponId).pipe(
-      tap((coupon) => {
+      tap(coupon => {
         this.edit = true;
 
         if (coupon.customerEligibilityCustomerGroups) {
-          coupon.customerEligibilityCustomerGroups = coupon.customerEligibilityCustomerGroups.map(customerGroup => {
-            return this.groupsOfCustomersSource.find(group => group.id === customerGroup);
+          coupon.customerEligibilityCustomerGroups.forEach((customerGroup, i) => {
+            coupon.customerEligibilityCustomerGroups[i] = this.groupsOfCustomersSource?.find(group => group.id === customerGroup);
           });
         }
 
-        if (coupon.customerEligibilitySpecificCustomers) {
-          coupon.customerEligibilitySpecificCustomers = coupon.customerEligibilitySpecificCustomers.map(customer => {
-            return this.customersSource.find(contact => contact.id === customer);
+        if (coupon.customerEligibilitySpecificCustomers && this.customersSource) {
+          coupon.customerEligibilitySpecificCustomers.forEach((customer, i) => {
+            coupon.customerEligibilitySpecificCustomers[i] = this.customersSource?.find(contact => contact.id === customer);
           });
         }
 
         if (coupon.type.appliesToProducts) {
-          coupon.type.appliesToProducts = coupon.type.appliesToProducts.map(appliesToProduct => {
-            return this.products.find(product => product._id === appliesToProduct);
+          coupon.type.appliesToProducts.forEach((appliesToProduct, i) => {
+            coupon.type.appliesToProducts[i] = this.products?.find(product => product._id === appliesToProduct);
           })
         }
 
         if (coupon.type.buyProducts) {
-          coupon.type.buyProducts = coupon.type.buyProducts.map(buyProduct => {
-            return this.products.find(product => product._id === buyProduct);
+          coupon.type.buyProducts.forEach((buyProduct, i) => {
+            coupon.type.buyProducts[i] = this.products?.find(product => product._id === buyProduct);
           })
         }
 
         if (coupon.type.buyCategories) {
-          coupon.type.buyCategories = coupon.type.buyCategories.map(buyCategory => {
-            return this.categories.find(category => category._id === buyCategory);
+          coupon.type.buyCategories.forEach((buyCategory, i) => {
+            coupon.type.buyCategories[i] = this.categories?.find(category => category._id === buyCategory);
           })
         }
 
         if (coupon.type.appliesToCategories) {
-          coupon.type.appliesToCategories = coupon.type.appliesToCategories.map(appliesToCategory => {
-            return this.categories.find(category => category._id === appliesToCategory);
+          coupon.type.appliesToCategories.forEach((appliesToCategory, i) => {
+            coupon.type.appliesToCategories[i] = this.categories?.find(category => category._id === appliesToCategory);
           })
         }
 
         if (coupon.type.freeShippingToCountries) {
-          coupon.type.freeShippingToCountries = coupon.type.freeShippingToCountries.map(toCountry => {
-            return { _id: toCountry };
+          coupon.type.freeShippingToCountries.forEach((toCountry, i) => {
+            const country = this.countries.find(country => country._id === toCountry);
+            
+            coupon.type.freeShippingToCountries[i] = { _id: country._id };
           })
         }
 
         if (coupon.type.getProducts) {
-          coupon.type.getProducts = coupon.type.getProducts.map(getProduct => {
-            return this.products.find(product => product._id === getProduct);
+          coupon.type.getProducts.forEach((getProduct, i) => {
+            coupon.type.getProducts[i] = this.products?.find(product => product._id === getProduct);
           })
         }
 
         if (coupon.type.getCategories) {
-          coupon.type.getCategories = coupon.type.getCategories.map(getCategory => {
-            return this.categories.find(category => category._id === getCategory);
+          coupon.type.getCategories.forEach((getCategory, i) => {
+            coupon.type.getCategories[i] = this.categories?.find(category => category._id === getCategory);
           })
         }
 
@@ -273,19 +284,23 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     ).subscribe();
   }
 
-  generateCode() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  trackItem(index: number, item: any) {
+    return item.id || item._id;
+  }
+
+  generateCode(): void {
+    const codeLength = 12;
 
     let result = '';
 
-    for (let i = 0; i < 12; i++) {
-      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    for (let i = 0; i < codeLength; i++) {
+      result += this.characters.charAt(Math.floor(Math.random() * this.characters.length));
     }
 
     this.couponForm.get('code').patchValue(result.toUpperCase());
   }
 
-  onClose() {
+  onClose(): void {
     this.peOverlayRef.close();
   }
 
@@ -302,10 +317,6 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
       }),
     ).subscribe();
   }
-
-  // 
-  // start shit
-  // 
 
   onSave() {
     const couponId = this.coupon?._id;
@@ -341,7 +352,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
       controls.customerEligibilityCustomerGroups.updateValueAndValidity();
     }
 
-    let body;
+    let body: PeCoupon;
 
     if (this.couponForm.value.type.type === PeCouponTypeEnum.Percentage) body = this.getPercentage(value);
     if (this.couponForm.value.type.type === PeCouponTypeEnum.FixedAmount) body = this.getFixedAmount(value);
@@ -375,25 +386,27 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     if (this.couponForm.valid) {
       if (couponId) {
         this.peApiService.updateCoupon(couponId, body).pipe(
+          tap(() => this.peOverlayRef.close(true)),
           takeUntil(this.destroyed$),
-        ).subscribe(() => this.peOverlayRef.close(true));
+        ).subscribe();
       } else {
         this.peApiService.createCoupon(body).pipe(
+          tap(() => this.peOverlayRef.close(true)),
           catchError(response => {  
             controls.code.setErrors({ 'isNotUnique': true })
             this.changeDetectorRef.markForCheck();
             return throwError(response);
           }),
           takeUntil(this.destroyed$),
-        ).subscribe(() => this.peOverlayRef.close(true));
+        ).subscribe();
       }
     } else {
       if (this.coupon) controls.code.disable();
     }
   }
 
-  getPercentage(value) {
-    const body = {
+  getPercentage(value: PeCoupon): PeCoupon {
+    const body: PeCoupon = {
       code: value.code,
       businessId: value.businessId,
       description: value.description,
@@ -410,7 +423,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         appliesTo: value.type.appliesTo,
         appliesToProducts: value.type.appliesToProducts ?? [],
         appliesToCategories: value.type.appliesToCategories ?? [],
-        minimumRequirements: value.type.minimumRequirements ?? false,
+        minimumRequirements: value.type.minimumRequirements ?? PeCouponTypeMinimumRequirementsEnum.None,
       },
       status: value.status ?? PeCouponsStatusEnum.Inactive,
       customerEligibility: value.customerEligibility,
@@ -471,7 +484,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     return body;
   }
 
-  getBuyXGetY(value) {
+  getBuyXGetY(value: PeCoupon): PeCoupon {
     const limits = (this.couponForm.get('limits') as FormGroup).controls;
     const type = (this.couponForm.get('type') as FormGroup).controls;
 
@@ -560,7 +573,6 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         getType: value.type.getType,
         getProducts: value.type.getProducts ?? [],
         getCategories: value.type.getCategories ?? [],
-
         getDiscountType: value.type.getDiscountType,
         getDiscountValue: Number(value.type.getDiscountValue),
         maxUsesPerOrder: value.type.maxUsesPerOrder ?? false,
@@ -573,8 +585,8 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     }
   } 
 
-  getFixedAmount(value) {
-    const body = {
+  getFixedAmount(value: PeCoupon): PeCoupon {
+    const body: PeCoupon = {
       code: value.code,
       businessId: value.businessId,
       description: value.description,
@@ -591,7 +603,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         appliesTo: value.type.appliesTo,
         appliesToProducts: value.type.appliesToProducts ?? [],
         appliesToCategories: value.type.appliesToCategories ?? [],
-        minimumRequirements: value.type.minimumRequirements ?? false,
+        minimumRequirements: value.type.minimumRequirements ?? PeCouponTypeMinimumRequirementsEnum.None,
       },
       status: value.status ?? PeCouponsStatusEnum.Inactive,
       customerEligibility: value.customerEligibility ?? null,
@@ -647,8 +659,8 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
     return body;
   }
 
-  getFreeShipping(value) {
-    const body = {
+  getFreeShipping(value: PeCoupon): PeCoupon {
+    const body: PeCoupon = {
       code: value.code,
       businessId: value.businessId,
       description: value.description,
@@ -665,7 +677,7 @@ export class PeCouponsFormComponent implements OnInit, OnDestroy {
         freeShippingType: value.type.freeShippingType ?? null,
         excludeShippingRatesOverCertainAmount: value.type.excludeShippingRatesOverCertainAmount ?? false,
         excludeShippingRatesOverCertainAmountValue: Number(value.type.excludeShippingRatesOverCertainAmountValue) ?? null,
-        minimumRequirements: value.type.minimumRequirements ?? false,
+        minimumRequirements: value.type.minimumRequirements ?? PeCouponTypeMinimumRequirementsEnum.None,
       },
       status: value.status ?? PeCouponsStatusEnum.Inactive,
       customerEligibility: value.customerEligibility ?? null,

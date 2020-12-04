@@ -4,7 +4,7 @@ import { PebEnvService } from '@pe/builder-core';
 import { EnvironmentConfigInterface, PE_ENV } from '@pe/common';
 
 import { Observable } from 'rxjs';
-import { PeCoupon } from '../misc/interfaces/coupon.model';
+import { PeCoupon } from '../misc/interfaces/coupon.interface';
 
 import { PeCouponsApi } from './abstract.coupons.api';
 

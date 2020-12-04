@@ -67,11 +67,3 @@ button {
     margin-left: 0.5625em;
   }
 }
-
-::ng-deep .cdk-overlay-container {
-  font-size: 12px; 
-  @media (min-width: 1536px) { font-size: 13px; }
-  @media (min-width: 1632px) { font-size: 14px; }
-  @media (min-width: 1728px) { font-size: 15px; }
-  @media (min-width: 1824px) { font-size: 16px; }
-}

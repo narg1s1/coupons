@@ -8,5 +8,5 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PeCouponsListItemComponent {
-  @Output() onRemove: EventEmitter<any> = new EventEmitter();
+  @Output() onRemove = new EventEmitter<void>();
 }

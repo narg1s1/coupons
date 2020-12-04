@@ -32,18 +32,7 @@ input {
   }
 }
 
-// TODO: remove ng-deep
-::ng-deep .mat-autocomplete-panel {
-  background-color: #1c1d1e !important;
-  border-radius: 0.75em !important;
-
-  .mat-option.mat-selected:not(.mat-active):not(:hover):not(.mat-option-disabled) {
-    background-color: inherit;
-    color: rgba(255, 255, 255, 0.95);
-  }
-}
-
-.mat-option {
+.mat-option[id^="pe-coupons-option-"] {
   color: rgba(255, 255, 255, 0.95);
   height: 2.875em;
   font-family: 'Roboto', sans-serif;
@@ -54,7 +43,7 @@ input {
   padding-right: 0.625em;
 
   &:hover {
-    background-color: #0091df !important;
+    background-color: #0091df;
   }
 
   &:not(:first-of-type) {

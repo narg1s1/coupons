@@ -6,5 +6,8 @@
   [matAutocomplete]="auto"
 >
 <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event.option.value)">
-  <mat-option *ngFor="let item of filteredItems | async" [value]="item">{{ item.title }}</mat-option>
+  <mat-option
+    *ngFor="let item of filteredItems | async; let i = index; trackBy: trackOption"
+    id="pe-coupons-option-{{ i }}"
+    [value]="item">{{ item.title }}</mat-option>
 </mat-autocomplete>

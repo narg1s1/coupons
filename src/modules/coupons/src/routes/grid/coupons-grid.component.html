@@ -1,11 +1,11 @@
 <pe-data-grid 
+  id="pe-coupons-data-grid"
   [filters]="filters"
   [items]="items$"
   [selectedItems]="selectedItems"
   [dataListOptions]="gridOptions"
   [multipleSelectedActions]="multipleSelectedActions"
   [sortByActions]="sortByActions"
-  (filtersChanged)="onFiltersChanged($event)"
   (searchChanged)="onSearchChanged($event)"
 >
 
@@ -66,7 +66,7 @@
   </pe-data-grid-item>
 
   <pe-data-grid-item
-    *ngFor="let item of items$ | async"
+    *ngFor="let item of items$ | async; trackBy: trackItem"
     inViewport
     [item]="item"
     [actions]="[singleSelectedAction]"

@@ -19,7 +19,7 @@ const DEFAULT_CONFIG: PeOverlayConfig = {
 export const PE_OVERLAY_DATA = new InjectionToken<any>('PE_OVERLAY_DATA');
 
 @Injectable()
-export class PeOverlayService {
+export class PeCouponsOverlayService {
 
   constructor(
     private injector: Injector,

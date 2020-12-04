@@ -35,41 +35,6 @@ $background-skeleton: #444;
   }
 }
 
-::ng-deep { 
-  pe-data-grid-sidebar {
-    top: unset !important;
-    height: calc(100% - 8.25em) !important;
-  }
-
-  pe-data-grid-item {
-    min-height: 18.375em;
-  
-    .item-header {
-      z-index: 1;
-    }
-  
-    .item {
-
-      &__checkbox {
-        margin-top: 0 !important;
-      }
-
-      .item-header__chip {
-        max-height: 1.75em;
-        padding: 0 10px !important;
-      }
-    }
-  }
-
-  .sidebar-tree__node-image {
-    min-width: 1.375em;
-  }
-
-  .mat-menu-panel {
-    overflow: hidden !important;
-  }
-}
-
 .coupon {
   &__container {
     display: flex;

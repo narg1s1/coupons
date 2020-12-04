@@ -19,9 +19,9 @@ export class PeCouponsInputComponent implements ControlValueAccessor, OnInit {
 
   @ViewChild('input', { static: true }) elementRef: ElementRef;
 
-  @Input() placeholder?: string = '';
-  @Input() type?: string = 'number';
-  @Input() min?: number = 0;
+  @Input() placeholder? = '';
+  @Input() type? = 'number';
+  @Input() min? = 0;
   @Input() max?: number;
 
   mask: any | boolean = false;

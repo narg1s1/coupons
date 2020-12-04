@@ -43,7 +43,7 @@ import { PeCouponsFormFieldPrefixDirective } from './misc/components/coupons-for
 import { PeCouponsFormFieldSuffixDirective } from './misc/components/coupons-form-field/coupons-form-field-suffix.directive';
 import { PeCouponsFormFieldSubscriptDirective } from './misc/components/coupons-form-field/coupons-form-field-subscript.directive';
 
-import { PeOverlayService } from './misc/components/overlay/overlay.service';
+import { PeCouponsOverlayService } from './misc/services/coupons-overlay/coupons-overlay.service';
 import { PeCouponsDatepickerComponent } from './misc/components/coupons-datepicker/coupons-datepicker.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -117,7 +117,7 @@ const icons = [
     ...icons,
   ],
   providers: [
-    PeOverlayService,
+    PeCouponsOverlayService,
   ],
 })
 export class PeCouponsModule {}

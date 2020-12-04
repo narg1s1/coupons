@@ -10,15 +10,23 @@ import {
   PeDataGridSortByActionIcon,
   TreeFilterNode,
 } from '@pe/data-grid';
+import { LocaleConstantsService } from '@pe/i18n';
 import { isEqual, orderBy } from 'lodash';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
-import { PeCoupon, PeCouponsStatusEnum } from '../../misc/interfaces/coupon.model';
+
+import { PeCoupon } from '../../misc/interfaces/coupon.interface';
+import { PeCouponCustomer } from '../../misc/interfaces/coupon-customer.interface';
+import { PeCouponCustomerGroup } from '../../misc/interfaces/coupon-customer-group.interface';
+import { PeCouponCategory } from '../../misc/interfaces/coupon-category.interface';
+import { PeCouponCountry } from '../../misc/interfaces/coupon-country.interface';
+import { PeCouponOption } from '../../misc/interfaces/coupon-option.interface';
+import { PeCouponProduct } from '../../misc/interfaces/coupon-product.interface';
 import { PeCouponsApi } from '../../services/abstract.coupons.api';
 
-import { PeOverlayService } from '../../misc/components/overlay/overlay.service';
+import { PeCouponsAbstractComponent } from '../../misc/components/coupons-abstract.component';
+import { PeCouponsOverlayService } from '../../misc/services/coupons-overlay/coupons-overlay.service';
 import { PeCouponsFormComponent } from '../form/coupons-form.component';
-import { LocaleConstantsService } from '@pe/i18n';
 
 
 @Component({
@@ -27,9 +35,7 @@ import { LocaleConstantsService } from '@pe/i18n';
   styleUrls: ['./coupons-grid.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PeCouponsGridComponent implements OnInit, OnDestroy {
-
-  private readonly destroyed$ = new Subject();
+export class PeCouponsGridComponent extends PeCouponsAbstractComponent implements OnInit, OnDestroy {
 
   private itemsSubject = new BehaviorSubject<PeDataGridItem[]>([]);
   readonly items$ = this.itemsSubject.asObservable();
@@ -90,11 +96,11 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
   sidebarFooterData: MenuSidebarFooterData = {
     headItem: { title: 'Folder Name' },
     menuItems: [
-      { title: 'Rename', onClick: () => { console.log('rename') } },
-      { title: 'Move', onClick: () => { console.log('move') } },
-      { title: 'Settings', onClick: () => { console.log('settings') } },
-      { title: 'Add New Album', onClick: () => { console.log('add new album') } },
-      { title: 'Delete', onClick: () => { console.log('delete') } },
+      { title: 'Rename', onClick: () => {  } },
+      { title: 'Move', onClick: () => {  } },
+      { title: 'Settings', onClick: () => {  } },
+      { title: 'Add New Album', onClick: () => {  } },
+      { title: 'Delete', onClick: () => {  } },
     ]
   }
 
@@ -162,8 +168,10 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
     private apiService: PeCouponsApi,
     private formBuilder: FormBuilder,
     private localConstantsService: LocaleConstantsService,
-    private overlayService: PeOverlayService,
-  ) {}
+    private overlayService: PeCouponsOverlayService,
+  ) {
+    super();
+  }
 
   open(couponId?: string) {
     const data = { 
@@ -222,34 +230,18 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
     this.getCustomers();
     this.getGroupsOfCustomers();
     this.getProducts();
-
-    this.formGroup.valueChanges.pipe(
-      takeUntil(this.destroyed$),
-      tap(value => console.log(value)),
-    ).subscribe();
   }
 
-  ngOnDestroy() {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
+  onSearchChanged(string: string): void {  }
 
-  onFiltersChanged(event) {
-    console.log(event);
-  }
+  customersSource: PeCouponCustomer[];
+  groupsOfCustomersSource: PeCouponCustomerGroup[];
 
-  onSearchChanged(string: string): void {
-    console.log(string);
-  }
-
-  customersSource;
-  groupsOfCustomersSource
-
-  categories;
-  countries;
-  customers;
-  groupsOfCustomers;
-  products;
+  categories: PeCouponCategory[];
+  countries: PeCouponCountry[];
+  customers: PeCouponOption[];
+  groupsOfCustomers: PeCouponOption[];
+  products: PeCouponProduct[];
 
   getCategories() {
     this.apiService.getCategories().pipe(
@@ -266,7 +258,7 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
 
     Object.keys(countryList).map(countryKey => {
       this.countries.push({
-        id: countryKey,
+        _id: countryKey,
         title: Array.isArray(countryList[countryKey]) ? countryList[countryKey][0] : countryList[countryKey]
       });
     })
@@ -306,6 +298,10 @@ export class PeCouponsGridComponent implements OnInit, OnDestroy {
       tap(products => this.products = products),
       takeUntil(this.destroyed$)
     ).subscribe();
+  }
+
+  trackItem(index: number, item: any) {
+    return item._id;
   }
 
 }

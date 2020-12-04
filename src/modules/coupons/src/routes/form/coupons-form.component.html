@@ -102,7 +102,7 @@
               </pe-coupons-form-field>
               <pe-coupons-list>
                 <pe-coupons-list-item 
-                  *ngFor="let country of couponForm.value.type.freeShippingToCountries; let i = index"
+                  *ngFor="let country of couponForm.value.type.freeShippingToCountries; let i = index; trackBy: trackItem"
                   (onRemove)="removeFromArray(couponForm.value.type.freeShippingToCountries, i)"
                 >{{ getFromArray(countries, country._id)?.title }}</pe-coupons-list-item>
               </pe-coupons-list>
@@ -268,7 +268,7 @@
               </pe-coupons-form-field>
               <pe-coupons-list>
                 <pe-coupons-list-item 
-                  *ngFor="let group of couponForm.value.customerEligibilityCustomerGroups; let i = index"
+                  *ngFor="let group of couponForm.value.customerEligibilityCustomerGroups; let i = index; trackBy: trackItem"
                   (onRemove)="removeFromArray(couponForm.value.customerEligibilityCustomerGroups, i)"
                 >{{ getFromArray(groupsOfCustomers, group.id)?.title }}</pe-coupons-list-item>
               </pe-coupons-list>
@@ -287,7 +287,7 @@
               </pe-coupons-form-field>
               <pe-coupons-list>
                 <pe-coupons-list-item 
-                  *ngFor="let customer of couponForm.value.customerEligibilitySpecificCustomers; let i = index"
+                  *ngFor="let customer of couponForm.value.customerEligibilitySpecificCustomers; let i = index; trackBy: trackItem"
                   (onRemove)="removeFromArray(couponForm.value.customerEligibilitySpecificCustomers, i)"
                 >{{ getFromArray(customers, customer.id)?.title }}</pe-coupons-list-item>
               </pe-coupons-list>
@@ -432,7 +432,7 @@
   </pe-coupons-form-field>
   <pe-coupons-list>
     <pe-coupons-list-item 
-      *ngFor="let product of control.value; let i = index"
+      *ngFor="let product of control.value; let i = index; trackBy: trackItem"
       (onRemove)="removeFromArray(control.value, i)"
     >
       <img [src]="getFromArray(products, product._id).imagesUrl[0]" alt="" width="38" height="38" style="object-fit: cover; margin: -0.5625em 0.75em -0.5625em 0; border-radius: 0.5em;">
@@ -448,7 +448,7 @@
   </pe-coupons-form-field>
   <pe-coupons-list>
     <pe-coupons-list-item 
-      *ngFor="let category of control.value; let i = index"
+      *ngFor="let category of control.value; let i = index; trackBy: trackItem"
       (onRemove)="removeFromArray(control.value, i)"
     >{{ getFromArray(categories, category._id)?.title }}</pe-coupons-list-item>
   </pe-coupons-list>
