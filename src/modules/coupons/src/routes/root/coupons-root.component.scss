@@ -275,7 +275,8 @@
   
   pe-data-grid-item {
     min-height: 18.375em;
-  
+    flex-basis: calc(28.3% - 20px);
+
     .item-header {
       z-index: 1;
     }
