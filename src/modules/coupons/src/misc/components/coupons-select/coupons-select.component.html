@@ -1,0 +1,3 @@
+<mat-select *ngIf="options" (selectionChange)="onChange($event.value)" [value]="selectedOption" id="pe-coupons-select" panelClass="pe-coupons-select-panel">
+  <mat-option *ngFor="let option of options; trackBy: trackOption" [value]="option.value">{{ option.label }}</mat-option>
+</mat-select>
